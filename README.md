@@ -32,7 +32,7 @@ Child: four separate Gemini responsibilities (classification, Bio, Research, Syn
 
 1. **Local build checks:** `npm test` has no API calls and does not emulate n8n execution.
 2. **Real local n8n engine:** use the self-hosted Community edition via Docker or npm. Import the workflows, bind personal credentials and test one author before a full batch. Match the original engine version where known; it has not been recovered from node type versions.
-3. **Mocked workflow integration:** a future test variant can replace external HTTP calls with fixed responses while retaining actual n8n routing. This is planned, not included in this initial repository.
+3. **Real n8n with mock responses:** `npm run setup:n8n` followed by `npm run test:n8n` executes mixed failures, shared stop, and full synthetic two-page intake in n8n 2.38.7. See [local integration tests](docs/local-n8n-tests.md).
 4. **Live integration:** requires independently configured Browserless and Gemini access. Hosting n8n locally does not provide those API services or company credentials.
 
 Official setup: https://docs.n8n.io/hosting/installation/docker/
@@ -41,7 +41,7 @@ Official setup: https://docs.n8n.io/hosting/installation/docker/
 
 Before repository extraction, the saved-intake variant completed a real 15-author run: no missing or duplicate authors; all dossiers degraded. Classification and Bio succeeded for all; Research was partial for 4 and failed for 11; Synthesis was successful for 10 and partial for 5. Separately, the two-page intake returned 20 quotes. The cleaned fresh-intake variant still needs a live end-to-end run in the destination environment.
 
-This repository's tests validate assembly and structure only. Earlier workspace regression and simulation tests are not yet migrated here; do not interpret `npm test` as full acceptance. No company execution exports, task text, correspondence, credential records or raw scraped pages are included.
+`npm test` validates assembly and structure; `npm run test:n8n` separately validates actual local engine behavior using synthetic HTTP responses. Earlier workspace semantic regression tests are not yet fully migrated here; neither command implies complete semantic acceptance. No company execution exports, task text, correspondence, credential records or raw scraped pages are included.
 
 ## Known limitations
 

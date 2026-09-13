@@ -5,7 +5,9 @@
   "description": "Evidence-aware author research workflows for n8n",
   "scripts": {
     "build": "node scripts/build.cjs",
-    "test": "node scripts/test.cjs"
+    "test": "node scripts/test.cjs",
+    "test:n8n": "node tests/n8n/run.cjs",
+    "setup:n8n": "npm install --prefix .runtime n8n@2.38.7 --cache .runtime/npm-cache --no-audit --no-fund"
   },
   "engines": {
     "node": ">=20"

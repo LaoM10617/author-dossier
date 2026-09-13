@@ -1,0 +1,29 @@
+{
+  "engine": "n8n 2.38.7",
+  "scope": "Real local n8n engine, HTTP and HTML nodes; external providers replaced with localhost synthetic responses. No real-model semantic validation.",
+  "passed": true,
+  "scenarios": {
+    "mixed": {
+      "authors": 8,
+      "completed": 3,
+      "degraded": 2,
+      "failed": 3
+    },
+    "sharedStop": {
+      "authors": 3,
+      "scheduled": 2,
+      "blocked": 1
+    },
+    "fullIntake": {
+      "pages": 2,
+      "quotes": 4,
+      "authors": 3,
+      "completed": 3
+    }
+  },
+  "durationsMs": {
+    "mixed": 9721,
+    "stop": 4234,
+    "intake": 4469
+  }
+}

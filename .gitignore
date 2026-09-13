@@ -6,3 +6,4 @@ dist/
 .n8n/
 artifacts/
 *.log
+.runtime/

@@ -1,0 +1,4 @@
+const http=require('node:http'),fs=require('node:fs'),path=require('node:path');const {reply}=require('./responses.cjs');
+const log=path.resolve('artifacts/mock-calls.jsonl');fs.mkdirSync(path.dirname(log),{recursive:true});fs.writeFileSync(log,'');
+http.createServer((req,res)=>{let body='';req.on('data',b=>body+=b);req.on('end',()=>{try{if(req.method==='GET'){res.end('local mock ready');return;}const c=JSON.parse(body);fs.appendFileSync(log,JSON.stringify({author:c.author.name,step:c.req.label,attempt:c.req.attempt})+'\n');const r=reply(c);res.writeHead(r.status,{'content-type':'application/json',...r.headers});res.end(typeof r.body==='string'?r.body:JSON.stringify(r.body));}catch(e){res.writeHead(500);res.end(JSON.stringify({error:e.message}));}});}).listen(5689,'127.0.0.1',()=>console.log('MOCK_READY 127.0.0.1:5689'));
+
