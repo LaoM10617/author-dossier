@@ -1,0 +1,52 @@
+{
+  "execution": 17,
+  "scope": "User-operated local n8n editor, direct provider requests, complete fresh-intake parent run",
+  "engine": "n8n 2.38.7",
+  "summary": {
+    "pages": [
+      {
+        "page_url": "https://quotes.toscrape.com/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      },
+      {
+        "page_url": "https://quotes.toscrape.com/page/2/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      }
+    ],
+    "input_complete": true,
+    "quote_count": 20,
+    "author_count": 15,
+    "completed_count": 0,
+    "degraded_count": 15,
+    "failed_count": 0,
+    "stop_reason": null
+  },
+  "stages": {
+    "classification": {
+      "success": 15
+    },
+    "bio": {
+      "success": 15
+    },
+    "research": {
+      "partial": 4,
+      "failed": 11
+    },
+    "synthesis": {
+      "success": 15
+    }
+  },
+  "profiles": 15,
+  "uniqueAuthors": 15,
+  "limitations": "Synthesis success denotes runtime contract acceptance, not full semantic validation. Portable exports require new credential and child bindings."
+}

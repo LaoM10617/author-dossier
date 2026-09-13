@@ -1,0 +1,572 @@
+[
+  {
+    "execution": 18,
+    "name": "Albert Einstein",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Einstein%20physicist%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Einstein physicist biography - Search",
+    "searchBox": "Einstein physicist biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 7,
+    "queueCount": 3,
+    "sampleTitles": [
+      "Albert Einstein - Wikipedia",
+      "Fresh Bagels Near You | Order Breakfast Online | Einstein Bros ...",
+      "Albert Einstein | Biography, Relativity, Education, Discoveries ..."
+    ]
+  },
+  {
+    "execution": 18,
+    "name": "Albert Einstein",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Albert%20Einstein%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Albert Einstein\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Albert Einstein\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 1,
+    "queueCount": 1,
+    "sampleTitles": [
+      "Albert | Your personal financial assistant",
+      "Grades 3-12 reading, writing, math, science, and test prep | Albert",
+      "Albert"
+    ]
+  },
+  {
+    "execution": 19,
+    "name": "J.K. Rowling",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=J.K.%20Rowling%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "J.K. Rowling biography - Search",
+    "searchBox": "J.K. Rowling biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 9,
+    "queueCount": 3,
+    "sampleTitles": [
+      "J. K. Rowling - Wikipedia",
+      "J.K. Rowling | Biography, Controversy, Books, Full Name, & Facts ...",
+      "About - J.K. Rowling"
+    ]
+  },
+  {
+    "execution": 19,
+    "name": "J.K. Rowling",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22J.K.%20Rowling%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"J.K. Rowling\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"J.K. Rowling\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 9,
+    "queueCount": 4,
+    "sampleTitles": [
+      "J. K. Rowling - Wikipedia",
+      "J.K. Rowling | Biography, Controversy, Books, Full Name, & Facts ...",
+      "About - J.K. Rowling"
+    ]
+  },
+  {
+    "execution": 20,
+    "name": "Jane Austen",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Jane%20Austen%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Jane Austen biography - Search",
+    "searchBox": "Jane Austen biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Sign In to Jane - Jane App",
+      "Jane | Daily Boutique Deals on Clothing, Home Decor & Personalized ...",
+      "Jane! - YouTube"
+    ]
+  },
+  {
+    "execution": 20,
+    "name": "Jane Austen",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Jane%20Austen%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Jane Austen\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Jane Austen\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Sign In to Jane - Jane App",
+      "Jane | Daily Boutique Deals on Clothing, Home Decor & Personalized ...",
+      "Jane! - YouTube"
+    ]
+  },
+  {
+    "execution": 21,
+    "name": "Marilyn Monroe",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Marilyn%20Monroe%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Marilyn Monroe biography - Search",
+    "searchBox": "Marilyn Monroe biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 9,
+    "queueCount": 3,
+    "sampleTitles": [
+      "Marilyn Monroe - Wikipedia",
+      "Marilyn Monroe | Movies, Death, Real Name, Height, & Facts - Britannica",
+      "Marilyn (singer) - Wikipedia"
+    ]
+  },
+  {
+    "execution": 21,
+    "name": "Marilyn Monroe",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Marilyn%20Monroe%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Marilyn Monroe\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Marilyn Monroe\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 9,
+    "queueCount": 4,
+    "sampleTitles": [
+      "Marilyn Monroe - Wikipedia",
+      "Marilyn Monroe | Movies, Death, Real Name, Height, & Facts - Britannica",
+      "Marilyn (singer) - Wikipedia"
+    ]
+  },
+  {
+    "execution": 22,
+    "name": "André Gide",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Andr%C3%A9%20Gide%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "André Gide biography - Search",
+    "searchBox": "André Gide biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Microsoft – AI, Cloud, Productivity, Computing, Gaming & Apps",
+      "Microsoft account | Sign In or Create Your Account Today – Microsoft",
+      "Sign in to your account"
+    ]
+  },
+  {
+    "execution": 22,
+    "name": "André Gide",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Andr%C3%A9%20Gide%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"André Gide\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"André Gide\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Oahu Official Travel Site: Find Vacation & Travel Information | Go Hawaii",
+      "Hawaii Travel Information | Official Hawaiian Islands Vacation Guide ...",
+      "Travel Assistance Questionnaire Oahu | Go Hawaii Media"
+    ]
+  },
+  {
+    "execution": 23,
+    "name": "Thomas A. Edison",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Thomas%20A.%20Edison%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Thomas A. Edison biography - Search",
+    "searchBox": "Thomas A. Edison biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Thomas & Friends | Number One Engine | Kids Cartoon - YouTube",
+      "Thomas the Tank Engine - Wikipedia",
+      "Thomas & Friends - YouTube"
+    ]
+  },
+  {
+    "execution": 23,
+    "name": "Thomas A. Edison",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Thomas%20A.%20Edison%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Thomas A. Edison\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Thomas A. Edison\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Thomas & Friends | Number One Engine | Kids Cartoon - YouTube",
+      "Thomas the Tank Engine - Wikipedia",
+      "Thomas & Friends - YouTube"
+    ]
+  },
+  {
+    "execution": 24,
+    "name": "Eleanor Roosevelt",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Eleanor%20Roosevelt%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Eleanor Roosevelt biography - Search",
+    "searchBox": "Eleanor Roosevelt biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Weeks Calculator - Count Weeks Between Dates Quickly",
+      "Date Calculator",
+      "Weeks Between Two Dates Calculator"
+    ]
+  },
+  {
+    "execution": 24,
+    "name": "Eleanor Roosevelt",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Eleanor%20Roosevelt%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Eleanor Roosevelt\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Eleanor Roosevelt\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Autour De Moi : plus de 19 000 emplois (12 septembre 2026) | Indeed",
+      "Accueil | France Travail",
+      "Pres De Chez Moi : plus de 7 000 emplois (13 septembre 2026) | Indeed"
+    ]
+  },
+  {
+    "execution": 25,
+    "name": "Steve Martin",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Steve%20Martin%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Steve Martin biography - Search",
+    "searchBox": "Steve Martin biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Steve – Minecraft Wiki",
+      "Steve (2025) - IMDb",
+      "Steve (2025 film) - Wikipedia"
+    ]
+  },
+  {
+    "execution": 25,
+    "name": "Steve Martin",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Steve%20Martin%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Steve Martin\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Steve Martin\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Steve – Minecraft Wiki",
+      "Steve (2025) - IMDb",
+      "Steve (2025 film) - Wikipedia"
+    ]
+  },
+  {
+    "execution": 26,
+    "name": "Bob Marley",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Bob%20Marley%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Bob Marley biography - Search",
+    "searchBox": "Bob Marley biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Discount Furniture & Mattress Store | Bob's Discount Furniture ...",
+      "HiBob - Customer login",
+      "Find A Furniture Store Near Me - Bob's Discount Furniture"
+    ]
+  },
+  {
+    "execution": 26,
+    "name": "Bob Marley",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Bob%20Marley%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Bob Marley\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Bob Marley\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Discount Furniture & Mattress Store | Bob's Discount Furniture ...",
+      "HiBob - Customer login",
+      "Find A Furniture Store Near Me - Bob's Discount Furniture"
+    ]
+  },
+  {
+    "execution": 27,
+    "name": "Dr. Seuss",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Dr.%20Seuss%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Dr. Seuss biography - Search",
+    "searchBox": "Dr. Seuss biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "On- prem to Azure DR setup - Microsoft Q&A",
+      "Update Audio drivers in Windows | Microsoft Support",
+      "Latest Supported Visual C++ Redistributable Downloads"
+    ]
+  },
+  {
+    "execution": 27,
+    "name": "Dr. Seuss",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Dr.%20Seuss%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Dr. Seuss\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Dr. Seuss\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "On- prem to Azure DR setup - Microsoft Q&A",
+      "Update Audio drivers in Windows | Microsoft Support",
+      "Latest Supported Visual C++ Redistributable Downloads"
+    ]
+  },
+  {
+    "execution": 28,
+    "name": "Douglas Adams",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Douglas%20Adams%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Douglas Adams biography - Search",
+    "searchBox": "Douglas Adams biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Douglas Cuddle Toys | Amazingly Soft and Cuddly Toys!",
+      "Plush Dogs & Puppies | Breed-Specific | Douglas Cuddle Toys",
+      "Douglas - amazon.com"
+    ]
+  },
+  {
+    "execution": 28,
+    "name": "Douglas Adams",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Douglas%20Adams%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Douglas Adams\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Douglas Adams\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Douglas Cuddle Toys | Amazingly Soft and Cuddly Toys!",
+      "Plush Dogs & Puppies | Breed-Specific | Douglas Cuddle Toys",
+      "Douglas - amazon.com"
+    ]
+  },
+  {
+    "execution": 29,
+    "name": "Elie Wiesel",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Elie%20Wiesel%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Elie Wiesel biography - Search",
+    "searchBox": "Elie Wiesel biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 8,
+    "queueCount": 3,
+    "sampleTitles": [
+      "Elie Wiesel - Wikipedia",
+      "Elie and Earlsferry - Wikipedia",
+      "Elie Wiesel | Books, Awards, & Facts | Britannica"
+    ]
+  },
+  {
+    "execution": 29,
+    "name": "Elie Wiesel",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Elie%20Wiesel%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Elie Wiesel\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Elie Wiesel\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 8,
+    "queueCount": 4,
+    "sampleTitles": [
+      "Elie Wiesel - Wikipedia",
+      "Elie and Earlsferry - Wikipedia",
+      "Elie Wiesel | Books, Awards, & Facts | Britannica"
+    ]
+  },
+  {
+    "execution": 30,
+    "name": "Friedrich Nietzsche",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Friedrich%20Nietzsche%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Friedrich Nietzsche biography - Search",
+    "searchBox": "Friedrich Nietzsche biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Room Air Conditioning Expert-Premium AC | Friedrich Air Conditioning",
+      "Friedrich Residential Products",
+      "Locate a Dealer for sales, service and support | Friedrich"
+    ]
+  },
+  {
+    "execution": 30,
+    "name": "Friedrich Nietzsche",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Friedrich%20Nietzsche%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Friedrich Nietzsche\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Friedrich Nietzsche\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Room Air Conditioning Expert-Premium AC | Friedrich Air Conditioning",
+      "Friedrich Residential Products",
+      "Locate a Dealer for sales, service and support | Friedrich"
+    ]
+  },
+  {
+    "execution": 31,
+    "name": "Mark Twain",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Mark%20Twain%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Mark Twain biography - Search",
+    "searchBox": "Mark Twain biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Mark 1 NIV - John the Baptist Prepares the Way - The - Bible Gateway",
+      "MARK Definition & Meaning - Merriam-Webster",
+      "Gospel of Mark - Wikipedia"
+    ]
+  },
+  {
+    "execution": 31,
+    "name": "Mark Twain",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Mark%20Twain%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Mark Twain\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Mark Twain\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "Mark 1 NIV - John the Baptist Prepares the Way - The - Bible Gateway",
+      "MARK Definition & Meaning - Merriam-Webster",
+      "Gospel of Mark - Wikipedia"
+    ]
+  },
+  {
+    "execution": 32,
+    "name": "Allen Saunders",
+    "round": 1,
+    "requestUrl": "https://www.bing.com/search?q=Allen%20Saunders%20biography",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "Allen Saunders biography - Search",
+    "searchBox": "Allen Saunders biography",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "ALLEN",
+      "Allen - Wikipedia",
+      "Allen & Heath • Heard Everywhere"
+    ]
+  },
+  {
+    "execution": 32,
+    "name": "Allen Saunders",
+    "round": 2,
+    "requestUrl": "https://www.bing.com/search?q=%22Allen%20Saunders%22%20biography%20(site%3Aedu%20OR%20site%3Agov%20OR%20site%3Aac.uk%20OR%20site%3Anobelprize.org)",
+    "http": 200,
+    "target": "200",
+    "pageTitle": "\"Allen Saunders\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org) - Search",
+    "searchBox": "\"Allen Saunders\" biography (site:edu OR site:gov OR site:ac.uk OR site:nobelprize.org)",
+    "rawMatchesExtracted": true,
+    "extractedCount": 10,
+    "relevantCount": 0,
+    "queueCount": 0,
+    "sampleTitles": [
+      "ALLEN",
+      "Allen - Wikipedia",
+      "Allen & Heath • Heard Everywhere"
+    ]
+  }
+]

@@ -7,3 +7,4 @@ dist/
 artifacts/
 *.log
 .runtime/
+debug_output_log/

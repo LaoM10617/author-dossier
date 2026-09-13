@@ -1,0 +1,4715 @@
+{
+  "run_id": "m05-batch-17",
+  "summary": {
+    "pages": [
+      {
+        "page_url": "https://quotes.toscrape.com/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      },
+      {
+        "page_url": "https://quotes.toscrape.com/page/2/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      }
+    ],
+    "input_complete": true,
+    "quote_count": 20,
+    "author_count": 15,
+    "completed_count": 0,
+    "degraded_count": 15,
+    "failed_count": 0,
+    "stop_reason": null
+  },
+  "dossiers": [
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "name": "Albert Einstein",
+        "bio_url": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-1",
+          "https://quotes.toscrape.com/#quote-3",
+          "https://quotes.toscrape.com/#quote-6",
+          "https://quotes.toscrape.com/page/2/#quote-3"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Albert Einstein is a universally recognized historical public figure whose biography is extensively documented in public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Albert-Einstein/",
+              "requested_url": "https://quotes.toscrape.com/author/Albert-Einstein/",
+              "title": "Albert Einstein",
+              "retrieved_at": "2026-09-13T20:44:07.057Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1879-03-14",
+              "source_id": "bio:1",
+              "evidence_text": "March 14, 1879",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Ulm, Germany",
+              "source_id": "bio:1",
+              "evidence_text": "Ulm, Germany",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "affiliation",
+              "subject": "University of Zurich",
+              "value": "completed his Ph.D. by 1909",
+              "source_id": "bio:1",
+              "evidence_text": "He completed his Ph.D. at the University of Zurich by 1909.",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "work",
+              "subject": "photoelectric effect paper",
+              "value": "published in 1905",
+              "source_id": "bio:1",
+              "evidence_text": "His 1905 paper explaining the photoelectric effect, the basis of electronics, earned him the Nobel Prize in 1921.",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "work",
+              "subject": "Special Relativity Theory paper",
+              "value": "published in 1905",
+              "source_id": "bio:1",
+              "evidence_text": "His first paper on Special Relativity Theory, also published in 1905, changed the world.",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "mass–energy equivalence formula E = mc2",
+              "value": "mass–energy equivalence formula E = mc2",
+              "source_id": "bio:1",
+              "evidence_text": "mass–energy equivalence formula E = mc2",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "general theory of relativity paper",
+              "value": "published in 1916",
+              "source_id": "bio:1",
+              "evidence_text": "with his subsequent theory of gravitation in 1916, he published a paper on the general theory of relativity.",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Institute for Advanced Study in Princeton, New Jersey",
+              "value": "affiliated until his death in 1955",
+              "source_id": "bio:1",
+              "evidence_text": "Einstein was affiliated with the Institute for Advanced Study in Princeton, New Jersey, until his death in 1955.",
+              "fact_id": "bio:1:f8"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "status": "partial",
+        "data": {
+          "sources": [
+            {
+              "source_id": "research:1",
+              "url": "https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/",
+              "requested_url": "https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/",
+              "title": "Albert Einstein – Biographical - NobelPrize.org",
+              "retrieved_at": "2026-09-13T20:44:15.078Z"
+            },
+            {
+              "source_id": "research:2",
+              "url": "https://en.wikipedia.org/wiki/Albert_Einstein",
+              "requested_url": "https://en.wikipedia.org/wiki/Albert_Einstein",
+              "title": "Albert Einstein - Wikipedia",
+              "retrieved_at": "2026-09-13T20:44:21.229Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1879-03-14",
+              "source_id": "research:1",
+              "evidence_text": "Albert EinsteinAlbert Einstein was born at Ulm, in Württemberg, Germany, on March 14, 1879. Six weeks later the family moved to Munich, where he later on began his schooling at the Luitpold Gymnasium. Later, they moved to Italy and Albert continued his education at Aarau, Switzerland and in 1896 he entered the Swiss Federal Polytechnic School in Zurich to be trained as a teacher in physics and mathematics. In 1901, the year he gained his diploma, he acquired Swiss citizenship and, as he was unable to find a teaching post, he accepted a position as technical assistant in the Swiss Patent Office. In 1905 he obtained his doctor’s degree.",
+              "fact_id": "research:1:f1"
+            },
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1879-03-14",
+              "source_id": "research:2",
+              "evidence_text": "Albert Einstein[a] (14 March 1879 – 18 April 1955) was a German-born theoretical physicist best known for developing the theory of relativity. Einstein also made important contributions to quantum theory. His mass–energy equivalence formula E = mc2, which arises from special relativity, has been called \"the world's most famous equation\". He received the 1921 Nobel Prize in Physics for \"his services to theoretical physics, and especially for his discovery of the law of the photoelectric effect\".",
+              "fact_id": "research:2:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Ulm, in Württemberg, Germany",
+              "source_id": "research:1",
+              "evidence_text": "Albert EinsteinAlbert Einstein was born at Ulm, in Württemberg, Germany, on March 14, 1879. Six weeks later the family moved to Munich, where he later on began his schooling at the Luitpold Gymnasium. Later, they moved to Italy and Albert continued his education at Aarau, Switzerland and in 1896 he entered the Swiss Federal Polytechnic School in Zurich to be trained as a teacher in physics and mathematics. In 1901, the year he gained his diploma, he acquired Swiss citizenship and, as he was unable to find a teaching post, he accepted a position as technical assistant in the Swiss Patent Office. In 1905 he obtained his doctor’s degree.",
+              "fact_id": "research:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "theoretical physicist",
+              "source_id": "research:2",
+              "evidence_text": "Albert Einstein[a] (14 March 1879 – 18 April 1955) was a German-born theoretical physicist best known for developing the theory of relativity. Einstein also made important contributions to quantum theory. His mass–energy equivalence formula E = mc2, which arises from special relativity, has been called \"the world's most famous equation\". He received the 1921 Nobel Prize in Physics for \"his services to theoretical physics, and especially for his discovery of the law of the photoelectric effect\".",
+              "fact_id": "research:2:f2"
+            }
+          ],
+          "evidence_status": "available",
+          "source_assessments": [
+            {
+              "source_id": "research:1",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "Biographical source details Albert Einstein's life, education, career, and publications.",
+              "independence": "no_obvious_overlap",
+              "related_source_ids": []
+            },
+            {
+              "source_id": "research:2",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "Wikipedia biography of Albert Einstein detailing his life, papers, and career.",
+              "independence": "uncertain",
+              "related_source_ids": [
+                "research:1"
+              ]
+            }
+          ],
+          "qualified_source_count": 1,
+          "target_sources": 2,
+          "target_met": false,
+          "stop_reason": "page_budget_exhausted"
+        },
+        "issues": [
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 5: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 6: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 7: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 8: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 9: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 10: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 11: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 12: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 13: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "TEXT_TRUNCATED",
+            "message": "External page text truncated.",
+            "source_id": "research:2"
+          },
+          {
+            "code": "SOURCE_ACCESS_DENIED",
+            "message": "Candidate https://www.britannica.com/biography/Albert-Einstein returned access restriction (target HTTP 403); try another source.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 1/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Albert-Einstein/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f1",
+                "research:1:f1"
+              ],
+              "explanation": "Both sources state that Albert Einstein was born on March 14, 1879."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f2",
+                "research:1:f2"
+              ],
+              "explanation": "Both sources report his birth place as Ulm, Germany (with the research source specifying it as Ulm, in Württemberg, Germany)."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "University of Zurich",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "photoelectric effect paper",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Special Relativity Theory paper",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "mass–energy equivalence formula E = mc2",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "general theory of relativity paper",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Institute for Advanced Study in Princeton, New Jersey",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Albert Einstein was born in Ulm, Germany, on March 14, 1879. He published groundbreaking papers in 1905 on the photoelectric effect and special relativity, and later completed his doctorate and general theory of relativity. He spent his later years affiliated with the Institute for Advanced Study in Princeton, New Jersey, until his death in 1955.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f7",
+            "bio:1:f8"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "name": "J.K. Rowling",
+        "bio_url": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-2",
+          "https://quotes.toscrape.com/page/2/#quote-2"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "J.K. Rowling is a globally recognized, historically documented author whose biography is easily verified through public historical and literary records."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/J-K-Rowling/",
+              "requested_url": "https://quotes.toscrape.com/author/J-K-Rowling/",
+              "title": "J.K. Rowling",
+              "retrieved_at": "2026-09-13T20:44:37.837Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1965-07-31",
+              "source_id": "bio:1",
+              "evidence_text": "Born: July 31, 1965 in Yate, South Gloucestershire, England, The United Kingdom",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Yate, South Gloucestershire, England, The United Kingdom",
+              "source_id": "bio:1",
+              "evidence_text": "Born: July 31, 1965 in Yate, South Gloucestershire, England, The United Kingdom",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "affiliation",
+              "subject": "St Michael's Primary School",
+              "value": "attended",
+              "source_id": "bio:1",
+              "evidence_text": "She attended St Michael's Primary School",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Wyedean School and College",
+              "value": "attended secondary school",
+              "source_id": "bio:1",
+              "evidence_text": "She attended secondary school at Wyedean School and College",
+              "fact_id": "bio:1:f4"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "status": "partial",
+        "data": {
+          "sources": [
+            {
+              "source_id": "research:1",
+              "url": "https://en.wikipedia.org/wiki/J._K._Rowling",
+              "requested_url": "https://en.wikipedia.org/wiki/J._K._Rowling",
+              "title": "J. K. Rowling - Wikipedia",
+              "retrieved_at": "2026-09-13T20:44:48.074Z"
+            },
+            {
+              "source_id": "research:2",
+              "url": "https://www.jkrowling.com/about/",
+              "requested_url": "https://www.jkrowling.com/about/",
+              "title": "About - J.K. Rowling",
+              "retrieved_at": "2026-09-13T20:44:59.455Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1965-07-31",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling was born on 31 July 1965 in Yate, Gloucestershire,[b] to a middle-class family. Her parents Anne (née Volant) and Peter (\"Pete\") James Rowling had met the previous year on a train, sharing a trip from King's Cross station, London, to their naval postings at Arbroath, Scotland. Rowling's mother was with the Wrens and her father with the Royal Navy. Her mother was of Scottish and French ancestry. Pete Rowling was the son of a machine-tool setter who later opened a grocery shop. Pete and Anne married on 14 March 1965 and settled in Yate, where Pete started work as an assembly-line production worker and eventually worked his way into management as a chartered engineer. Anne Rowling later worked as a science technician. Neither of Rowling's parents attended university. Rowling is two years older than her sister, Dianne.",
+              "fact_id": "research:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Yate, Gloucestershire",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling was born on 31 July 1965 in Yate, Gloucestershire,[b] to a middle-class family. Her parents Anne (née Volant) and Peter (\"Pete\") James Rowling had met the previous year on a train, sharing a trip from King's Cross station, London, to their naval postings at Arbroath, Scotland. Rowling's mother was with the Wrens and her father with the Royal Navy. Her mother was of Scottish and French ancestry. Pete Rowling was the son of a machine-tool setter who later opened a grocery shop. Pete and Anne married on 14 March 1965 and settled in Yate, where Pete started work as an assembly-line production worker and eventually worked his way into management as a chartered engineer. Anne Rowling later worked as a science technician. Neither of Rowling's parents attended university. Rowling is two years older than her sister, Dianne.",
+              "fact_id": "research:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "author",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling (/ˈroʊlɪŋ/ //upload.wikimedia.org/wikipedia/commons/transcoded/2/29/J._K._Rowling_%282%29.ogg/J._K._Rowling_%282%29.ogg.mp3ⓘ [/wiki/File:J._K._Rowling_(2).ogg] ROH-ling; born 31 July 1965), better known by her pen name J. K. Rowling, is a British author, philanthropist, producer, and screenwriter. She is best known for writing Harry Potter, a seven-volume series about a young wizard which is the best-selling book series in history, with over 600 million copies sold. She also writes Cormoran Strike, an ongoing crime fiction series, under the alias Robert Galbraith.",
+              "fact_id": "research:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "philanthropist",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling (/ˈroʊlɪŋ/ //upload.wikimedia.org/wikipedia/commons/transcoded/2/29/J._K._Rowling_%282%29.ogg/J._K._Rowling_%282%29.ogg.mp3ⓘ [/wiki/File:J._K._Rowling_(2).ogg] ROH-ling; born 31 July 1965), better known by her pen name J. K. Rowling, is a British author, philanthropist, producer, and screenwriter. She is best known for writing Harry Potter, a seven-volume series about a young wizard which is the best-selling book series in history, with over 600 million copies sold. She also writes Cormoran Strike, an ongoing crime fiction series, under the alias Robert Galbraith.",
+              "fact_id": "research:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "producer",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling (/ˈroʊlɪŋ/ //upload.wikimedia.org/wikipedia/commons/transcoded/2/29/J._K._Rowling_%282%29.ogg/J._K._Rowling_%282%29.ogg.mp3ⓘ [/wiki/File:J._K._Rowling_(2).ogg] ROH-ling; born 31 July 1965), better known by her pen name J. K. Rowling, is a British author, philanthropist, producer, and screenwriter. She is best known for writing Harry Potter, a seven-volume series about a young wizard which is the best-selling book series in history, with over 600 million copies sold. She also writes Cormoran Strike, an ongoing crime fiction series, under the alias Robert Galbraith.",
+              "fact_id": "research:1:f5"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "screenwriter",
+              "source_id": "research:1",
+              "evidence_text": "Joanne Rowling (/ˈroʊlɪŋ/ //upload.wikimedia.org/wikipedia/commons/transcoded/2/29/J._K._Rowling_%282%29.ogg/J._K._Rowling_%282%29.ogg.mp3ⓘ [/wiki/File:J._K._Rowling_(2).ogg] ROH-ling; born 31 July 1965), better known by her pen name J. K. Rowling, is a British author, philanthropist, producer, and screenwriter. She is best known for writing Harry Potter, a seven-volume series about a young wizard which is the best-selling book series in history, with over 600 million copies sold. She also writes Cormoran Strike, an ongoing crime fiction series, under the alias Robert Galbraith.",
+              "fact_id": "research:1:f6"
+            },
+            {
+              "field": "affiliation",
+              "subject": "J.K. Rowling",
+              "value": "University of Exeter",
+              "source_id": "research:1",
+              "evidence_text": "Rowling always wanted to be a writer, but chose to study French and the classics at the University of Exeter for practical reasons, influenced by her parents who thought job prospects would be better with evidence of bilingualism. She later stated that Exeter was not initially what she expected (\"to be among lots of similar people – thinking radical thoughts\") but that she enjoyed herself after she met more people like her. She was an average student at Exeter, described by biographers as prioritising her social life over her studies, and lacking ambition and enthusiasm. Rowling recalls doing little work at university, preferring to read Charles Dickens and J. R. R. Tolkien. She earned a BA in French from Exeter, graduating in 1987 after a year of study in Paris.",
+              "fact_id": "research:1:f7"
+            },
+            {
+              "field": "affiliation",
+              "subject": "J.K. Rowling",
+              "value": "Amnesty International",
+              "source_id": "research:1",
+              "evidence_text": "After university, Rowling moved to a flat in Clapham Junction with friends, and took a course to become a bilingual secretary. While she was working in temporary jobs in London, Amnesty International hired her to document human rights issues in French-speaking Africa. She began writing adult novels while working as a temp, although they were never published. In 1990, she planned to move with her boyfriend to Manchester, and frequently took long train trips to visit. In mid-1990, she was on a train delayed by four hours from Manchester to London, when the characters Harry Potter, Ron Weasley, and Hermione Granger came plainly into her mind. Having no pen or paper allowed her to fully explore the characters and their story in her imagination before she reached her flat and began to write.",
+              "fact_id": "research:1:f8"
+            },
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1965-07-31",
+              "source_id": "research:2",
+              "evidence_text": "Joanne Rowling was born on 31st July 1965 at Yate General Hospital near Bristol and she and her younger sister grew up in Gloucestershire in England and in Chepstow, Gwent, in south-east Wales.",
+              "fact_id": "research:2:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Yate General Hospital",
+              "source_id": "research:2",
+              "evidence_text": "Joanne Rowling was born on 31st July 1965 at Yate General Hospital near Bristol and she and her younger sister grew up in Gloucestershire in England and in Chepstow, Gwent, in south-east Wales.",
+              "fact_id": "research:2:f2"
+            }
+          ],
+          "evidence_status": "available",
+          "source_assessments": [
+            {
+              "source_id": "research:1",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "Wikipedia biography of J.K. Rowling provides verified biographical details.",
+              "independence": "no_obvious_overlap",
+              "related_source_ids": []
+            },
+            {
+              "source_id": "research:2",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "The source is an official biographical page for J.K. Rowling.",
+              "independence": "uncertain",
+              "related_source_ids": [
+                "research:1"
+              ]
+            }
+          ],
+          "qualified_source_count": 1,
+          "target_sources": 2,
+          "target_met": false,
+          "stop_reason": "page_budget_exhausted"
+        },
+        "issues": [
+          {
+            "code": "SOURCE_ACCESS_DENIED",
+            "message": "Candidate https://www.britannica.com/biography/J-K-Rowling returned access restriction (target HTTP 403); try another source.",
+            "source_id": null
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 7: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 8: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 9: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "TEXT_TRUNCATED",
+            "message": "External page text truncated.",
+            "source_id": "research:1"
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 1/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/J-K-Rowling/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f1",
+                "research:1:f1"
+              ],
+              "explanation": "Both sources confirm that Joanne Rowling was born on July 31, 1965."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f2",
+                "research:1:f2"
+              ],
+              "explanation": "Both sources state she was born in Yate, Gloucestershire, with the site adding further regional details."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "St Michael's Primary School",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "The attendance at St Michael's Primary School is only mentioned in the site source."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Wyedean School and College",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "The attendance at Wyedean School and College is only mentioned in the site source."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "web_only",
+              "fact_ids": [
+                "research:1:f3"
+              ],
+              "explanation": "Only web evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "web_only",
+              "fact_ids": [
+                "research:1:f4"
+              ],
+              "explanation": "Only web evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "web_only",
+              "fact_ids": [
+                "research:1:f5"
+              ],
+              "explanation": "Only web evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "web_only",
+              "fact_ids": [
+                "research:1:f6"
+              ],
+              "explanation": "Only web evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Joanne Rowling was born on July 31, 1965, in Yate, England. She is best known as the author of the Harry Potter book series.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "research:1:f3"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "name": "Jane Austen",
+        "bio_url": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-4"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Jane Austen is a globally recognized, historically documented English novelist whose life and works are extensively recorded in public historical sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Jane-Austen/",
+              "requested_url": "https://quotes.toscrape.com/author/Jane-Austen/",
+              "title": "Jane Austen",
+              "retrieved_at": "2026-09-13T20:45:09.561Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1775-12-16",
+              "source_id": "bio:1",
+              "evidence_text": "December 16, 1775",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Steventon Rectory, Hampshire, The United Kingdom",
+              "source_id": "bio:1",
+              "evidence_text": "Steventon Rectory, Hampshire, The United Kingdom",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "novelist",
+              "source_id": "bio:1",
+              "evidence_text": "Jane Austen was an English novelist",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "work",
+              "subject": "Sense and Sensibility",
+              "value": "published in 1811",
+              "source_id": "bio:1",
+              "evidence_text": "Sense and Sensibility (1811)",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "work",
+              "subject": "Pride and Prejudice",
+              "value": "published in 1813",
+              "source_id": "bio:1",
+              "evidence_text": "Pride and Prejudice (1813)",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "Mansfield Park",
+              "value": "published in 1814",
+              "source_id": "bio:1",
+              "evidence_text": "Mansfield Park (1814)",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "Emma",
+              "value": "published in 1815",
+              "source_id": "bio:1",
+              "evidence_text": "Emma (1815)",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "work",
+              "subject": "Northanger Abbey",
+              "value": "published posthumously in 1818",
+              "source_id": "bio:1",
+              "evidence_text": "Northanger Abbey and Persuasion, both published posthumously in 1818",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "work",
+              "subject": "Persuasion",
+              "value": "published posthumously in 1818",
+              "source_id": "bio:1",
+              "evidence_text": "Northanger Abbey and Persuasion, both published posthumously in 1818",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "work",
+              "subject": "Sanditon",
+              "value": "began but died before completing it",
+              "source_id": "bio:1",
+              "evidence_text": "began a third, which was eventually titled Sanditon, but died before completing it.",
+              "fact_id": "bio:1:f10"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Jane-Austen/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Sense and Sensibility",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Pride and Prejudice",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Mansfield Park",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Emma",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Northanger Abbey",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Persuasion",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Sanditon",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Jane Austen was an English novelist born on December 16, 1775, at Steventon Rectory, Hampshire, The United Kingdom. She authored renowned works such as Sense and Sensibility and Pride and Prejudice, published in 1811 and 1813 respectively. Her literary career culminated in several celebrated novels before her death while working on Sanditon.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f10"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "name": "Marilyn Monroe",
+        "bio_url": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-5",
+          "https://quotes.toscrape.com/page/2/#quote-1"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Marilyn Monroe is a well-documented historical public figure and cultural icon whose biography is verifiable through extensive public records."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+              "requested_url": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+              "title": "Marilyn Monroe",
+              "retrieved_at": "2026-09-13T20:45:26.336Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1926-06-01",
+              "source_id": "bio:1",
+              "evidence_text": "June 01, 1926",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "The United States",
+              "source_id": "bio:1",
+              "evidence_text": "The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "actress",
+              "source_id": "bio:1",
+              "evidence_text": "actress",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "model",
+              "source_id": "bio:1",
+              "evidence_text": "model",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "singer",
+              "source_id": "bio:1",
+              "evidence_text": "singer",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "The Asphalt Jungle",
+              "value": "film appearance in 1950",
+              "source_id": "bio:1",
+              "evidence_text": "The Asphalt Jungle and All About Eve (both 1950)",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "All About Eve",
+              "value": "film appearance in 1950",
+              "source_id": "bio:1",
+              "evidence_text": "The Asphalt Jungle and All About Eve (both 1950)",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "work",
+              "subject": "Don't Bother to Knock",
+              "value": "leading role by 1952",
+              "source_id": "bio:1",
+              "evidence_text": "By 1952 she had her first leading role in Don't Bother to Knock",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "work",
+              "subject": "Niagara",
+              "value": "lead role in 1953",
+              "source_id": "bio:1",
+              "evidence_text": "1953 brought a lead in Niagara",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "work",
+              "subject": "Gentlemen Prefer Blondes",
+              "value": "film in 1953",
+              "source_id": "bio:1",
+              "evidence_text": "Gentlemen Prefer Blondes (1953)",
+              "fact_id": "bio:1:f10"
+            },
+            {
+              "field": "work",
+              "subject": "How to Marry a Millionaire",
+              "value": "film in 1953",
+              "source_id": "bio:1",
+              "evidence_text": "How to Marry a Millionaire (1953)",
+              "fact_id": "bio:1:f11"
+            },
+            {
+              "field": "work",
+              "subject": "The Seven Year Itch",
+              "value": "film in 1955",
+              "source_id": "bio:1",
+              "evidence_text": "The Seven Year Itch (1955)",
+              "fact_id": "bio:1:f12"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Actors Studio",
+              "value": "studied at the Actors Studio",
+              "source_id": "bio:1",
+              "evidence_text": "Monroe studied at the Actors Studio to broaden her range.",
+              "fact_id": "bio:1:f13"
+            },
+            {
+              "field": "work",
+              "subject": "Bus Stop",
+              "value": "dramatic performance in 1956",
+              "source_id": "bio:1",
+              "evidence_text": "Her dramatic performance in Bus Stop (1956)",
+              "fact_id": "bio:1:f14"
+            },
+            {
+              "field": "work",
+              "subject": "The Prince and the Showgirl",
+              "value": "released in 1957",
+              "source_id": "bio:1",
+              "evidence_text": "released The Prince and the Showgirl (1957)",
+              "fact_id": "bio:1:f15"
+            },
+            {
+              "field": "work",
+              "subject": "Some Like It Hot",
+              "value": "performance in 1959",
+              "source_id": "bio:1",
+              "evidence_text": "performance in Some Like It Hot (1959)",
+              "fact_id": "bio:1:f16"
+            },
+            {
+              "field": "work",
+              "subject": "The Misfits",
+              "value": "last completed film",
+              "source_id": "bio:1",
+              "evidence_text": "Monroe's last completed film was The Misfits",
+              "fact_id": "bio:1:f17"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "status": "partial",
+        "data": {
+          "sources": [
+            {
+              "source_id": "research:1",
+              "url": "https://en.wikipedia.org/wiki/Marilyn_Monroe",
+              "requested_url": "https://en.wikipedia.org/wiki/Marilyn_Monroe",
+              "title": "Marilyn Monroe - Wikipedia",
+              "retrieved_at": "2026-09-13T20:45:36.645Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1926-06-01",
+              "source_id": "research:1",
+              "evidence_text": "Marilyn Monroe (/ˈmærəlɪn mənˈroʊ/ MAIR-ə-lin mən-ROH; born Norma Jeane Mortenson; June 1, 1926 – August 4, 1962) was an American actress and model. Known for playing comic \"Blonde bombshell\" characters, she became one of the most popular sex symbols of the 1950s and early 1960s, as well as an emblem of the era's sexual revolution. She was a top-billed actress for a decade, and her films grossed $200 million (equivalent to $2 billion in 2025) by her death in 1962.",
+              "fact_id": "research:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Los Angeles",
+              "source_id": "research:1",
+              "evidence_text": "Born in Los Angeles, Monroe spent most of her childhood in foster homes and an orphanage before marrying James Dougherty at age sixteen. She was working in a factory during World War II when she met a photographer from the First Motion Picture Unit and began a successful pin-up modeling career, which led to short-lived film contracts with 20th Century Fox and Columbia Pictures. After roles as a freelancer, she began a longer contract with Fox in 1951, becoming a popular actress with roles in several comedies, including As Young as You Feel and Monkey Business, and in the dramas Clash by Night and Don't Bother to Knock. Monroe faced a scandal when it was revealed that she had posed for nude photographs prior to fame, but the story resulted in increased interest in her films.",
+              "fact_id": "research:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "actress",
+              "source_id": "research:1",
+              "evidence_text": "Marilyn Monroe (/ˈmærəlɪn mənˈroʊ/ MAIR-ə-lin mən-ROH; born Norma Jeane Mortenson; June 1, 1926 – August 4, 1962) was an American actress and model. Known for playing comic \"Blonde bombshell\" characters, she became one of the most popular sex symbols of the 1950s and early 1960s, as well as an emblem of the era's sexual revolution. She was a top-billed actress for a decade, and her films grossed $200 million (equivalent to $2 billion in 2025) by her death in 1962.",
+              "fact_id": "research:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "model",
+              "source_id": "research:1",
+              "evidence_text": "Marilyn Monroe (/ˈmærəlɪn mənˈroʊ/ MAIR-ə-lin mən-ROH; born Norma Jeane Mortenson; June 1, 1926 – August 4, 1962) was an American actress and model. Known for playing comic \"Blonde bombshell\" characters, she became one of the most popular sex symbols of the 1950s and early 1960s, as well as an emblem of the era's sexual revolution. She was a top-billed actress for a decade, and her films grossed $200 million (equivalent to $2 billion in 2025) by her death in 1962.",
+              "fact_id": "research:1:f4"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Marilyn Monroe",
+              "value": "Actors Studio",
+              "source_id": "research:1",
+              "evidence_text": "When the studio was still reluctant to change Monroe's contract, she founded her own film production company in 1954 with her friend Milton Greene. She dedicated 1955 to building the company and began studying method acting under Lee Strasberg at the Actors Studio. Later that year, Fox awarded her a new contract, which gave her more control and a larger salary. Her subsequent roles included a critically acclaimed performance in Bus Stop (1956) and her first independent production in The Prince and the Showgirl (1957), for which she received a BAFTA nomination, and won the David di Donatello Award for Best Actress. She won a Golden Globe for her role in Some Like It Hot (1959), a critical and commercial success. Her last completed film was the drama The Misfits (1961).",
+              "fact_id": "research:1:f5"
+            }
+          ],
+          "evidence_status": "available",
+          "source_assessments": [
+            {
+              "source_id": "research:1",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "The source contains extensive biographical information about Marilyn Monroe.",
+              "independence": "no_obvious_overlap",
+              "related_source_ids": []
+            }
+          ],
+          "qualified_source_count": 1,
+          "target_sources": 2,
+          "target_met": false,
+          "stop_reason": "page_budget_exhausted"
+        },
+        "issues": [
+          {
+            "code": "SOURCE_ACCESS_DENIED",
+            "message": "Candidate https://www.britannica.com/biography/Marilyn-Monroe returned access restriction (target HTTP 403); try another source.",
+            "source_id": null
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 5: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 6: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 7: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 8: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 9: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 10: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 11: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 12: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 13: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 14: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 15: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 16: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 17: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 18: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 19: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 20: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 21: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 22: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 23: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "TEXT_TRUNCATED",
+            "message": "External page text truncated.",
+            "source_id": "research:1"
+          },
+          {
+            "code": "SOURCE_ACCESS_DENIED",
+            "message": "Candidate https://www.imdb.com/name/nm0000054/ returned access restriction (target HTTP 403); try another source.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 1/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Marilyn-Monroe/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f1",
+                "research:1:f1"
+              ],
+              "explanation": "Both sources state that the birth date is June 1, 1926."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "inconclusive",
+              "fact_ids": [
+                "bio:1:f2",
+                "research:1:f2"
+              ],
+              "explanation": "The site mentions the country as the United States, whereas the research specifies Los Angeles, creating a granularity difference rather than a direct contradiction."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f3",
+                "research:1:f3"
+              ],
+              "explanation": "Both sources identify her occupation as an actress."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f4",
+                "research:1:f4"
+              ],
+              "explanation": "Both sources confirm she worked as a model."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "The site provides the occupation singer, which is not present in the allowed web research facts."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Asphalt Jungle",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "All About Eve",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Don't Bother to Knock",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Niagara",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Gentlemen Prefer Blondes",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "How to Marry a Millionaire",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f11"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Seven Year Itch",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f12"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Actors Studio",
+              "conclusion": "agreement",
+              "fact_ids": [
+                "bio:1:f13",
+                "research:1:f5"
+              ],
+              "explanation": "Both sources mention her studying at the Actors Studio."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Bus Stop",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f14"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Prince and the Showgirl",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f15"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Some Like It Hot",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f16"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Misfits",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f17"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Marilyn Monroe was an American actress and model born on June 1, 1926. She pursued her career in the United States and studied at the Actors Studio.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f13"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "name": "André Gide",
+        "bio_url": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-7"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Andre Gide is a well-documented historical author and Nobel Prize laureate whose biography is easily verified against public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Andre-Gide/",
+              "requested_url": "https://quotes.toscrape.com/author/Andre-Gide/",
+              "title": "André Gide",
+              "retrieved_at": "2026-09-13T20:45:57.915Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1869-11-22",
+              "source_id": "bio:1",
+              "evidence_text": "November 22, 1869",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Paris, France",
+              "source_id": "bio:1",
+              "evidence_text": "Paris, France",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "author",
+              "source_id": "bio:1",
+              "evidence_text": "French author",
+              "fact_id": "bio:1:f3"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Andre-Gide/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Andre Gide was born in Paris, France on November 22, 1869. He worked as an accomplished author.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "name": "Thomas A. Edison",
+        "bio_url": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-8"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Thomas A. Edison is a widely documented historical figure and inventor whose biography is easily verifiable through public historical records."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+              "requested_url": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+              "title": "Thomas A. Edison",
+              "retrieved_at": "2026-09-13T20:46:13.191Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1847-02-11",
+              "source_id": "bio:1",
+              "evidence_text": "Born: February 11, 1847",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Milan, Ohio, The United States",
+              "source_id": "bio:1",
+              "evidence_text": "Milan, Ohio, The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "inventor",
+              "source_id": "bio:1",
+              "evidence_text": "inventor",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "scientist",
+              "source_id": "bio:1",
+              "evidence_text": "scientist",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "businessman",
+              "source_id": "bio:1",
+              "evidence_text": "businessman",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "phonograph",
+              "value": "developed phonograph",
+              "source_id": "bio:1",
+              "evidence_text": "including the phonograph",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "motion picture camera",
+              "value": "developed motion picture camera",
+              "source_id": "bio:1",
+              "evidence_text": "the motion picture camera",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "work",
+              "subject": "long-lasting, practical electric light bulb",
+              "value": "developed long-lasting, practical electric light bulb",
+              "source_id": "bio:1",
+              "evidence_text": "a long-lasting, practical electric light bulb",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "work",
+              "subject": "first industrial research laboratory",
+              "value": "creation of the first industrial research laboratory",
+              "source_id": "bio:1",
+              "evidence_text": "creation of the first industrial research laboratory",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "work",
+              "subject": "concept and implementation of electric-power generation and distribution to homes, businesses, and factories",
+              "value": "originated the concept and implementation of electric-power generation and distribution to homes, businesses, and factories",
+              "source_id": "bio:1",
+              "evidence_text": "Edison originated the concept and implementation of electric-power generation and distribution to homes, businesses, and factories",
+              "fact_id": "bio:1:f10"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Thomas-A-Edison/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "phonograph",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "motion picture camera",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "long-lasting, practical electric light bulb",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "first industrial research laboratory",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "concept and implementation of electric-power generation and distribution to homes, businesses, and factories",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Thomas A. Edison was born on February 11, 1847, in Milan, Ohio, The United States. He worked as an inventor, scientist, and businessman.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "name": "Eleanor Roosevelt",
+        "bio_url": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-9"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Eleanor Roosevelt is a well-documented historical public figure and former First Lady of the United States whose biography can be easily verified through standard historical sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+              "requested_url": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+              "title": "Eleanor Roosevelt",
+              "retrieved_at": "2026-09-13T20:46:29.018Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1884-10-11",
+              "source_id": "bio:1",
+              "evidence_text": "Born: October 11, 1884",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "The United States",
+              "source_id": "bio:1",
+              "evidence_text": "Born: October 11, 1884 in The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "political leader",
+              "source_id": "bio:1",
+              "evidence_text": "Anna Eleanor Roosevelt was an American political leader",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "author",
+              "source_id": "bio:1",
+              "evidence_text": "she continued to be an internationally prominent author and speaker for the New Deal coalition.",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "speaker",
+              "source_id": "bio:1",
+              "evidence_text": "she continued to be an internationally prominent author and speaker for the New Deal coalition.",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Freedom House",
+              "value": "co-founder in the 1940s",
+              "source_id": "bio:1",
+              "evidence_text": "In the 1940s, she was one of the co-founders of Freedom House",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "UN Association of the United States",
+              "value": "founded in 1943",
+              "source_id": "bio:1",
+              "evidence_text": "Eleanor Roosevelt founded the UN Association of the United States in 1943",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "affiliation",
+              "subject": "UN General Assembly",
+              "value": "delegate from 1945 and 1952",
+              "source_id": "bio:1",
+              "evidence_text": "She was a delegate to the UN General Assembly from 1945 and 1952",
+              "fact_id": "bio:1:f8"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Freedom House",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "UN Association of the United States",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "UN General Assembly",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Anna Eleanor Roosevelt was born on October 11, 1884, in the United States and became an American political leader, author, and speaker. Throughout her career, she served as a delegate to the UN General Assembly from 1945 to 1952 and co-founded Freedom House in the 1940s.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f8"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "name": "Steve Martin",
+        "bio_url": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/#quote-10"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Steve Martin is a well-known, historically documented public figure, actor, and writer whose biography is easily verifiable against public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Steve-Martin/",
+              "requested_url": "https://quotes.toscrape.com/author/Steve-Martin/",
+              "title": "Steve Martin",
+              "retrieved_at": "2026-09-13T20:46:44.616Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1945-08-14",
+              "source_id": "bio:1",
+              "evidence_text": "Born: August 14, 1945",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Waco, Texas, The United States",
+              "source_id": "bio:1",
+              "evidence_text": "Waco, Texas, The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "actor",
+              "source_id": "bio:1",
+              "evidence_text": "actor",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "comedian",
+              "source_id": "bio:1",
+              "evidence_text": "comedian",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "writer",
+              "source_id": "bio:1",
+              "evidence_text": "writer",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "playwright",
+              "source_id": "bio:1",
+              "evidence_text": "playwright",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "producer",
+              "source_id": "bio:1",
+              "evidence_text": "producer",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "musician",
+              "source_id": "bio:1",
+              "evidence_text": "musician",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "composer",
+              "source_id": "bio:1",
+              "evidence_text": "composer",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "juggler",
+              "source_id": "bio:1",
+              "evidence_text": "juggler",
+              "fact_id": "bio:1:f10"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Steve-Martin/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Steve Martin was born on August 14, 1945, in Waco, Texas, The United States. He has worked as an actor, comedian, writer, playwright, producer, musician, composer, and juggler.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f7",
+            "bio:1:f8",
+            "bio:1:f9",
+            "bio:1:f10"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "name": "Bob Marley",
+        "bio_url": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-4"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Bob Marley is a globally recognized and historically documented Jamaican singer-songwriter and musician whose biography is easily verifiable."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Bob-Marley/",
+              "requested_url": "https://quotes.toscrape.com/author/Bob-Marley/",
+              "title": "Bob Marley",
+              "retrieved_at": "2026-09-13T20:47:00.231Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1945-02-06",
+              "source_id": "bio:1",
+              "evidence_text": "February 06, 1945",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Nine Mile, Saint Ann, Jamaica",
+              "source_id": "bio:1",
+              "evidence_text": "Nine Mile, Saint Ann, Jamaica",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "singer",
+              "source_id": "bio:1",
+              "evidence_text": "singer",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "songwriter",
+              "source_id": "bio:1",
+              "evidence_text": "songwriter",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "guitarist",
+              "source_id": "bio:1",
+              "evidence_text": "guitarist",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "activist",
+              "source_id": "bio:1",
+              "evidence_text": "activist",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "affiliation",
+              "subject": "The Wailers",
+              "value": "frontman, lead singer, songwriter and guitarist (1964 – 1974)",
+              "source_id": "bio:1",
+              "evidence_text": "frontman, lead singer, songwriter and guitarist for the ska, rocksteady and reggae bands: The Wailers (1964 – 1974)",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Bob Marley & the Wailers",
+              "value": "frontman, lead singer, songwriter and guitarist (1974 - 1981)",
+              "source_id": "bio:1",
+              "evidence_text": "frontman, lead singer, songwriter and guitarist for the ska, rocksteady and reggae bands: The Wailers (1964 – 1974) and Bob Marley & the Wailers (1974 - 1981).",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "work",
+              "subject": "I Shot the Sheriff",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"I Shot the Sheriff\"",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "work",
+              "subject": "No Woman, No Cry",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"No Woman, No Cry\"",
+              "fact_id": "bio:1:f10"
+            },
+            {
+              "field": "work",
+              "subject": "Exodus",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"Exodus\"",
+              "fact_id": "bio:1:f11"
+            },
+            {
+              "field": "work",
+              "subject": "Could You Be Loved",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"Could You Be Loved\"",
+              "fact_id": "bio:1:f12"
+            },
+            {
+              "field": "work",
+              "subject": "Stir It Up",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"Stir It Up\"",
+              "fact_id": "bio:1:f13"
+            },
+            {
+              "field": "work",
+              "subject": "Jamming",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"Jamming\"",
+              "fact_id": "bio:1:f14"
+            },
+            {
+              "field": "work",
+              "subject": "Redemption Song",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"Redemption Song\"",
+              "fact_id": "bio:1:f15"
+            },
+            {
+              "field": "work",
+              "subject": "One Love",
+              "value": "hit song",
+              "source_id": "bio:1",
+              "evidence_text": "\"One Love\"",
+              "fact_id": "bio:1:f16"
+            },
+            {
+              "field": "work",
+              "subject": "Buffalo Soldier",
+              "value": "posthumous release",
+              "source_id": "bio:1",
+              "evidence_text": "posthumous releases \"Buffalo Soldier\"",
+              "fact_id": "bio:1:f17"
+            },
+            {
+              "field": "work",
+              "subject": "Iron Lion Zion",
+              "value": "posthumous release",
+              "source_id": "bio:1",
+              "evidence_text": "\"Iron Lion Zion\"",
+              "fact_id": "bio:1:f18"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Bob-Marley/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "The Wailers",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Bob Marley & the Wailers",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "I Shot the Sheriff",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "No Woman, No Cry",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Exodus",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f11"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Could You Be Loved",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f12"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Stir It Up",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f13"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Jamming",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f14"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Redemption Song",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f15"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "One Love",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f16"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Buffalo Soldier",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f17"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Iron Lion Zion",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f18"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Bob Marley was a Jamaican singer, songwriter, guitarist, and activist born on February 06, 1945, in Nine Mile, Saint Ann, Jamaica. He served as the frontman, lead singer, songwriter, and guitarist for The Wailers from 1964 to 1974, and subsequently for Bob Marley & the Wailers from 1974 until 1981. Throughout his career, he created numerous celebrated songs such as I Shot the Sheriff, No Woman, No Cry, and Redemption Song.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f7",
+            "bio:1:f8",
+            "bio:1:f9",
+            "bio:1:f10",
+            "bio:1:f15"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "name": "Dr. Seuss",
+        "bio_url": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-5"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Dr. Seuss is the well-documented pen name of American children's author and cartoonist Theodor Seuss Geisel, a historically verifiable public figure."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Dr-Seuss/",
+              "requested_url": "https://quotes.toscrape.com/author/Dr-Seuss/",
+              "title": "Dr. Seuss",
+              "retrieved_at": "2026-09-13T20:47:17.118Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1904-03-02",
+              "source_id": "bio:1",
+              "evidence_text": "Born: March 02, 1904",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Springfield, MA, The United States",
+              "source_id": "bio:1",
+              "evidence_text": "Springfield, MA, The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Dartmouth College",
+              "value": "graduated in 1925",
+              "source_id": "bio:1",
+              "evidence_text": "He graduated Dartmouth College in 1925",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Oxford University",
+              "value": "attended with the intent of acquiring a doctorate in literature",
+              "source_id": "bio:1",
+              "evidence_text": "proceeded on to Oxford University with the intent of acquiring a doctorate in literature.",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "work",
+              "subject": "And to Think That I Saw It on Mulberry Street",
+              "value": "published in 1937",
+              "source_id": "bio:1",
+              "evidence_text": "Eventually in 1937 a friend published the book for him, and it went on to at least moderate success.",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "Gerald McBoing-Boing",
+              "value": "created as a cartoon",
+              "source_id": "bio:1",
+              "evidence_text": "He also created a cartoon called Gerald McBoing-Boing",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "The Cat in the Hat",
+              "value": "published in 1955",
+              "source_id": "bio:1",
+              "evidence_text": "Nine months later, Geisel, using 220 of the words given to him published The Cat in the Hat",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "work",
+              "subject": "Green Eggs and Ham",
+              "value": "published in 1960",
+              "source_id": "bio:1",
+              "evidence_text": "In 1960 Bennett Cerf bet Geisel $50 that he couldn't write an entire book using only fifty words. The result was Green Eggs and Ham.",
+              "fact_id": "bio:1:f8"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Dr-Seuss/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Dartmouth College",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Oxford University",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "And to Think That I Saw It on Mulberry Street",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Gerald McBoing-Boing",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Cat in the Hat",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Green Eggs and Ham",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Dr. Seuss was born on March 2, 1904, in Springfield, Massachusetts, and graduated from Dartmouth College in 1925 before attending Oxford University. He published his first book, And to Think That I Saw It on Mulberry Street, in 1937, and later achieved widespread fame with works such as The Cat in the Hat and Green Eggs and Ham.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f7",
+            "bio:1:f8"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "name": "Douglas Adams",
+        "bio_url": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-6"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Douglas Adams is a well-known, historically documented author of The Hitchhiker's Guide to the Galaxy whose biography and works are widely recorded in public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Douglas-Adams/",
+              "requested_url": "https://quotes.toscrape.com/author/Douglas-Adams/",
+              "title": "Douglas Adams",
+              "retrieved_at": "2026-09-13T20:47:33.310Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1952-03-11",
+              "source_id": "bio:1",
+              "evidence_text": "March 11, 1952",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Cambridge, England, The United Kingdom",
+              "source_id": "bio:1",
+              "evidence_text": "Cambridge, England, The United Kingdom",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "author",
+              "source_id": "bio:1",
+              "evidence_text": "author",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "comic radio dramatist",
+              "source_id": "bio:1",
+              "evidence_text": "comic radio dramatist",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "musician",
+              "source_id": "bio:1",
+              "evidence_text": "musician",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "Hitchhiker's Guide to the Galaxy series",
+              "value": "author of the Hitchhiker's Guide to the Galaxy series",
+              "source_id": "bio:1",
+              "evidence_text": "author of the Hitchhiker's Guide to the Galaxy series.",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "Doctor Who",
+              "value": "wrote or co-wrote three stories of the science fiction television series Doctor Who",
+              "source_id": "bio:1",
+              "evidence_text": "wrote or co-wrote three stories of the science fiction television series Doctor Who",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Doctor Who",
+              "value": "Script Editor during the seventeenth season",
+              "source_id": "bio:1",
+              "evidence_text": "served as Script Editor during the seventeenth season.",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "work",
+              "subject": "Dirk Gently novels",
+              "value": "Dirk Gently novels",
+              "source_id": "bio:1",
+              "evidence_text": "the Dirk Gently novels",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "work",
+              "subject": "Liff books",
+              "value": "co-wrote two Liff books",
+              "source_id": "bio:1",
+              "evidence_text": "co-wrote two Liff books",
+              "fact_id": "bio:1:f10"
+            },
+            {
+              "field": "work",
+              "subject": "Last Chance to See",
+              "value": "Last Chance to See, itself based on a radio series",
+              "source_id": "bio:1",
+              "evidence_text": "Last Chance to See, itself based on a radio series.",
+              "fact_id": "bio:1:f11"
+            },
+            {
+              "field": "work",
+              "subject": "Starship Titanic",
+              "value": "originated the idea for the computer game Starship Titanic",
+              "source_id": "bio:1",
+              "evidence_text": "originated the idea for the computer game Starship Titanic",
+              "fact_id": "bio:1:f12"
+            },
+            {
+              "field": "work",
+              "subject": "The Salmon of Doubt",
+              "value": "The Salmon of Doubt published in 2002",
+              "source_id": "bio:1",
+              "evidence_text": "published as The Salmon of Doubt in 2002.",
+              "fact_id": "bio:1:f13"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Douglas-Adams/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Hitchhiker's Guide to the Galaxy series",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Doctor Who",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Doctor Who",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Dirk Gently novels",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Liff books",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Last Chance to See",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f11"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Starship Titanic",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f12"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Salmon of Doubt",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f13"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Douglas Adams was an author, comic radio dramatist, and musician born in Cambridge, England, on March 11, 1952. He is best known as the author of the Hitchhiker's Guide to the Galaxy series and also wrote several Dirk Gently novels. Additionally, he contributed to Doctor Who as a writer and served as its Script Editor during the seventeenth season.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f7",
+            "bio:1:f8",
+            "bio:1:f9"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "name": "Elie Wiesel",
+        "bio_url": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-7"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Elie Wiesel is a well-documented historical public figure, author, and Nobel Peace Prize laureate whose biography is easily verified against public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+              "requested_url": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+              "title": "Elie Wiesel",
+              "retrieved_at": "2026-09-13T20:47:50.012Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1928-09-30",
+              "source_id": "bio:1",
+              "evidence_text": "September 30, 1928",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Sighet, Romania",
+              "source_id": "bio:1",
+              "evidence_text": "Sighet, Romania",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "novelist",
+              "source_id": "bio:1",
+              "evidence_text": "novelist",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "political activist",
+              "source_id": "bio:1",
+              "evidence_text": "political activist",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "work",
+              "subject": "Night",
+              "value": "memoir published as author of over 40 books",
+              "source_id": "bio:1",
+              "evidence_text": "He was the author of over 40 books, the best known of which is Night, a memoir that describes his experiences during the Holocaust and his imprisonment in several concentration camps.",
+              "fact_id": "bio:1:f5"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "status": "partial",
+        "data": {
+          "sources": [
+            {
+              "source_id": "research:1",
+              "url": "https://www.nobelprize.org/prizes/peace/1986/wiesel/biographical/",
+              "requested_url": "https://www.nobelprize.org/prizes/peace/1986/wiesel/biographical/",
+              "title": "Elie Wiesel – Biographical - NobelPrize.org",
+              "retrieved_at": "2026-09-13T20:47:57.187Z"
+            },
+            {
+              "source_id": "research:2",
+              "url": "https://en.wikipedia.org/wiki/Elie_Wiesel",
+              "requested_url": "https://en.wikipedia.org/wiki/Elie_Wiesel",
+              "title": "Elie Wiesel - Wikipedia",
+              "retrieved_at": "2026-09-13T20:48:01.681Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1928",
+              "source_id": "research:1",
+              "evidence_text": "Elie Wiesel was born in 1928 in the town of Sighet, now part of Romania. During World War II, he, with his family and other Jews from the area, were deported to the German concentration and extermination camps, where his parents and little sister perished. Wiesel and his two older sisters survived. Liberated from Buchenwald in 1945 by advancing Allied troops, he was taken to Paris where he studied at the Sorbonne and worked as a journalist.",
+              "fact_id": "research:1:f1"
+            },
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1928-09-30",
+              "source_id": "research:2",
+              "evidence_text": "Eliezer \"Elie\" Wiesel[a] (September 30, 1928 – July 2, 2016) was a Romanian-born American writer, professor, political activist, Nobel laureate, and Holocaust survivor. He authored 57 books, written mostly in French and English, including Night, which is based on his experiences as a Jewish prisoner at Auschwitz and Buchenwald during the Holocaust.",
+              "fact_id": "research:2:f1"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "journalist",
+              "source_id": "research:1",
+              "evidence_text": "Elie Wiesel was born in 1928 in the town of Sighet, now part of Romania. During World War II, he, with his family and other Jews from the area, were deported to the German concentration and extermination camps, where his parents and little sister perished. Wiesel and his two older sisters survived. Liberated from Buchenwald in 1945 by advancing Allied troops, he was taken to Paris where he studied at the Sorbonne and worked as a journalist.",
+              "fact_id": "research:1:f2"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Elie Wiesel",
+              "value": "Yale University",
+              "source_id": "research:1",
+              "evidence_text": "Wiesel has made his home in New York City, and is now a United States citizen. He has been a visiting scholar at Yale University, a Distinguished Professor of Judaic Studies at the City College of New York, and since 1976 has been Andrew W. Mellon Professor in the Humanities at Boston University where he teaches “Literature of Memory.” Chairman of the United States Holocaust Memorial Council from 1980 – 1986, Wiesel serves on numerous boards of trustees and advisors.",
+              "fact_id": "research:1:f3"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Elie Wiesel",
+              "value": "City College of New York",
+              "source_id": "research:1",
+              "evidence_text": "Wiesel has made his home in New York City, and is now a United States citizen. He has been a visiting scholar at Yale University, a Distinguished Professor of Judaic Studies at the City College of New York, and since 1976 has been Andrew W. Mellon Professor in the Humanities at Boston University where he teaches “Literature of Memory.” Chairman of the United States Holocaust Memorial Council from 1980 – 1986, Wiesel serves on numerous boards of trustees and advisors.",
+              "fact_id": "research:1:f4"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Elie Wiesel",
+              "value": "Boston University",
+              "source_id": "research:1",
+              "evidence_text": "Wiesel has made his home in New York City, and is now a United States citizen. He has been a visiting scholar at Yale University, a Distinguished Professor of Judaic Studies at the City College of New York, and since 1976 has been Andrew W. Mellon Professor in the Humanities at Boston University where he teaches “Literature of Memory.” Chairman of the United States Holocaust Memorial Council from 1980 – 1986, Wiesel serves on numerous boards of trustees and advisors.",
+              "fact_id": "research:1:f5"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "writer",
+              "source_id": "research:2",
+              "evidence_text": "Eliezer \"Elie\" Wiesel[a] (September 30, 1928 – July 2, 2016) was a Romanian-born American writer, professor, political activist, Nobel laureate, and Holocaust survivor. He authored 57 books, written mostly in French and English, including Night, which is based on his experiences as a Jewish prisoner at Auschwitz and Buchenwald during the Holocaust.",
+              "fact_id": "research:2:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "professor",
+              "source_id": "research:2",
+              "evidence_text": "Eliezer \"Elie\" Wiesel[a] (September 30, 1928 – July 2, 2016) was a Romanian-born American writer, professor, political activist, Nobel laureate, and Holocaust survivor. He authored 57 books, written mostly in French and English, including Night, which is based on his experiences as a Jewish prisoner at Auschwitz and Buchenwald during the Holocaust.",
+              "fact_id": "research:2:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "political activist",
+              "source_id": "research:2",
+              "evidence_text": "Eliezer \"Elie\" Wiesel[a] (September 30, 1928 – July 2, 2016) was a Romanian-born American writer, professor, political activist, Nobel laureate, and Holocaust survivor. He authored 57 books, written mostly in French and English, including Night, which is based on his experiences as a Jewish prisoner at Auschwitz and Buchenwald during the Holocaust.",
+              "fact_id": "research:2:f4"
+            }
+          ],
+          "evidence_status": "available",
+          "source_assessments": [
+            {
+              "source_id": "research:1",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "Biographical information about Elie Wiesel from NobelPrize.org",
+              "independence": "uncertain",
+              "related_source_ids": [
+                "research:2"
+              ]
+            },
+            {
+              "source_id": "research:2",
+              "identity_match": "match",
+              "usable": true,
+              "reason": "Wikipedia biography of Elie Wiesel",
+              "independence": "uncertain",
+              "related_source_ids": [
+                "research:1"
+              ]
+            }
+          ],
+          "qualified_source_count": 0,
+          "target_sources": 2,
+          "target_met": false,
+          "stop_reason": "page_budget_exhausted"
+        },
+        "issues": [
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 4: generic work subject",
+            "source_id": "research:1"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 11: generic work subject",
+            "source_id": "research:2"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 12: generic work subject",
+            "source_id": "research:2"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 13: generic work subject",
+            "source_id": "research:2"
+          },
+          {
+            "code": "FACT_REJECTED",
+            "message": "Fact 14: generic work subject",
+            "source_id": "research:2"
+          },
+          {
+            "code": "TEXT_TRUNCATED",
+            "message": "External page text truncated.",
+            "source_id": "research:2"
+          },
+          {
+            "code": "SOURCE_ACCESS_DENIED",
+            "message": "Candidate https://www.britannica.com/biography/Elie-Wiesel returned access restriction (target HTTP 403); try another source.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Elie-Wiesel/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Night",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Elie Wiesel was born in Sighet, Romania, on September 30, 1928. He worked as a novelist and political activist, and he authored over forty books, most notably his memoir Night detailing his Holocaust experiences.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "name": "Friedrich Nietzsche",
+        "bio_url": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-8"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Friedrich Nietzsche is a well-documented historical philosopher whose life and works are extensively recorded in public sources."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+              "requested_url": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+              "title": "Friedrich Nietzsche",
+              "retrieved_at": "2026-09-13T20:48:18.768Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1844-10-15",
+              "source_id": "bio:1",
+              "evidence_text": "October 15, 1844",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Röcken bei Lützen, Prussian Province of Saxony, Germany",
+              "source_id": "bio:1",
+              "evidence_text": "Röcken bei Lützen, Prussian Province of Saxony, Germany",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "philosopher",
+              "source_id": "bio:1",
+              "evidence_text": "German philosopher",
+              "fact_id": "bio:1:f3"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Friedrich-Nietzsche/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Friedrich Nietzsche was a German philosopher born on October 15, 1844. His birthplace was Röcken bei Lützen, located in the Prussian Province of Saxony, Germany.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "name": "Mark Twain",
+        "bio_url": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-9"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Mark Twain is a universally recognized historical public figure and author whose biography is extensively documented and easily verifiable."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Mark-Twain/",
+              "requested_url": "https://quotes.toscrape.com/author/Mark-Twain/",
+              "title": "Mark Twain",
+              "retrieved_at": "2026-09-13T20:48:34.275Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1835-11-30",
+              "source_id": "bio:1",
+              "evidence_text": "Born: November 30, 1835",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Florida, Missouri, The United States",
+              "source_id": "bio:1",
+              "evidence_text": "Florida, Missouri, The United States",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "author",
+              "source_id": "bio:1",
+              "evidence_text": "was an American author and humorist.",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "humorist",
+              "source_id": "bio:1",
+              "evidence_text": "was an American author and humorist.",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "work",
+              "subject": "Adventures of Huckleberry Finn",
+              "value": "novel published in 1885",
+              "source_id": "bio:1",
+              "evidence_text": "Adventures of Huckleberry Finn (1885)",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "The Adventures of Tom Sawyer",
+              "value": "novel published in 1876",
+              "source_id": "bio:1",
+              "evidence_text": "The Adventures of Tom Sawyer (1876)",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "printer",
+              "source_id": "bio:1",
+              "evidence_text": "He apprenticed with a printer.",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "typesetter",
+              "source_id": "bio:1",
+              "evidence_text": "He also worked as a typesetter",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "master riverboat pilot",
+              "source_id": "bio:1",
+              "evidence_text": "he became a master riverboat pilot on the Mississippi River",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "journalist",
+              "source_id": "bio:1",
+              "evidence_text": "he next turned to journalism.",
+              "fact_id": "bio:1:f10"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "reporter",
+              "source_id": "bio:1",
+              "evidence_text": "While a reporter,",
+              "fact_id": "bio:1:f11"
+            },
+            {
+              "field": "work",
+              "subject": "The Celebrated Jumping Frog of Calaveras County",
+              "value": "humorous story",
+              "source_id": "bio:1",
+              "evidence_text": "he wrote a humorous story, \"The Celebrated Jumping Frog of Calaveras County,\"",
+              "fact_id": "bio:1:f12"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "writer",
+              "source_id": "bio:1",
+              "evidence_text": "He achieved great success as a writer",
+              "fact_id": "bio:1:f13"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "public speaker",
+              "source_id": "bio:1",
+              "evidence_text": "and public speaker.",
+              "fact_id": "bio:1:f14"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Mark-Twain/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Adventures of Huckleberry Finn",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Adventures of Tom Sawyer",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f11"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "The Celebrated Jumping Frog of Calaveras County",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f12"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f13"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f14"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Mark Twain was born in Florida, Missouri, on November 30, 1835. He worked as a printer, typesetter, riverboat pilot, journalist, and reporter before achieving great success as an author, humorist, and public speaker. Some of his most notable works include the novels The Adventures of Tom Sawyer and Adventures of Huckleberry Finn.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f7",
+            "bio:1:f8",
+            "bio:1:f9",
+            "bio:1:f10",
+            "bio:1:f11",
+            "bio:1:f13",
+            "bio:1:f14"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    },
+    {
+      "author": {
+        "author_id": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "name": "Allen Saunders",
+        "bio_url": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "quote_ids": [
+          "https://quotes.toscrape.com/page/2/#quote-10"
+        ]
+      },
+      "classification": {
+        "author_id": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "status": "success",
+        "data": {
+          "category": "verifiable",
+          "reason": "Allen Saunders is a real, historically documented American writer and cartoonist known for comic strips like Mary Worth and Steve Roper, and is famously credited with the quote about life happening while making other plans."
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "bio": {
+        "author_id": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "status": "success",
+        "data": {
+          "sources": [
+            {
+              "source_id": "bio:1",
+              "url": "https://quotes.toscrape.com/author/Allen-Saunders/",
+              "requested_url": "https://quotes.toscrape.com/author/Allen-Saunders/",
+              "title": "Allen Saunders",
+              "retrieved_at": "2026-09-13T20:48:52.724Z"
+            }
+          ],
+          "facts": [
+            {
+              "field": "birth_date",
+              "subject": null,
+              "value": "1899-04-24",
+              "source_id": "bio:1",
+              "evidence_text": "April 24, 1899",
+              "fact_id": "bio:1:f1"
+            },
+            {
+              "field": "birth_place",
+              "subject": null,
+              "value": "Lebanon, Indiana",
+              "source_id": "bio:1",
+              "evidence_text": "Born in Lebanon, Indiana",
+              "fact_id": "bio:1:f2"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "writer",
+              "source_id": "bio:1",
+              "evidence_text": "writer",
+              "fact_id": "bio:1:f3"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "journalist",
+              "source_id": "bio:1",
+              "evidence_text": "journalist",
+              "fact_id": "bio:1:f4"
+            },
+            {
+              "field": "occupation",
+              "subject": null,
+              "value": "cartoonist",
+              "source_id": "bio:1",
+              "evidence_text": "cartoonist",
+              "fact_id": "bio:1:f5"
+            },
+            {
+              "field": "work",
+              "subject": "Steve Roper and Mike Nomad",
+              "value": "comic strip",
+              "source_id": "bio:1",
+              "evidence_text": "comic strips Steve Roper and Mike Nomad",
+              "fact_id": "bio:1:f6"
+            },
+            {
+              "field": "work",
+              "subject": "Mary Worth",
+              "value": "comic strip",
+              "source_id": "bio:1",
+              "evidence_text": "Mary Worth",
+              "fact_id": "bio:1:f7"
+            },
+            {
+              "field": "work",
+              "subject": "Kerry Drake",
+              "value": "comic strip",
+              "source_id": "bio:1",
+              "evidence_text": "Kerry Drake",
+              "fact_id": "bio:1:f8"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Wabash College",
+              "value": "graduated in 1920",
+              "source_id": "bio:1",
+              "evidence_text": "After graduating from Wabash College in 1920",
+              "fact_id": "bio:1:f9"
+            },
+            {
+              "field": "affiliation",
+              "subject": "Wabash College",
+              "value": "taught French there for seven years",
+              "source_id": "bio:1",
+              "evidence_text": "he taught French there for seven years",
+              "fact_id": "bio:1:f10"
+            },
+            {
+              "field": "work",
+              "subject": "Miserable Moments",
+              "value": "single-panel cartoon",
+              "source_id": "bio:1",
+              "evidence_text": "single-panel Miserable Moments",
+              "fact_id": "bio:1:f11"
+            },
+            {
+              "field": "work",
+              "subject": "Big Chief Wahoo",
+              "value": "comic strip, appeared in newspapers on November 23, 1936",
+              "source_id": "bio:1",
+              "evidence_text": "On November 23, 1936, it finally appeared in the newspapers as Big Chief Wahoo",
+              "fact_id": "bio:1:f12"
+            },
+            {
+              "field": "work",
+              "subject": "Steve Roper",
+              "value": "adventure strip, began in 1940",
+              "source_id": "bio:1",
+              "evidence_text": "in 1940, he began to reshape the narrative into Steve Roper",
+              "fact_id": "bio:1:f13"
+            }
+          ],
+          "evidence_status": "available"
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "research": {
+        "author_id": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "status": "failed",
+        "data": null,
+        "issues": [
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "NO_RELEVANT_CANDIDATES",
+            "message": "Search produced no URLs matching the author identity.",
+            "source_id": null
+          },
+          {
+            "code": "RESEARCH_TARGET_UNMET",
+            "message": "Qualified source target not met: 0/2.",
+            "source_id": null
+          }
+        ],
+        "skip_reason": null
+      },
+      "synthesis": {
+        "author_id": "https://quotes.toscrape.com/author/Allen-Saunders/",
+        "status": "success",
+        "data": {
+          "comparisons": [
+            {
+              "scope": "site_vs_web",
+              "field": "birth_date",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f1"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "birth_place",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f2"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f3"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f4"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "occupation",
+              "subject": null,
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f5"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Steve Roper and Mike Nomad",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f6"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Mary Worth",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f7"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Kerry Drake",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f8"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Wabash College",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f9"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "affiliation",
+              "subject": "Wabash College",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f10"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Miserable Moments",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f11"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Big Chief Wahoo",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f12"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            },
+            {
+              "scope": "site_vs_web",
+              "field": "work",
+              "subject": "Steve Roper",
+              "conclusion": "site_only",
+              "fact_ids": [
+                "bio:1:f13"
+              ],
+              "explanation": "Only site evidence is available in this comparison task; no cross-source corroboration is established."
+            }
+          ],
+          "profile": "Allen Saunders was born in Lebanon, Indiana on April 24, 1899. He worked as a writer, journalist, and cartoonist, creating well-known comic strips such as Steve Roper and Mike Nomad, Mary Worth, and Kerry Drake. After graduating from Wabash College in 1920, he taught French there for seven years.",
+          "profile_fact_ids": [
+            "bio:1:f1",
+            "bio:1:f2",
+            "bio:1:f3",
+            "bio:1:f4",
+            "bio:1:f5",
+            "bio:1:f6",
+            "bio:1:f7",
+            "bio:1:f8",
+            "bio:1:f9",
+            "bio:1:f10"
+          ],
+          "limitations": [
+            "Site-only claims are not independently verified.",
+            "External evidence has recorded limitations.",
+            "External source target not met.",
+            "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+          ]
+        },
+        "issues": [],
+        "skip_reason": null
+      },
+      "outcome": "degraded",
+      "limitations": [
+        "Site evidence is not independently verified.",
+        "External source target not met.",
+        "Site-only claims are not independently verified.",
+        "External evidence has recorded limitations.",
+        "External source target not met.",
+        "Profile is limited to available accepted evidence; independent corroboration is incomplete."
+      ]
+    }
+  ]
+}

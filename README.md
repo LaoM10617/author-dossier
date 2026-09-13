@@ -1,54 +1,91 @@
 # Author Dossier
 
-An n8n parent/child pipeline for quote intake, author classification, website biography extraction, independent research and evidence-based synthesis.
+An n8n parent/child pipeline that turns quotes from two pages into one evidence-aware dossier per unique author. Browserless retrieves pages; distinct Gemini calls classify authors, extract site biographies, research external sources and synthesize comparisons and profiles.
 
-## Quick start
+**Status:** the full workflow completed a real local n8n editor run. All 15 authors were retained. Independent research coverage remains limited; outputs explicitly record degradation rather than claiming complete verification.
 
-For the local editor, credential binding and import verification, see [the local UI guide](docs/local-editor-check.md). For precisely scoped open quality questions and search terms, see [synthesis quality investigation](docs/synthesis-quality-investigation.md).
+## Start here
 
-Requires Node.js 20+ for local build checks. No npm dependencies are needed.
+- [Parent workflow](delivery/ui-verified-execution-17/parent-workflow.json) and [child workflow](delivery/ui-verified-execution-17/child-workflow.json): latest portable imports, with instance and credential bindings removed.
+- [Actual final output](delivery/ui-verified-execution-17/batch-output.json): 20 quotes and 15 dossiers from local parent execution #17.
+- [Reproduction guide](docs/reproduce.md): import order, credentials, child selection and checks.
+- [Search diagnosis](docs/search-candidate-diagnosis.md): evidence locating the main research failure boundary.
+- [Synthesis investigation](docs/synthesis-quality-investigation.md): remaining citation/semantic limitations and technical questions.
 
-```sh
-npm run build
-npm test
-```
-
-Import `dist/child-workflow.json` first, then `dist/parent-workflow.json` into your own n8n instance. Bind your own Gemini and Browserless credentials on the HTTP nodes, and select the imported child in `Call Live Author`. Execute the parent manual trigger. The two workflows are separate imports, not an automatically linked bundle.
-
-## Layout
-
-- `src/parent`, `src/child`: editable JavaScript for each Code node.
-- `workflows/*.template.json`: node settings, prompts outside Code nodes and connections.
-- `scripts/build.cjs`: assembles importable workflow JSON into `dist`.
-- `scripts/test.cjs`: compilation, wiring and clean-import checks.
-
-Research policy, paragraph selection and synthesis contracts are maintained in `src/shared` and injected during the build. Some legacy Code-node helpers remain duplicated.
+Download JSON using GitHub's Raw/download control, or clone the repository. Import the parent and child as **two separate workflows**. Repository downloads do not include service credentials.
 
 ## Architecture
 
-Parent: fetch two quote pages via Browserless, extract quotes, deduplicate by author biography URL, call one child at a time, reconcile results by identity.
+```mermaid
+flowchart TD
+    A[Browserless: first two quote pages] --> B[Extract quotes and deduplicate authors]
+    B --> C[Parent loop: one author per child call]
+    C --> D[Gemini classification]
+    D --> E[Browserless Bio + Gemini extraction]
+    E --> F{Verifiable classification?}
+    F -->|Yes| G[External search and pages + Research Gemini]
+    F -->|No or unusable classification| H[Explicit research skip]
+    G --> I[Merge evidence and limitations]
+    H --> I
+    I --> J[Synthesis Gemini + contract checks]
+    J --> K[Return dossier and reconcile identity]
+```
 
-Child: four separate Gemini responsibilities (classification, Bio, Research, Synthesis). Bio is intended for every author; Research calls are gated by a verifiable classification. Research uses external page excerpts with paragraph references. Accepted facts retain source references and supporting text. Bounded retries and time reserves protect synthesis and result packaging. Missing child results produce explicit fallbacks rather than disappearing authors.
+The parent extracts quote text, author name, tags and biography URL, deduplicates by author URL, and collects one result per author. Classification actively gates research; Bio is attempted for all authors. Each Gemini responsibility has a distinct prompt and call. Skipped or failed research does not silently drop authors.
 
-## Testing options
+Research retrieves external search-result HTML through Browserless **`/content`**, decodes links, filters author identity and selects pages within explicit page, round and time budgets. This is not a dedicated Browserless search API integration. Paragraph references preserve provenance; source assessments determine eligibility for independent corroboration.
 
-1. **Local build checks:** `npm test` has no API calls and does not emulate n8n execution.
-2. **Real local n8n engine:** use the self-hosted Community edition via Docker or npm. Import the workflows, bind personal credentials and test one author before a full batch. Match the original engine version where known; it has not been recovered from node type versions.
-3. **Real n8n with mock responses:** `npm run setup:n8n` followed by `npm run test:n8n` executes mixed failures, shared stop, and full synthetic two-page intake in n8n 2.38.7. See [local integration tests](docs/local-n8n-tests.md).
-4. **Live integration:** requires independently configured Browserless and Gemini access. Hosting n8n locally does not provide those API services or company credentials.
+Synthesis creates explicit comparison tasks for accepted Bio facts. Single-sided evidence is labeled, unresolved results retain limitations, and retries/repair are bounded. These mechanisms enforce structure and coverage, not universal factual correctness.
 
-Official setup: https://docs.n8n.io/hosting/installation/docker/
+## Latest observed results
 
-## Validation status
+Local n8n **2.38.7**, direct Browserless and Gemini calls, parent execution **#17**:
 
-On 2026-09-13, local n8n 2.38.7 fetched both real pages (20 quotes, 15 unique authors), passed a one-author smoke, then completed one full real-provider batch using that fresh saved intake in 5m12s. All 15 authors returned without duplicates or child fallbacks. Classification: 15 success; Bio: 14 success, 1 partial; Research: 5 partial, 10 failed; Synthesis: 15 success under the runtime contract. All 15 dossiers remain degraded. All accepted Bio facts occur in comparisons, and all authors have profiles; this does not establish factual correctness or complete citation coverage.
+- Both input pages succeeded: **20 quotes, 15 unique authors**, no missing or duplicate authors.
+- Classification and Bio: **15 successful each**.
+- Research: **4 partial, 11 failed**; no author reached the configured two-qualified-source target.
+- Synthesis: **15 runtime-contract successes**, all with profiles and comparison coverage of accepted Bio facts.
+- Final dossiers: **15 degraded, 0 failed, 0 completed**; no batch stop.
 
-`npm test` and `npm run test:n8n` passed before this run. See [final validation](docs/final-validation.md) for scope and remaining quality limitations. The [frozen delivery](delivery/release-1789324402547/README.md) includes clean parent/child imports, the observed batch output and checksums. Tests used a local credential bridge to real providers; the exports require credentials and a child binding in the destination instance. Original company correspondence and credential records are excluded.
+See [validation metadata](delivery/ui-verified-execution-17/validation.json). The two-source target is a project quality setting, not a numerical requirement of the original exercise. Operational completion does not establish full independent verification.
 
-## Known limitations
+An earlier credential-bridge batch and local simulated tests are documented in [the previous acceptance report](docs/final-validation.md). They are separate runs. An initial editor attempt lacked child credential bindings; that configuration issue was corrected before execution #17.
 
-Search candidate recall, source access and model independence judgments still limit research. Paragraph references enforce provenance, not semantic entailment. Manual review found incomplete profile citation coverage and inconsistent work-subject normalization. Research uses bounded candidate replacement, two model rounds and a default three-page budget. The project demonstrates complete orchestration and explicit degradation, not production-grade independent verification.
+## Known limitations and diagnosis
 
-## Development policy
+**Search response relevance:** all 30 saved search responses had HTTP 200 and target HTTP 200. Re-parsing organic-result titles matched the workflow extraction in every case. For 11 authors, both searches yielded no identity-matching candidate. A full Jane Austen query appeared in the page title and search box, while results contained Jane App and unrelated Jane pages. The anomaly is already present in returned search content; its underlying provider/environment cause is unresolved. Weakening identity checks would admit unrelated sources. See [per-search evidence](docs/search-diagnosis-evidence.json).
 
-Preserve the delivered baseline while improving retrieval and semantic tests. Keep credentials in n8n, never in source. `dist`, personal `.env` files and local execution artifacts are ignored. This project has no selected open-source license yet; repository visibility and licensing are pending owner choice.
+**Synthesis quality:** valid fact IDs do not prove that each profile claim is supported by its cited subset. Manual review of an earlier run found incomplete attribution. Same-field matching also leaves claim identity and entailment partly dependent on the model. The 2–3 sentence requirement is prompted but not deterministically enforced. These remain quality limitations even when a stage reports success.
+
+**Reproducibility:** destination credentials and child selection must be configured. Website results, provider quotas and the model alias can change. The procedure can be repeated; identical live facts or status counts cannot be guaranteed.
+
+## Run locally
+
+Tested runtime: **Node.js 24.19.0**, **n8n 2.38.7**. From the repository:
+
+```sh
+npm test
+npm run setup:n8n
+npm run test:n8n
+```
+
+`npm test` runs offline build, contract and policy checks. `test:n8n` uses the real engine with simulated providers to test mixed failures, shared stop, intake and bounded candidate replacement. It does not validate live search quality. Setup downloads the runtime; simulated execution makes no real provider calls.
+
+On Windows, launch the editor:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\local\start-n8n.ps1
+```
+
+Visit `http://localhost:5678`, create a local owner account if needed, and follow [the reproduction guide](docs/reproduce.md). Editor and automated-test databases are separate; do not run the editor and CLI tests simultaneously. A full live parent run consumes external service quota and requires authorized credentials.
+
+## Repository layout
+
+- `src/parent`, `src/child`: editable node code; `src/shared`: research/synthesis contracts injected during build.
+- `workflows`: templates; `scripts/build.cjs`: development imports in `dist`.
+- `tests`: offline fixtures and local n8n harnesses.
+- `delivery/ui-verified-execution-17`: latest sanitized editor exports, observed output and SHA-256 checksums. Use this for review; build commands do not overwrite this snapshot.
+- `delivery/release-1789324402547`: preserved earlier acceptance snapshot.
+- `docs`: reproduction, validation and investigations.
+
+Credentials, databases, raw execution logs and debug working files are excluded from Git. This private repository is intended for invited reviewers; no open-source license has been selected.
