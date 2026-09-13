@@ -1,0 +1,43 @@
+{
+  "scope": "Synthesis-only real n8n replay of saved real webpage evidence",
+  "modelAlias": "gemini-flash-lite-latest",
+  "lastNode": "Package Author Envelope",
+  "calls": [
+    {
+      "step": "synthesis",
+      "status": 200
+    }
+  ],
+  "outcome": "degraded",
+  "stages": {
+    "classification": "success",
+    "bio": "success",
+    "research": "partial",
+    "synthesis": "partial"
+  },
+  "issues": [
+    {
+      "code": "SYNTHESIS_COMPARISON_REJECTED",
+      "message": "Comparison 2: Invalid comparison references",
+      "source_id": null
+    },
+    {
+      "code": "SYNTHESIS_COMPARISON_REJECTED",
+      "message": "Comparison 11: Invalid comparison references",
+      "source_id": null
+    },
+    {
+      "code": "SYNTHESIS_COMPARISON_REJECTED",
+      "message": "Comparison 13: Invalid comparison references",
+      "source_id": null
+    },
+    {
+      "code": "SYNTHESIS_COVERAGE_INCOMPLETE",
+      "message": "Site facts without an accepted comparison: bio:1:f2",
+      "source_id": null
+    }
+  ],
+  "siteFactsCovered": 7,
+  "siteFactsTotal": 8,
+  "sourceTargetMet": true
+}

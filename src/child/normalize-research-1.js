@@ -81,14 +81,7 @@ function bioResult(c) {
 }
 function researchEnabled(c){return c.classification.status==='success'&&c.classification.data.category==='verifiable';}
 function qualified(c){return c.assessments.filter(a=>a.usable&&a.identity_match==='match'&&a.independence==='no_obvious_overlap'&&c.webfacts.some(f=>f.source_id===a.source_id)).length;}
-function researchResult(c) {
- if(!researchEnabled(c)){c.research=stage(c,'skipped',null,[],c.classification.status==='success'?'category_unverifiable':'classification_failed');return c;}
- const count=qualified(c),met=count>=c.limits.target_sources;
- const stop=met?'target_met':c.control.stop_new_authors?'service_blocked':Date.now()+c.limits.gemini_timeout_ms+c.limits.synthesis_reserve_ms+c.limits.packaging_reserve_ms>c.deadline?'time_budget_exhausted':c.attempted.length>=c.limits.max_pages?'page_budget_exhausted':c.round>=c.limits.max_research_rounds?'round_limit_reached':'candidates_exhausted';
- const failed=!c.webfacts.length&&c.research_issues.length>0;
- c.research=stage(c,failed?'failed':c.research_issues.length?'partial':'success',failed?null:{sources:c.webpages.map(p=>p.source),facts:c.webfacts,evidence_status:c.webfacts.length?'available':'none',source_assessments:c.assessments,qualified_source_count:count,target_sources:c.limits.target_sources,target_met:met,stop_reason:stop},c.research_issues);
- return c;
-}
+function researchResult(c) { return finalizeResearch(c); }
 
 const c=$input.first().json;if(!c.round_pages.length)return output(c);const d=parsedModel(c);
 if(!d||Object.keys(d).sort().join(',')!=='facts,source_assessments'||!Array.isArray(d.facts)||!Array.isArray(d.source_assessments)){c.research_issues.push(issue('RESEARCH_MODEL_FAILED','Research round returned invalid structure.'));return output(c);}
@@ -100,6 +93,6 @@ const host=u=>(u.match(/^https?:\/\/([^/]+)/i)?.[1]||'').replace(/^www\./,'').re
 const previous=[...c.webpages,...accepted].find(q=>host(q.source.url)===host(p.source.url));if(previous){a.independence='duplicate';a.related_source_ids=[previous.source.source_id];}
 c.assessments.push(a);if(a.identity_match==='match'&&a.usable)accepted.push(p);
 }
-const v=acceptedFacts(c,d.facts,accepted);c.webfacts.push(...v.facts);c.research_issues.push(...v.issues);
+const v=resolveResearchFacts(c,d.facts,accepted);c.webfacts.push(...v.facts);c.research_issues.push(...v.issues);
 for(const p of c.round_pages)if(p.truncated)c.research_issues.push(issue('TEXT_TRUNCATED','External page text truncated.',p.source.source_id));
 c.webpages.push(...c.round_pages);return output(c);

@@ -81,16 +81,6 @@ function bioResult(c) {
 }
 function researchEnabled(c){return c.classification.status==='success'&&c.classification.data.category==='verifiable';}
 function qualified(c){return c.assessments.filter(a=>a.usable&&a.identity_match==='match'&&a.independence==='no_obvious_overlap'&&c.webfacts.some(f=>f.source_id===a.source_id)).length;}
-function researchResult(c) {
- if(!researchEnabled(c)){c.research=stage(c,'skipped',null,[],c.classification.status==='success'?'category_unverifiable':'classification_failed');return c;}
- const count=qualified(c),met=count>=c.limits.target_sources;
- const stop=met?'target_met':c.control.stop_new_authors?'service_blocked':Date.now()+c.limits.gemini_timeout_ms+c.limits.synthesis_reserve_ms+c.limits.packaging_reserve_ms>c.deadline?'time_budget_exhausted':c.attempted.length>=c.limits.max_pages?'page_budget_exhausted':c.round>=c.limits.max_research_rounds?'round_limit_reached':'candidates_exhausted';
- const failed=!c.webfacts.length&&c.research_issues.length>0;
- c.research=stage(c,failed?'failed':c.research_issues.length?'partial':'success',failed?null:{sources:c.webpages.map(p=>p.source),facts:c.webfacts,evidence_status:c.webfacts.length?'available':'none',source_assessments:c.assessments,qualified_source_count:count,target_sources:c.limits.target_sources,target_met:met,stop_reason:stop},c.research_issues);
- return c;
-}
+function researchResult(c) { return finalizeResearch(c); }
 
-const c=$input.first().json;const d=parsedModel(c);const l=c.req.label;
-const shape=d&&typeof d==='object'&&!Array.isArray(d)&&(l==='classification'?Object.keys(d).sort().join(',')==='category,reason'&&['verifiable','unverifiable'].includes(d.category)&&clean(d.reason):l==='bio'?Object.keys(d).join(',')==='facts'&&Array.isArray(d.facts):l.startsWith('research')?Object.keys(d).sort().join(',')==='facts,source_assessments'&&Array.isArray(d.facts)&&Array.isArray(d.source_assessments):Array.isArray(d.comparisons)&&Array.isArray(d.profile_fact_ids)&&Array.isArray(d.limitations));
-const used=c.calls.filter(x=>x.step===l).length;c.repair=!!(c.req.allowed&&c.response?.statusCode===200&&!shape&&c.limits.gemini_repair_calls>0&&used<c.limits.max_gemini_requests_per_step&&!c.control.stop_new_authors&&Date.now()+c.req.timeout+c.req.reserve<=c.deadline);
-if(c.repair){c.req.attempt=used+1;c.req.started_at=Date.now();c.req.body.systemInstruction.parts[0].text+=' Your previous response failed the required JSON structure. Return only the exact schema and required fields.';}return output(c);
+return repairStructuredSynthesis($input.first().json);

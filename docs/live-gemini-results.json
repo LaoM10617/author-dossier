@@ -1,0 +1,30 @@
+{
+  "scope": "Real local n8n and Gemini; synthetic Browserless pages, not real research validation",
+  "modelAlias": "gemini-flash-lite-latest",
+  "lastNode": "Package Author Envelope",
+  "calls": [
+    {
+      "step": "classification",
+      "status": 200
+    },
+    {
+      "step": "bio",
+      "status": 200
+    },
+    {
+      "step": "research_round_1",
+      "status": 200
+    },
+    {
+      "step": "synthesis",
+      "status": 200
+    }
+  ],
+  "stages": {
+    "classification": "success",
+    "bio": "success",
+    "research": "partial",
+    "synthesis": "success"
+  },
+  "outcome": "degraded"
+}

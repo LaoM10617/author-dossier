@@ -1,0 +1,8 @@
+[
+  {"id":"target-403","kind":"page","targetStatus":403,"text":"Access denied","expectedPages":0,"expectedIssue":"SOURCE_ACCESS_DENIED"},
+  {"id":"empty-page","kind":"page","targetStatus":200,"text":"","expectedPages":0,"expectedIssue":"SOURCE_UNAVAILABLE"},
+  {"id":"same-name-wrong-person","kind":"assessment","identity":"mismatch","hosts":["one.example"],"expectedQualified":0},
+  {"id":"wikipedia-language-mirror","kind":"assessment","identity":"match","hosts":["en.wikipedia.org","de.wikipedia.org"],"expectedQualified":1},
+  {"id":"insufficient-sources","kind":"assessment","identity":"match","hosts":["one.example"],"expectedQualified":1},
+  {"id":"two-distinct-sources","kind":"assessment","identity":"match","hosts":["one.example","two.example"],"expectedQualified":2}
+]

@@ -1,0 +1,896 @@
+{
+  "name": "Author Dossier - Parent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Author Dossier\nSee README for setup, tested scope and known limitations. Bind personal credentials and the child workflow before execution.",
+        "height": 2414,
+        "width": 612
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "65183722-0130-4906-97c5-7e2d4465c99e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        752,
+        240
+      ],
+      "id": "60ef9d08-9c3a-4ebe-b16a-068f7b48b924",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "const c=$input.first().json;if(c.page_urls.length!==2)throw new Error('Expected exactly two configured pages');return [{json:{...c,run_id:'m05-intake-'+$execution.id}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b1b17ec0-95f3-4edc-812a-53c330e85343",
+      "name": "Initialize Intake",
+      "position": [
+        1456,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $('Initialize Intake').first().json.page_urls[0] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Initialize Intake').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1696,
+        240
+      ],
+      "id": "3bf98ace-44bf-4b66-af47-3301b94dc385",
+      "name": "Fetch Page 1",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json;const page_url=$('Initialize Intake').first().json.page_urls[0];\r\nconst ok=r.statusCode===200&&Number(r.headers?.['x-response-code'])===200&&typeof r.html==='string'&&r.html.trim().length>0;\r\nreturn [{json:{page_url,ok,html:ok?r.html:'<html></html>',issues:ok?[]:[{code:'PAGE_FETCH_FAILED',message:'Page fetch failed or returned no HTML',source_id:null}]}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "76f0e6cd-d0c4-4ab4-9f22-7083762bed73",
+      "name": "Normalize Fetch 1",
+      "position": [
+        1936,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "blocks",
+              "cssSelector": ".quote",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2176,
+        240
+      ],
+      "id": "2505d426-2cee-42de-a766-7ec06bc6a9e4",
+      "name": "Extract Blocks 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const blocks=$input.first().json.blocks;return (Array.isArray(blocks)&&blocks.length?blocks:['']).map((html,i)=>({json:{html},pairedItem:{item:0}}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b6d0d505-35fe-4270-ad91-cd9b0913546c",
+      "name": "Split Blocks 1",
+      "position": [
+        2416,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "texts",
+              "cssSelector": ".text",
+              "returnArray": true
+            },
+            {
+              "key": "names",
+              "cssSelector": ".author",
+              "returnArray": true
+            },
+            {
+              "key": "links",
+              "cssSelector": "a[href^=\"/author/\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "tags",
+              "cssSelector": ".tags a.tag",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2656,
+        240
+      ],
+      "id": "166b339f-d106-422a-b024-e06269f3c341",
+      "name": "Extract Quotes 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const f=$('Normalize Fetch 1').first().json;\r\nconst blocks=$('Extract Blocks 1').first().json.blocks||[];const rows=$input.all();const quotes=[];const issues=[...f.issues];\r\nconst clean=s=>typeof s==='string'?s.replace(/\\s+/g,' ').trim():'';\r\nif(blocks.length&&rows.length!==blocks.length)throw new Error('QUOTE_ITEM_COUNT_MISMATCH');\r\nfor(let i=0;i<blocks.length;i++){const r=rows[i].json;\r\n if(r.texts?.length!==1||r.names?.length!==1||r.links?.length!==1||!clean(r.texts[0])||!clean(r.names[0])||!/^\\/author\\/[^/?#]+\\/?$/.test(r.links[0])){issues.push({code:'QUOTE_INVALID',message:'Invalid quote at position '+(i+1),source_id:null});continue;}\r\n const bio_url='https://quotes.toscrape.com'+r.links[0].replace(/\\/?$/,'/');\r\n quotes.push({quote_id:f.page_url+'#quote-'+(i+1),page_url:f.page_url,position:i+1,text:clean(r.texts[0]),author_name:clean(r.names[0]),tags:[...new Set((r.tags||[]).map(clean).filter(Boolean))],bio_url,author_id:bio_url});\r\n}\r\nif(f.ok&&!blocks.length)issues.push({code:'NO_QUOTES_FOUND',message:'Successful HTTP response contained no quote blocks; coverage is incomplete',source_id:null});\r\nreturn [{json:{coverage:{page_url:f.page_url,fetch_status:f.ok?'success':'failed',discovered_count:blocks.length,parsed_count:quotes.length,invalid_count:blocks.length-quotes.length,complete:f.ok&&blocks.length>0&&quotes.length===blocks.length,issues},quotes}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "77b7c2cb-b4b5-475a-8343-d5451985a7da",
+      "name": "Collect Page 1",
+      "position": [
+        2896,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $('Initialize Intake').first().json.page_urls[1] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Initialize Intake').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3136,
+        240
+      ],
+      "id": "7504b1bd-81f5-4ca0-9ddc-3c78d19762d4",
+      "name": "Fetch Page 2",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json;const page_url=$('Initialize Intake').first().json.page_urls[1];\r\nconst ok=r.statusCode===200&&Number(r.headers?.['x-response-code'])===200&&typeof r.html==='string'&&r.html.trim().length>0;\r\nreturn [{json:{page_url,ok,html:ok?r.html:'<html></html>',issues:ok?[]:[{code:'PAGE_FETCH_FAILED',message:'Page fetch failed or returned no HTML',source_id:null}]}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "332aa572-196b-4026-94e1-55089517d0b8",
+      "name": "Normalize Fetch 2",
+      "position": [
+        3376,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "blocks",
+              "cssSelector": ".quote",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        3616,
+        240
+      ],
+      "id": "69370ff7-f82e-4d2f-8ddc-f904c6525a5f",
+      "name": "Extract Blocks 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const blocks=$input.first().json.blocks;return (Array.isArray(blocks)&&blocks.length?blocks:['']).map((html,i)=>({json:{html},pairedItem:{item:0}}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "55fda5ca-2c41-4544-bab4-33d60b0e6db9",
+      "name": "Split Blocks 2",
+      "position": [
+        3856,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "texts",
+              "cssSelector": ".text",
+              "returnArray": true
+            },
+            {
+              "key": "names",
+              "cssSelector": ".author",
+              "returnArray": true
+            },
+            {
+              "key": "links",
+              "cssSelector": "a[href^=\"/author/\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "tags",
+              "cssSelector": ".tags a.tag",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4144,
+        288
+      ],
+      "id": "e5221e2b-054e-4130-84e3-8a81881d203f",
+      "name": "Extract Quotes 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const f=$('Normalize Fetch 2').first().json;\r\nconst blocks=$('Extract Blocks 2').first().json.blocks||[];const rows=$input.all();const quotes=[];const issues=[...f.issues];\r\nconst clean=s=>typeof s==='string'?s.replace(/\\s+/g,' ').trim():'';\r\nif(blocks.length&&rows.length!==blocks.length)throw new Error('QUOTE_ITEM_COUNT_MISMATCH');\r\nfor(let i=0;i<blocks.length;i++){const r=rows[i].json;\r\n if(r.texts?.length!==1||r.names?.length!==1||r.links?.length!==1||!clean(r.texts[0])||!clean(r.names[0])||!/^\\/author\\/[^/?#]+\\/?$/.test(r.links[0])){issues.push({code:'QUOTE_INVALID',message:'Invalid quote at position '+(i+1),source_id:null});continue;}\r\n const bio_url='https://quotes.toscrape.com'+r.links[0].replace(/\\/?$/,'/');\r\n quotes.push({quote_id:f.page_url+'#quote-'+(i+1),page_url:f.page_url,position:i+1,text:clean(r.texts[0]),author_name:clean(r.names[0]),tags:[...new Set((r.tags||[]).map(clean).filter(Boolean))],bio_url,author_id:bio_url});\r\n}\r\nif(f.ok&&!blocks.length)issues.push({code:'NO_QUOTES_FOUND',message:'Successful HTTP response contained no quote blocks; coverage is incomplete',source_id:null});\r\nreturn [{json:{coverage:{page_url:f.page_url,fetch_status:f.ok?'success':'failed',discovered_count:blocks.length,parsed_count:quotes.length,invalid_count:blocks.length-quotes.length,complete:f.ok&&blocks.length>0&&quotes.length===blocks.length,issues},quotes}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "94dc9ee8-7364-4a1a-9928-158489919741",
+      "name": "Collect Page 2",
+      "position": [
+        4384,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c=$('Initialize Intake').first().json;const pages=[$('Collect Page 1').first().json,$('Collect Page 2').first().json];\r\nconst quotes=pages.flatMap(p=>p.quotes);const byId=new Map();\r\nfor(const q of quotes){if(!byId.has(q.author_id))byId.set(q.author_id,{author_id:q.author_id,name:q.author_name,bio_url:q.bio_url,quote_ids:[]});byId.get(q.author_id).quote_ids.push(q.quote_id);}\r\nconst authors=[...byId.values()];\r\nreturn [{json:{run_id:c.run_id,pages:pages.map(p=>p.coverage),input_complete:pages.every(p=>p.coverage.complete),quotes,authors,author_inputs:authors.map(author=>({run_id:c.run_id,author,limits:c.limits,identity_quotes:quotes.filter(q=>q.author_id===author.author_id).map(q=>q.text)})),quote_count:quotes.length,author_count:authors.length}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "ec59101e-1eb8-4e2c-9ae4-1d4deac77eb8",
+      "name": "Build Author Dataset",
+      "position": [
+        4624,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d=$input.first().json;const run_id='m05-batch-'+$execution.id;\r\nif(!Array.isArray(d.author_inputs)||!Array.isArray(d.quotes)||!Array.isArray(d.pages))throw new Error('INVALID_DATASET');\r\nif(new Set(d.author_inputs.map(x=>x.author.author_id)).size!==d.author_inputs.length)throw new Error('DUPLICATE_AUTHOR_INPUT');\r\nreturn [{json:{...d,run_id,author_inputs:d.author_inputs.map(x=>({...x,run_id}))}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "937457c6-d17c-44ee-9e0f-525f1fd6e1d2",
+      "name": "Prepare Batch",
+      "position": [
+        1232,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "288ecccc-1e1e-4a91-ba48-321d83555f44",
+              "leftValue": "={{ $json.author_inputs.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1488,
+        32
+      ],
+      "id": "febb31d8-54eb-42cd-b356-ab12133be138",
+      "name": "Has Authors?"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $('Prepare Batch').first().json.author_inputs.map(json=>({json,pairedItem:{item:0}}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "42abd974-a1b8-4391-9ee0-a6f57ccfb50d",
+      "name": "Emit Author Inputs",
+      "position": [
+        1728,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_IMPORTED_CHILD_ID",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2480,
+        80
+      ],
+      "id": "e63e5980-1c1f-48a6-a893-e025de60ed8f",
+      "name": "Call Live Author",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const CONTRACT={\"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"title\": \"Author Dossier contracts v0.1\", \"$ref\": \"#/$defs/BatchOutput\", \"$defs\": {\"Issue\": {\"type\": \"object\", \"properties\": {\"code\": {\"type\": \"string\", \"minLength\": 1}, \"message\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"code\", \"message\", \"source_id\"], \"additionalProperties\": false}, \"Limits\": {\"type\": \"object\", \"properties\": {\"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"max_pages\": {\"type\": \"integer\", \"minimum\": 1}, \"max_searches\": {\"type\": \"integer\", \"minimum\": 1}, \"candidates_per_search\": {\"type\": \"integer\", \"minimum\": 1}, \"max_research_rounds\": {\"type\": \"integer\", \"minimum\": 1}, \"max_gemini_requests_per_step\": {\"type\": \"integer\", \"minimum\": 1}, \"request_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"gemini_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"author_budget_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"synthesis_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"packaging_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"max_page_text_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"max_model_input_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"prior_reference_chars_per_source\": {\"type\": \"integer\", \"minimum\": 1}, \"retry_wait_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"request_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_transport_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_repair_calls\": {\"type\": \"integer\", \"minimum\": 0}}, \"required\": [\"target_sources\", \"max_pages\", \"max_searches\", \"candidates_per_search\", \"max_research_rounds\", \"max_gemini_requests_per_step\", \"request_timeout_ms\", \"gemini_timeout_ms\", \"author_budget_ms\", \"synthesis_reserve_ms\", \"packaging_reserve_ms\", \"max_page_text_chars\", \"max_model_input_chars\", \"prior_reference_chars_per_source\", \"retry_wait_ms\", \"request_retries\", \"gemini_transport_retries\", \"gemini_repair_calls\"], \"additionalProperties\": false}, \"Config\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_urls\": {\"const\": [\"https://quotes.toscrape.com/\", \"https://quotes.toscrape.com/page/2/\"]}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}}, \"required\": [\"run_id\", \"page_urls\", \"limits\"], \"additionalProperties\": false}, \"PageFetch\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"enum\": [\"success\", \"failed\"]}, \"http_status\": {\"anyOf\": [{\"type\": \"integer\", \"minimum\": 100, \"maximum\": 599}, {\"type\": \"null\"}]}, \"raw_html\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"fetched_at\": {\"type\": \"string\", \"format\": \"date-time\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"status\", \"http_status\", \"raw_html\", \"fetched_at\", \"issues\"], \"additionalProperties\": false}, \"Quote\": {\"type\": \"object\", \"properties\": {\"quote_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"position\": {\"type\": \"integer\", \"minimum\": 1}, \"text\": {\"type\": \"string\", \"minLength\": 1}, \"author_name\": {\"type\": \"string\", \"minLength\": 1}, \"tags\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}}, \"required\": [\"quote_id\", \"page_url\", \"position\", \"text\", \"author_name\", \"tags\", \"bio_url\", \"author_id\"], \"additionalProperties\": false}, \"PageParse\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"quotes\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Quote\"}}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"quotes\", \"issues\"], \"additionalProperties\": false}, \"Author\": {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"name\": {\"type\": \"string\", \"minLength\": 1}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"quote_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}}, \"required\": [\"author_id\", \"name\", \"bio_url\", \"quote_ids\"], \"additionalProperties\": false}, \"AuthorInput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author\": {\"$ref\": \"#/$defs/Author\"}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}, \"identity_quotes\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"run_id\", \"author\", \"limits\", \"identity_quotes\"], \"additionalProperties\": false}, \"ClassificationData\": {\"type\": \"object\", \"properties\": {\"category\": {\"enum\": [\"verifiable\", \"unverifiable\"]}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"category\", \"reason\"], \"additionalProperties\": false}, \"Source\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"requested_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"title\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"retrieved_at\": {\"type\": \"string\", \"format\": \"date-time\"}}, \"required\": [\"source_id\", \"url\", \"requested_url\", \"title\", \"retrieved_at\"], \"additionalProperties\": false}, \"PageWork\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"raw_content\": {\"type\": \"string\"}, \"extracted_text\": {\"type\": \"string\"}, \"submitted_text\": {\"type\": \"string\"}, \"truncated\": {\"type\": \"boolean\"}}, \"required\": [\"source_id\", \"raw_content\", \"extracted_text\", \"submitted_text\", \"truncated\"], \"additionalProperties\": false}, \"ExtractedFact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"Fact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}, \"fact_id\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\", \"fact_id\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"SourceAssessment\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"identity_match\": {\"enum\": [\"match\", \"mismatch\", \"uncertain\"]}, \"usable\": {\"type\": \"boolean\"}, \"reason\": {\"type\": \"string\", \"minLength\": 1}, \"independence\": {\"enum\": [\"no_obvious_overlap\", \"duplicate\", \"uncertain\"]}, \"related_source_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"source_id\", \"identity_match\", \"usable\", \"reason\", \"independence\", \"related_source_ids\"], \"additionalProperties\": false}, \"BioData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\"], \"additionalProperties\": false}, \"ResearchData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}, \"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"qualified_source_count\": {\"type\": \"integer\", \"minimum\": 0}, \"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"target_met\": {\"type\": \"boolean\"}, \"stop_reason\": {\"enum\": [\"target_met\", \"page_budget_exhausted\", \"round_limit_reached\", \"candidates_exhausted\", \"time_budget_exhausted\", \"service_blocked\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\", \"source_assessments\", \"qualified_source_count\", \"target_sources\", \"target_met\", \"stop_reason\"], \"additionalProperties\": false}, \"Comparison\": {\"type\": \"object\", \"properties\": {\"scope\": {\"enum\": [\"site_vs_web\", \"within_web\", \"within_site\"]}, \"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"site_only\", \"web_only\", \"inconclusive\"]}, \"fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"minItems\": 1, \"uniqueItems\": true}, \"explanation\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"scope\", \"field\", \"subject\", \"conclusion\", \"fact_ids\", \"explanation\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"scope\": {\"enum\": [\"within_web\", \"within_site\"]}}}, \"then\": {\"properties\": {\"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"inconclusive\"]}}}}]}, \"SynthesisData\": {\"type\": \"object\", \"properties\": {\"comparisons\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Comparison\"}}, \"profile\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"profile_fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"comparisons\", \"profile\", \"profile_fact_ids\", \"limitations\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"profile\": {\"type\": \"null\"}}}, \"then\": {\"properties\": {\"profile_fact_ids\": {\"maxItems\": 0}}}, \"else\": {\"properties\": {\"profile_fact_ids\": {\"minItems\": 1}}}}]}, \"ClassificationResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ClassificationData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"BioResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"ResearchResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"SynthesisResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"MergedAuthor\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\"], \"additionalProperties\": false}, \"Dossier\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}, \"synthesis\": {\"$ref\": \"#/$defs/SynthesisResult\"}, \"outcome\": {\"enum\": [\"completed\", \"degraded\", \"failed\"]}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\", \"synthesis\", \"outcome\", \"limitations\"], \"additionalProperties\": false}, \"Control\": {\"type\": \"object\", \"properties\": {\"stop_new_authors\": {\"type\": \"boolean\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\", null]}, \"scope\": {\"enum\": [\"operation\", \"author\", \"batch\", null]}, \"code\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"stop_new_authors\", \"service\", \"scope\", \"code\", \"reason\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"stop_new_authors\": {\"const\": true}}}, \"then\": {\"properties\": {\"scope\": {\"const\": \"batch\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\"]}, \"code\": {\"type\": \"string\", \"minLength\": 1}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}}}]}, \"Envelope\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"dossier\": {\"$ref\": \"#/$defs/Dossier\"}, \"control\": {\"$ref\": \"#/$defs/Control\"}}, \"required\": [\"run_id\", \"author_id\", \"dossier\", \"control\"], \"additionalProperties\": false}, \"PageCoverage\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"fetch_status\": {\"enum\": [\"success\", \"failed\", \"skipped\"]}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"complete\": {\"type\": \"boolean\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"fetch_status\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"complete\", \"issues\"], \"additionalProperties\": false}, \"Summary\": {\"type\": \"object\", \"properties\": {\"pages\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/PageCoverage\"}}, \"input_complete\": {\"type\": \"boolean\"}, \"quote_count\": {\"type\": \"integer\", \"minimum\": 0}, \"author_count\": {\"type\": \"integer\", \"minimum\": 0}, \"completed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"degraded_count\": {\"type\": \"integer\", \"minimum\": 0}, \"failed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"stop_reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"pages\", \"input_complete\", \"quote_count\", \"author_count\", \"completed_count\", \"degraded_count\", \"failed_count\", \"stop_reason\"], \"additionalProperties\": false}, \"BatchOutput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"summary\": {\"$ref\": \"#/$defs/Summary\"}, \"dossiers\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Dossier\"}}}, \"required\": [\"run_id\", \"summary\", \"dossiers\"], \"additionalProperties\": false}, \"BioModelOutput\": {\"type\": \"object\", \"properties\": {\"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"facts\"], \"additionalProperties\": false}, \"ResearchModelOutput\": {\"type\": \"object\", \"properties\": {\"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"source_assessments\", \"facts\"], \"additionalProperties\": false}}};\r\n// Shared parent-boundary logic. CONTRACT is embedded by the generator.\r\nfunction matches(v,s){\r\n if(s.$ref)return matches(v,CONTRACT.$defs[s.$ref.split('/').pop()]);\r\n if(s.allOf&&!s.allOf.every(x=>matches(v,x)))return false;\r\n if(s.anyOf&&!s.anyOf.some(x=>matches(v,x)))return false;\r\n if(s.oneOf&&s.oneOf.filter(x=>matches(v,x)).length!==1)return false;\r\n if(s.if&&matches(v,s.if)&&s.then&&!matches(v,s.then))return false;\r\n if(s.if&&!matches(v,s.if)&&s.else&&!matches(v,s.else))return false;\r\n if(Object.hasOwn(s,'const')&&JSON.stringify(v)!==JSON.stringify(s.const))return false;\r\n if(s.enum&&!s.enum.some(x=>JSON.stringify(x)===JSON.stringify(v)))return false;\r\n const type=t=>t==='null'?v===null:t==='array'?Array.isArray(v):t==='object'?v!==null&&typeof v==='object'&&!Array.isArray(v):t==='integer'?Number.isInteger(v):typeof v===t;\r\n if(s.type&&!(Array.isArray(s.type)?s.type.some(type):type(s.type)))return false;\r\n if(typeof v==='number'&&((s.minimum!==undefined&&v<s.minimum)||(s.maximum!==undefined&&v>s.maximum)))return false;\r\n if(typeof v==='string'){\r\n  if(s.minLength!==undefined&&v.length<s.minLength||s.maxLength!==undefined&&v.length>s.maxLength||s.pattern&&!new RegExp(s.pattern).test(v))return false;\r\n  if(s.format==='uri'&&!/^https?:\\/\\/[^\\s/]+(?:\\/[^\\s]*)?$/.test(v))return false;\r\n  if(s.format==='date-time'&&!/^\\d{4}-\\d{2}-\\d{2}T/.test(v)||s.format==='date-time'&&!Number.isFinite(Date.parse(v)))return false;\r\n }\r\n if(Array.isArray(v)){\r\n  if(s.minItems!==undefined&&v.length<s.minItems||s.maxItems!==undefined&&v.length>s.maxItems)return false;\r\n  if(s.uniqueItems&&new Set(v.map(x=>JSON.stringify(x))).size!==v.length)return false;\r\n  if(s.items&&!v.every(x=>matches(x,s.items)))return false;\r\n }\r\n if(v&&typeof v==='object'&&!Array.isArray(v)){\r\n  if(s.required&&!s.required.every(k=>Object.hasOwn(v,k)))return false;\r\n  if(s.additionalProperties===false&&Object.keys(v).some(k=>!Object.hasOwn(s.properties||{},k)))return false;\r\n  if(s.properties&&!Object.entries(s.properties).every(([k,t])=>!Object.hasOwn(v,k)||matches(v[k],t)))return false;\r\n }\r\n return true;\r\n}\r\nfunction fallback(input,code,blocked=false){\r\n const id=input.author.author_id;\r\n const result=()=>({author_id:id,status:'skipped',data:null,issues:[],skip_reason:blocked?'global_service_blocked':'child_result_unavailable'});\r\n return {run_id:input.run_id,author_id:id,dossier:{author:input.author,classification:result(),bio:result(),research:result(),synthesis:result(),outcome:'failed',limitations:[blocked?'Author was not scheduled because a shared service was blocked.':'Child result unavailable; intermediate child progress cannot be recovered.',code]},control:{stop_new_authors:false,service:null,scope:null,code:null,reason:null}};\r\n}\r\nfunction consistent(e,input){\r\n if(!matches(e,CONTRACT.$defs.Envelope)||e.run_id!==input.run_id||e.author_id!==input.author.author_id)return false;\r\n const d=e.dossier;if(['author_id','name','bio_url'].some(k=>d.author[k]!==input.author[k])||JSON.stringify(d.author.quote_ids)!==JSON.stringify(input.author.quote_ids))return false;\r\n for(const k of ['classification','bio','research','synthesis'])if(d[k].author_id!==e.author_id)return false;\r\n const category=d.classification.status==='success'?d.classification.data?.category:null;\r\n if(d.research.status==='skipped'){\r\n  const reason=d.research.skip_reason;\r\n  if(reason==='category_unverifiable'&&category!=='unverifiable'||reason==='classification_failed'&&category!==null)return false;\r\n  if(category==='unverifiable'&&reason!=='category_unverifiable')return false;\r\n }else if(category!=='verifiable')return false;\r\n const facts=[...(d.bio.data?.facts||[]),...(d.research.data?.facts||[])];\r\n if(new Set(facts.map(f=>f.fact_id)).size!==facts.length)return false;\r\n for(const k of ['bio','research']){const data=d[k].data;if(!data)continue;const sources=new Set(data.sources.map(s=>s.source_id));if(sources.size!==data.sources.length||data.facts.some(f=>!sources.has(f.source_id)))return false;}\r\n if(d.research.data){const r=d.research.data;const ids=new Set(r.sources.map(s=>s.source_id));if(r.source_assessments.some(a=>!ids.has(a.source_id)||a.related_source_ids.some(id=>!ids.has(id))))return false;const assessed=new Set(r.source_assessments.map(a=>a.source_id));if(assessed.size!==r.source_assessments.length||assessed.size!==ids.size)return false;\r\n const count=r.source_assessments.filter(a=>a.identity_match==='match'&&a.usable&&a.independence==='no_obvious_overlap'&&r.facts.some(f=>f.source_id===a.source_id)).length;\r\n if(r.qualified_source_count!==count||r.target_sources!==input.limits.target_sources||r.target_met!==(count>=r.target_sources))return false;}\r\n const ids=new Set(facts.map(f=>f.fact_id));if(d.synthesis.data&&[...d.synthesis.data.profile_fact_ids,...d.synthesis.data.comparisons.flatMap(x=>x.fact_ids)].some(id=>!ids.has(id)))return false;\r\n if(!facts.length&&d.outcome!=='failed')return false;\r\n if(d.outcome==='completed'&&(d.classification.status!=='success'||d.bio.status!=='success'||d.synthesis.status!=='success'||d.research.status!=='skipped'&&(d.research.status!=='success'||!d.research.data?.target_met)))return false;\r\n return true;\r\n}\r\nfunction normalizeReturn(input,rows){\r\n if(rows.length!==1)return fallback(input,'CHILD_ITEM_COUNT_INVALID');\r\n const e=rows[0];if(!e||Object.keys(e).length===0)return fallback(input,'CHILD_EMPTY_RESULT');\r\n if(e.error)return fallback(input,'CHILD_EXECUTION_FAILED');\r\n return consistent(e,input)?e:fallback(input,'CHILD_CONTRACT_INVALID');\r\n}\r\nfunction finalizeBatch(dataset,envelopes,stop=null){\r\n const expected=dataset.author_inputs;const expectedIds=new Set(expected.map(x=>x.author.author_id));\r\n if(expectedIds.size!==expected.length)throw new Error('DUPLICATE_INPUT_AUTHOR');\r\n if(envelopes.some(e=>!expectedIds.has(e.author_id)))throw new Error('UNKNOWN_RETURNED_AUTHOR');\r\n const dossiers=expected.map(input=>{\r\n  const rows=envelopes.filter(e=>e.author_id===input.author.author_id);\r\n  if(!rows.length)return fallback(input,stop?'GLOBAL_SERVICE_BLOCKED':'MISSING_CHILD_RESULT',!!stop).dossier;\r\n  return normalizeReturn(input,rows).dossier;\r\n });\r\n const result={run_id:dataset.run_id,summary:{pages:dataset.pages,input_complete:dataset.input_complete,quote_count:dataset.quotes.length,author_count:expected.length,completed_count:dossiers.filter(d=>d.outcome==='completed').length,degraded_count:dossiers.filter(d=>d.outcome==='degraded').length,failed_count:dossiers.filter(d=>d.outcome==='failed').length,stop_reason:stop},dossiers};\r\n if(!matches(result,CONTRACT.$defs.BatchOutput))throw new Error('BATCH_SCHEMA_INVALID');\r\n return result;\r\n}\r\n\r\nreturn [{json:finalizeBatch($('Prepare Batch').first().json,$input.all().map(x=>x.json))}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "bb0e8df2-9d2e-4121-a813-b50e97e0e428",
+      "name": "Finalize Batch",
+      "position": [
+        2240,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const CONTRACT={\"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"title\": \"Author Dossier contracts v0.1\", \"$ref\": \"#/$defs/BatchOutput\", \"$defs\": {\"Issue\": {\"type\": \"object\", \"properties\": {\"code\": {\"type\": \"string\", \"minLength\": 1}, \"message\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"code\", \"message\", \"source_id\"], \"additionalProperties\": false}, \"Limits\": {\"type\": \"object\", \"properties\": {\"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"max_pages\": {\"type\": \"integer\", \"minimum\": 1}, \"max_searches\": {\"type\": \"integer\", \"minimum\": 1}, \"candidates_per_search\": {\"type\": \"integer\", \"minimum\": 1}, \"max_research_rounds\": {\"type\": \"integer\", \"minimum\": 1}, \"max_gemini_requests_per_step\": {\"type\": \"integer\", \"minimum\": 1}, \"request_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"gemini_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"author_budget_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"synthesis_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"packaging_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"max_page_text_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"max_model_input_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"prior_reference_chars_per_source\": {\"type\": \"integer\", \"minimum\": 1}, \"retry_wait_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"request_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_transport_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_repair_calls\": {\"type\": \"integer\", \"minimum\": 0}}, \"required\": [\"target_sources\", \"max_pages\", \"max_searches\", \"candidates_per_search\", \"max_research_rounds\", \"max_gemini_requests_per_step\", \"request_timeout_ms\", \"gemini_timeout_ms\", \"author_budget_ms\", \"synthesis_reserve_ms\", \"packaging_reserve_ms\", \"max_page_text_chars\", \"max_model_input_chars\", \"prior_reference_chars_per_source\", \"retry_wait_ms\", \"request_retries\", \"gemini_transport_retries\", \"gemini_repair_calls\"], \"additionalProperties\": false}, \"Config\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_urls\": {\"const\": [\"https://quotes.toscrape.com/\", \"https://quotes.toscrape.com/page/2/\"]}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}}, \"required\": [\"run_id\", \"page_urls\", \"limits\"], \"additionalProperties\": false}, \"PageFetch\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"enum\": [\"success\", \"failed\"]}, \"http_status\": {\"anyOf\": [{\"type\": \"integer\", \"minimum\": 100, \"maximum\": 599}, {\"type\": \"null\"}]}, \"raw_html\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"fetched_at\": {\"type\": \"string\", \"format\": \"date-time\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"status\", \"http_status\", \"raw_html\", \"fetched_at\", \"issues\"], \"additionalProperties\": false}, \"Quote\": {\"type\": \"object\", \"properties\": {\"quote_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"position\": {\"type\": \"integer\", \"minimum\": 1}, \"text\": {\"type\": \"string\", \"minLength\": 1}, \"author_name\": {\"type\": \"string\", \"minLength\": 1}, \"tags\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}}, \"required\": [\"quote_id\", \"page_url\", \"position\", \"text\", \"author_name\", \"tags\", \"bio_url\", \"author_id\"], \"additionalProperties\": false}, \"PageParse\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"quotes\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Quote\"}}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"quotes\", \"issues\"], \"additionalProperties\": false}, \"Author\": {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"name\": {\"type\": \"string\", \"minLength\": 1}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"quote_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}}, \"required\": [\"author_id\", \"name\", \"bio_url\", \"quote_ids\"], \"additionalProperties\": false}, \"AuthorInput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author\": {\"$ref\": \"#/$defs/Author\"}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}, \"identity_quotes\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"run_id\", \"author\", \"limits\", \"identity_quotes\"], \"additionalProperties\": false}, \"ClassificationData\": {\"type\": \"object\", \"properties\": {\"category\": {\"enum\": [\"verifiable\", \"unverifiable\"]}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"category\", \"reason\"], \"additionalProperties\": false}, \"Source\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"requested_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"title\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"retrieved_at\": {\"type\": \"string\", \"format\": \"date-time\"}}, \"required\": [\"source_id\", \"url\", \"requested_url\", \"title\", \"retrieved_at\"], \"additionalProperties\": false}, \"PageWork\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"raw_content\": {\"type\": \"string\"}, \"extracted_text\": {\"type\": \"string\"}, \"submitted_text\": {\"type\": \"string\"}, \"truncated\": {\"type\": \"boolean\"}}, \"required\": [\"source_id\", \"raw_content\", \"extracted_text\", \"submitted_text\", \"truncated\"], \"additionalProperties\": false}, \"ExtractedFact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"Fact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}, \"fact_id\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\", \"fact_id\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"SourceAssessment\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"identity_match\": {\"enum\": [\"match\", \"mismatch\", \"uncertain\"]}, \"usable\": {\"type\": \"boolean\"}, \"reason\": {\"type\": \"string\", \"minLength\": 1}, \"independence\": {\"enum\": [\"no_obvious_overlap\", \"duplicate\", \"uncertain\"]}, \"related_source_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"source_id\", \"identity_match\", \"usable\", \"reason\", \"independence\", \"related_source_ids\"], \"additionalProperties\": false}, \"BioData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\"], \"additionalProperties\": false}, \"ResearchData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}, \"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"qualified_source_count\": {\"type\": \"integer\", \"minimum\": 0}, \"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"target_met\": {\"type\": \"boolean\"}, \"stop_reason\": {\"enum\": [\"target_met\", \"page_budget_exhausted\", \"round_limit_reached\", \"candidates_exhausted\", \"time_budget_exhausted\", \"service_blocked\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\", \"source_assessments\", \"qualified_source_count\", \"target_sources\", \"target_met\", \"stop_reason\"], \"additionalProperties\": false}, \"Comparison\": {\"type\": \"object\", \"properties\": {\"scope\": {\"enum\": [\"site_vs_web\", \"within_web\", \"within_site\"]}, \"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"site_only\", \"web_only\", \"inconclusive\"]}, \"fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"minItems\": 1, \"uniqueItems\": true}, \"explanation\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"scope\", \"field\", \"subject\", \"conclusion\", \"fact_ids\", \"explanation\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"scope\": {\"enum\": [\"within_web\", \"within_site\"]}}}, \"then\": {\"properties\": {\"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"inconclusive\"]}}}}]}, \"SynthesisData\": {\"type\": \"object\", \"properties\": {\"comparisons\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Comparison\"}}, \"profile\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"profile_fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"comparisons\", \"profile\", \"profile_fact_ids\", \"limitations\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"profile\": {\"type\": \"null\"}}}, \"then\": {\"properties\": {\"profile_fact_ids\": {\"maxItems\": 0}}}, \"else\": {\"properties\": {\"profile_fact_ids\": {\"minItems\": 1}}}}]}, \"ClassificationResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ClassificationData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"BioResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"ResearchResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"SynthesisResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"MergedAuthor\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\"], \"additionalProperties\": false}, \"Dossier\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}, \"synthesis\": {\"$ref\": \"#/$defs/SynthesisResult\"}, \"outcome\": {\"enum\": [\"completed\", \"degraded\", \"failed\"]}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\", \"synthesis\", \"outcome\", \"limitations\"], \"additionalProperties\": false}, \"Control\": {\"type\": \"object\", \"properties\": {\"stop_new_authors\": {\"type\": \"boolean\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\", null]}, \"scope\": {\"enum\": [\"operation\", \"author\", \"batch\", null]}, \"code\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"stop_new_authors\", \"service\", \"scope\", \"code\", \"reason\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"stop_new_authors\": {\"const\": true}}}, \"then\": {\"properties\": {\"scope\": {\"const\": \"batch\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\"]}, \"code\": {\"type\": \"string\", \"minLength\": 1}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}}}]}, \"Envelope\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"dossier\": {\"$ref\": \"#/$defs/Dossier\"}, \"control\": {\"$ref\": \"#/$defs/Control\"}}, \"required\": [\"run_id\", \"author_id\", \"dossier\", \"control\"], \"additionalProperties\": false}, \"PageCoverage\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"fetch_status\": {\"enum\": [\"success\", \"failed\", \"skipped\"]}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"complete\": {\"type\": \"boolean\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"fetch_status\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"complete\", \"issues\"], \"additionalProperties\": false}, \"Summary\": {\"type\": \"object\", \"properties\": {\"pages\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/PageCoverage\"}}, \"input_complete\": {\"type\": \"boolean\"}, \"quote_count\": {\"type\": \"integer\", \"minimum\": 0}, \"author_count\": {\"type\": \"integer\", \"minimum\": 0}, \"completed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"degraded_count\": {\"type\": \"integer\", \"minimum\": 0}, \"failed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"stop_reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"pages\", \"input_complete\", \"quote_count\", \"author_count\", \"completed_count\", \"degraded_count\", \"failed_count\", \"stop_reason\"], \"additionalProperties\": false}, \"BatchOutput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"summary\": {\"$ref\": \"#/$defs/Summary\"}, \"dossiers\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Dossier\"}}}, \"required\": [\"run_id\", \"summary\", \"dossiers\"], \"additionalProperties\": false}, \"BioModelOutput\": {\"type\": \"object\", \"properties\": {\"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"facts\"], \"additionalProperties\": false}, \"ResearchModelOutput\": {\"type\": \"object\", \"properties\": {\"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"source_assessments\", \"facts\"], \"additionalProperties\": false}}};\r\n// Shared parent-boundary logic. CONTRACT is embedded by the generator.\r\nfunction matches(v,s){\r\n if(s.$ref)return matches(v,CONTRACT.$defs[s.$ref.split('/').pop()]);\r\n if(s.allOf&&!s.allOf.every(x=>matches(v,x)))return false;\r\n if(s.anyOf&&!s.anyOf.some(x=>matches(v,x)))return false;\r\n if(s.oneOf&&s.oneOf.filter(x=>matches(v,x)).length!==1)return false;\r\n if(s.if&&matches(v,s.if)&&s.then&&!matches(v,s.then))return false;\r\n if(s.if&&!matches(v,s.if)&&s.else&&!matches(v,s.else))return false;\r\n if(Object.hasOwn(s,'const')&&JSON.stringify(v)!==JSON.stringify(s.const))return false;\r\n if(s.enum&&!s.enum.some(x=>JSON.stringify(x)===JSON.stringify(v)))return false;\r\n const type=t=>t==='null'?v===null:t==='array'?Array.isArray(v):t==='object'?v!==null&&typeof v==='object'&&!Array.isArray(v):t==='integer'?Number.isInteger(v):typeof v===t;\r\n if(s.type&&!(Array.isArray(s.type)?s.type.some(type):type(s.type)))return false;\r\n if(typeof v==='number'&&((s.minimum!==undefined&&v<s.minimum)||(s.maximum!==undefined&&v>s.maximum)))return false;\r\n if(typeof v==='string'){\r\n  if(s.minLength!==undefined&&v.length<s.minLength||s.maxLength!==undefined&&v.length>s.maxLength||s.pattern&&!new RegExp(s.pattern).test(v))return false;\r\n  if(s.format==='uri'&&!/^https?:\\/\\/[^\\s/]+(?:\\/[^\\s]*)?$/.test(v))return false;\r\n  if(s.format==='date-time'&&!/^\\d{4}-\\d{2}-\\d{2}T/.test(v)||s.format==='date-time'&&!Number.isFinite(Date.parse(v)))return false;\r\n }\r\n if(Array.isArray(v)){\r\n  if(s.minItems!==undefined&&v.length<s.minItems||s.maxItems!==undefined&&v.length>s.maxItems)return false;\r\n  if(s.uniqueItems&&new Set(v.map(x=>JSON.stringify(x))).size!==v.length)return false;\r\n  if(s.items&&!v.every(x=>matches(x,s.items)))return false;\r\n }\r\n if(v&&typeof v==='object'&&!Array.isArray(v)){\r\n  if(s.required&&!s.required.every(k=>Object.hasOwn(v,k)))return false;\r\n  if(s.additionalProperties===false&&Object.keys(v).some(k=>!Object.hasOwn(s.properties||{},k)))return false;\r\n  if(s.properties&&!Object.entries(s.properties).every(([k,t])=>!Object.hasOwn(v,k)||matches(v[k],t)))return false;\r\n }\r\n return true;\r\n}\r\nfunction fallback(input,code,blocked=false){\r\n const id=input.author.author_id;\r\n const result=()=>({author_id:id,status:'skipped',data:null,issues:[],skip_reason:blocked?'global_service_blocked':'child_result_unavailable'});\r\n return {run_id:input.run_id,author_id:id,dossier:{author:input.author,classification:result(),bio:result(),research:result(),synthesis:result(),outcome:'failed',limitations:[blocked?'Author was not scheduled because a shared service was blocked.':'Child result unavailable; intermediate child progress cannot be recovered.',code]},control:{stop_new_authors:false,service:null,scope:null,code:null,reason:null}};\r\n}\r\nfunction consistent(e,input){\r\n if(!matches(e,CONTRACT.$defs.Envelope)||e.run_id!==input.run_id||e.author_id!==input.author.author_id)return false;\r\n const d=e.dossier;if(['author_id','name','bio_url'].some(k=>d.author[k]!==input.author[k])||JSON.stringify(d.author.quote_ids)!==JSON.stringify(input.author.quote_ids))return false;\r\n for(const k of ['classification','bio','research','synthesis'])if(d[k].author_id!==e.author_id)return false;\r\n const category=d.classification.status==='success'?d.classification.data?.category:null;\r\n if(d.research.status==='skipped'){\r\n  const reason=d.research.skip_reason;\r\n  if(reason==='category_unverifiable'&&category!=='unverifiable'||reason==='classification_failed'&&category!==null)return false;\r\n  if(category==='unverifiable'&&reason!=='category_unverifiable')return false;\r\n }else if(category!=='verifiable')return false;\r\n const facts=[...(d.bio.data?.facts||[]),...(d.research.data?.facts||[])];\r\n if(new Set(facts.map(f=>f.fact_id)).size!==facts.length)return false;\r\n for(const k of ['bio','research']){const data=d[k].data;if(!data)continue;const sources=new Set(data.sources.map(s=>s.source_id));if(sources.size!==data.sources.length||data.facts.some(f=>!sources.has(f.source_id)))return false;}\r\n if(d.research.data){const r=d.research.data;const ids=new Set(r.sources.map(s=>s.source_id));if(r.source_assessments.some(a=>!ids.has(a.source_id)||a.related_source_ids.some(id=>!ids.has(id))))return false;const assessed=new Set(r.source_assessments.map(a=>a.source_id));if(assessed.size!==r.source_assessments.length||assessed.size!==ids.size)return false;\r\n const count=r.source_assessments.filter(a=>a.identity_match==='match'&&a.usable&&a.independence==='no_obvious_overlap'&&r.facts.some(f=>f.source_id===a.source_id)).length;\r\n if(r.qualified_source_count!==count||r.target_sources!==input.limits.target_sources||r.target_met!==(count>=r.target_sources))return false;}\r\n const ids=new Set(facts.map(f=>f.fact_id));if(d.synthesis.data&&[...d.synthesis.data.profile_fact_ids,...d.synthesis.data.comparisons.flatMap(x=>x.fact_ids)].some(id=>!ids.has(id)))return false;\r\n if(!facts.length&&d.outcome!=='failed')return false;\r\n if(d.outcome==='completed'&&(d.classification.status!=='success'||d.bio.status!=='success'||d.synthesis.status!=='success'||d.research.status!=='skipped'&&(d.research.status!=='success'||!d.research.data?.target_met)))return false;\r\n return true;\r\n}\r\nfunction normalizeReturn(input,rows){\r\n if(rows.length!==1)return fallback(input,'CHILD_ITEM_COUNT_INVALID');\r\n const e=rows[0];if(!e||Object.keys(e).length===0)return fallback(input,'CHILD_EMPTY_RESULT');\r\n if(e.error)return fallback(input,'CHILD_EXECUTION_FAILED');\r\n return consistent(e,input)?e:fallback(input,'CHILD_CONTRACT_INVALID');\r\n}\r\nfunction finalizeBatch(dataset,envelopes,stop=null){\r\n const expected=dataset.author_inputs;const expectedIds=new Set(expected.map(x=>x.author.author_id));\r\n if(expectedIds.size!==expected.length)throw new Error('DUPLICATE_INPUT_AUTHOR');\r\n if(envelopes.some(e=>!expectedIds.has(e.author_id)))throw new Error('UNKNOWN_RETURNED_AUTHOR');\r\n const dossiers=expected.map(input=>{\r\n  const rows=envelopes.filter(e=>e.author_id===input.author.author_id);\r\n  if(!rows.length)return fallback(input,stop?'GLOBAL_SERVICE_BLOCKED':'MISSING_CHILD_RESULT',!!stop).dossier;\r\n  return normalizeReturn(input,rows).dossier;\r\n });\r\n const result={run_id:dataset.run_id,summary:{pages:dataset.pages,input_complete:dataset.input_complete,quote_count:dataset.quotes.length,author_count:expected.length,completed_count:dossiers.filter(d=>d.outcome==='completed').length,degraded_count:dossiers.filter(d=>d.outcome==='degraded').length,failed_count:dossiers.filter(d=>d.outcome==='failed').length,stop_reason:stop},dossiers};\r\n if(!matches(result,CONTRACT.$defs.BatchOutput))throw new Error('BATCH_SCHEMA_INVALID');\r\n return result;\r\n}\r\n\r\nreturn [{json:finalizeBatch($('Prepare Batch').first().json,[])}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "cd9a6e58-ed62-4264-8f82-bde8e7951155",
+      "name": "Finalize Empty Batch",
+      "position": [
+        1728,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const CONTRACT={\"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"title\": \"Author Dossier contracts v0.1\", \"$ref\": \"#/$defs/BatchOutput\", \"$defs\": {\"Issue\": {\"type\": \"object\", \"properties\": {\"code\": {\"type\": \"string\", \"minLength\": 1}, \"message\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"code\", \"message\", \"source_id\"], \"additionalProperties\": false}, \"Limits\": {\"type\": \"object\", \"properties\": {\"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"max_pages\": {\"type\": \"integer\", \"minimum\": 1}, \"max_searches\": {\"type\": \"integer\", \"minimum\": 1}, \"candidates_per_search\": {\"type\": \"integer\", \"minimum\": 1}, \"max_research_rounds\": {\"type\": \"integer\", \"minimum\": 1}, \"max_gemini_requests_per_step\": {\"type\": \"integer\", \"minimum\": 1}, \"request_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"gemini_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"author_budget_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"synthesis_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"packaging_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"max_page_text_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"max_model_input_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"prior_reference_chars_per_source\": {\"type\": \"integer\", \"minimum\": 1}, \"retry_wait_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"request_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_transport_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_repair_calls\": {\"type\": \"integer\", \"minimum\": 0}}, \"required\": [\"target_sources\", \"max_pages\", \"max_searches\", \"candidates_per_search\", \"max_research_rounds\", \"max_gemini_requests_per_step\", \"request_timeout_ms\", \"gemini_timeout_ms\", \"author_budget_ms\", \"synthesis_reserve_ms\", \"packaging_reserve_ms\", \"max_page_text_chars\", \"max_model_input_chars\", \"prior_reference_chars_per_source\", \"retry_wait_ms\", \"request_retries\", \"gemini_transport_retries\", \"gemini_repair_calls\"], \"additionalProperties\": false}, \"Config\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_urls\": {\"const\": [\"https://quotes.toscrape.com/\", \"https://quotes.toscrape.com/page/2/\"]}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}}, \"required\": [\"run_id\", \"page_urls\", \"limits\"], \"additionalProperties\": false}, \"PageFetch\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"enum\": [\"success\", \"failed\"]}, \"http_status\": {\"anyOf\": [{\"type\": \"integer\", \"minimum\": 100, \"maximum\": 599}, {\"type\": \"null\"}]}, \"raw_html\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"fetched_at\": {\"type\": \"string\", \"format\": \"date-time\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"status\", \"http_status\", \"raw_html\", \"fetched_at\", \"issues\"], \"additionalProperties\": false}, \"Quote\": {\"type\": \"object\", \"properties\": {\"quote_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"position\": {\"type\": \"integer\", \"minimum\": 1}, \"text\": {\"type\": \"string\", \"minLength\": 1}, \"author_name\": {\"type\": \"string\", \"minLength\": 1}, \"tags\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}}, \"required\": [\"quote_id\", \"page_url\", \"position\", \"text\", \"author_name\", \"tags\", \"bio_url\", \"author_id\"], \"additionalProperties\": false}, \"PageParse\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"quotes\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Quote\"}}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"quotes\", \"issues\"], \"additionalProperties\": false}, \"Author\": {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"name\": {\"type\": \"string\", \"minLength\": 1}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"quote_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}}, \"required\": [\"author_id\", \"name\", \"bio_url\", \"quote_ids\"], \"additionalProperties\": false}, \"AuthorInput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author\": {\"$ref\": \"#/$defs/Author\"}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}, \"identity_quotes\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"run_id\", \"author\", \"limits\", \"identity_quotes\"], \"additionalProperties\": false}, \"ClassificationData\": {\"type\": \"object\", \"properties\": {\"category\": {\"enum\": [\"verifiable\", \"unverifiable\"]}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"category\", \"reason\"], \"additionalProperties\": false}, \"Source\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"requested_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"title\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"retrieved_at\": {\"type\": \"string\", \"format\": \"date-time\"}}, \"required\": [\"source_id\", \"url\", \"requested_url\", \"title\", \"retrieved_at\"], \"additionalProperties\": false}, \"PageWork\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"raw_content\": {\"type\": \"string\"}, \"extracted_text\": {\"type\": \"string\"}, \"submitted_text\": {\"type\": \"string\"}, \"truncated\": {\"type\": \"boolean\"}}, \"required\": [\"source_id\", \"raw_content\", \"extracted_text\", \"submitted_text\", \"truncated\"], \"additionalProperties\": false}, \"ExtractedFact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"Fact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}, \"fact_id\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\", \"fact_id\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"SourceAssessment\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"identity_match\": {\"enum\": [\"match\", \"mismatch\", \"uncertain\"]}, \"usable\": {\"type\": \"boolean\"}, \"reason\": {\"type\": \"string\", \"minLength\": 1}, \"independence\": {\"enum\": [\"no_obvious_overlap\", \"duplicate\", \"uncertain\"]}, \"related_source_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"source_id\", \"identity_match\", \"usable\", \"reason\", \"independence\", \"related_source_ids\"], \"additionalProperties\": false}, \"BioData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\"], \"additionalProperties\": false}, \"ResearchData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}, \"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"qualified_source_count\": {\"type\": \"integer\", \"minimum\": 0}, \"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"target_met\": {\"type\": \"boolean\"}, \"stop_reason\": {\"enum\": [\"target_met\", \"page_budget_exhausted\", \"round_limit_reached\", \"candidates_exhausted\", \"time_budget_exhausted\", \"service_blocked\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\", \"source_assessments\", \"qualified_source_count\", \"target_sources\", \"target_met\", \"stop_reason\"], \"additionalProperties\": false}, \"Comparison\": {\"type\": \"object\", \"properties\": {\"scope\": {\"enum\": [\"site_vs_web\", \"within_web\", \"within_site\"]}, \"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"site_only\", \"web_only\", \"inconclusive\"]}, \"fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"minItems\": 1, \"uniqueItems\": true}, \"explanation\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"scope\", \"field\", \"subject\", \"conclusion\", \"fact_ids\", \"explanation\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"scope\": {\"enum\": [\"within_web\", \"within_site\"]}}}, \"then\": {\"properties\": {\"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"inconclusive\"]}}}}]}, \"SynthesisData\": {\"type\": \"object\", \"properties\": {\"comparisons\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Comparison\"}}, \"profile\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"profile_fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"comparisons\", \"profile\", \"profile_fact_ids\", \"limitations\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"profile\": {\"type\": \"null\"}}}, \"then\": {\"properties\": {\"profile_fact_ids\": {\"maxItems\": 0}}}, \"else\": {\"properties\": {\"profile_fact_ids\": {\"minItems\": 1}}}}]}, \"ClassificationResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ClassificationData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"BioResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"ResearchResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"SynthesisResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"MergedAuthor\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\"], \"additionalProperties\": false}, \"Dossier\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}, \"synthesis\": {\"$ref\": \"#/$defs/SynthesisResult\"}, \"outcome\": {\"enum\": [\"completed\", \"degraded\", \"failed\"]}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\", \"synthesis\", \"outcome\", \"limitations\"], \"additionalProperties\": false}, \"Control\": {\"type\": \"object\", \"properties\": {\"stop_new_authors\": {\"type\": \"boolean\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\", null]}, \"scope\": {\"enum\": [\"operation\", \"author\", \"batch\", null]}, \"code\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"stop_new_authors\", \"service\", \"scope\", \"code\", \"reason\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"stop_new_authors\": {\"const\": true}}}, \"then\": {\"properties\": {\"scope\": {\"const\": \"batch\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\"]}, \"code\": {\"type\": \"string\", \"minLength\": 1}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}}}]}, \"Envelope\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"dossier\": {\"$ref\": \"#/$defs/Dossier\"}, \"control\": {\"$ref\": \"#/$defs/Control\"}}, \"required\": [\"run_id\", \"author_id\", \"dossier\", \"control\"], \"additionalProperties\": false}, \"PageCoverage\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"fetch_status\": {\"enum\": [\"success\", \"failed\", \"skipped\"]}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"complete\": {\"type\": \"boolean\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"fetch_status\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"complete\", \"issues\"], \"additionalProperties\": false}, \"Summary\": {\"type\": \"object\", \"properties\": {\"pages\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/PageCoverage\"}}, \"input_complete\": {\"type\": \"boolean\"}, \"quote_count\": {\"type\": \"integer\", \"minimum\": 0}, \"author_count\": {\"type\": \"integer\", \"minimum\": 0}, \"completed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"degraded_count\": {\"type\": \"integer\", \"minimum\": 0}, \"failed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"stop_reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"pages\", \"input_complete\", \"quote_count\", \"author_count\", \"completed_count\", \"degraded_count\", \"failed_count\", \"stop_reason\"], \"additionalProperties\": false}, \"BatchOutput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"summary\": {\"$ref\": \"#/$defs/Summary\"}, \"dossiers\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Dossier\"}}}, \"required\": [\"run_id\", \"summary\", \"dossiers\"], \"additionalProperties\": false}, \"BioModelOutput\": {\"type\": \"object\", \"properties\": {\"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"facts\"], \"additionalProperties\": false}, \"ResearchModelOutput\": {\"type\": \"object\", \"properties\": {\"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"source_assessments\", \"facts\"], \"additionalProperties\": false}}};\r\n// Shared parent-boundary logic. CONTRACT is embedded by the generator.\r\nfunction matches(v,s){\r\n if(s.$ref)return matches(v,CONTRACT.$defs[s.$ref.split('/').pop()]);\r\n if(s.allOf&&!s.allOf.every(x=>matches(v,x)))return false;\r\n if(s.anyOf&&!s.anyOf.some(x=>matches(v,x)))return false;\r\n if(s.oneOf&&s.oneOf.filter(x=>matches(v,x)).length!==1)return false;\r\n if(s.if&&matches(v,s.if)&&s.then&&!matches(v,s.then))return false;\r\n if(s.if&&!matches(v,s.if)&&s.else&&!matches(v,s.else))return false;\r\n if(Object.hasOwn(s,'const')&&JSON.stringify(v)!==JSON.stringify(s.const))return false;\r\n if(s.enum&&!s.enum.some(x=>JSON.stringify(x)===JSON.stringify(v)))return false;\r\n const type=t=>t==='null'?v===null:t==='array'?Array.isArray(v):t==='object'?v!==null&&typeof v==='object'&&!Array.isArray(v):t==='integer'?Number.isInteger(v):typeof v===t;\r\n if(s.type&&!(Array.isArray(s.type)?s.type.some(type):type(s.type)))return false;\r\n if(typeof v==='number'&&((s.minimum!==undefined&&v<s.minimum)||(s.maximum!==undefined&&v>s.maximum)))return false;\r\n if(typeof v==='string'){\r\n  if(s.minLength!==undefined&&v.length<s.minLength||s.maxLength!==undefined&&v.length>s.maxLength||s.pattern&&!new RegExp(s.pattern).test(v))return false;\r\n  if(s.format==='uri'&&!/^https?:\\/\\/[^\\s/]+(?:\\/[^\\s]*)?$/.test(v))return false;\r\n  if(s.format==='date-time'&&!/^\\d{4}-\\d{2}-\\d{2}T/.test(v)||s.format==='date-time'&&!Number.isFinite(Date.parse(v)))return false;\r\n }\r\n if(Array.isArray(v)){\r\n  if(s.minItems!==undefined&&v.length<s.minItems||s.maxItems!==undefined&&v.length>s.maxItems)return false;\r\n  if(s.uniqueItems&&new Set(v.map(x=>JSON.stringify(x))).size!==v.length)return false;\r\n  if(s.items&&!v.every(x=>matches(x,s.items)))return false;\r\n }\r\n if(v&&typeof v==='object'&&!Array.isArray(v)){\r\n  if(s.required&&!s.required.every(k=>Object.hasOwn(v,k)))return false;\r\n  if(s.additionalProperties===false&&Object.keys(v).some(k=>!Object.hasOwn(s.properties||{},k)))return false;\r\n  if(s.properties&&!Object.entries(s.properties).every(([k,t])=>!Object.hasOwn(v,k)||matches(v[k],t)))return false;\r\n }\r\n return true;\r\n}\r\nfunction fallback(input,code,blocked=false){\r\n const id=input.author.author_id;\r\n const result=()=>({author_id:id,status:'skipped',data:null,issues:[],skip_reason:blocked?'global_service_blocked':'child_result_unavailable'});\r\n return {run_id:input.run_id,author_id:id,dossier:{author:input.author,classification:result(),bio:result(),research:result(),synthesis:result(),outcome:'failed',limitations:[blocked?'Author was not scheduled because a shared service was blocked.':'Child result unavailable; intermediate child progress cannot be recovered.',code]},control:{stop_new_authors:false,service:null,scope:null,code:null,reason:null}};\r\n}\r\nfunction consistent(e,input){\r\n if(!matches(e,CONTRACT.$defs.Envelope)||e.run_id!==input.run_id||e.author_id!==input.author.author_id)return false;\r\n const d=e.dossier;if(['author_id','name','bio_url'].some(k=>d.author[k]!==input.author[k])||JSON.stringify(d.author.quote_ids)!==JSON.stringify(input.author.quote_ids))return false;\r\n for(const k of ['classification','bio','research','synthesis'])if(d[k].author_id!==e.author_id)return false;\r\n const category=d.classification.status==='success'?d.classification.data?.category:null;\r\n if(d.research.status==='skipped'){\r\n  const reason=d.research.skip_reason;\r\n  if(reason==='category_unverifiable'&&category!=='unverifiable'||reason==='classification_failed'&&category!==null)return false;\r\n  if(category==='unverifiable'&&reason!=='category_unverifiable')return false;\r\n }else if(category!=='verifiable')return false;\r\n const facts=[...(d.bio.data?.facts||[]),...(d.research.data?.facts||[])];\r\n if(new Set(facts.map(f=>f.fact_id)).size!==facts.length)return false;\r\n for(const k of ['bio','research']){const data=d[k].data;if(!data)continue;const sources=new Set(data.sources.map(s=>s.source_id));if(sources.size!==data.sources.length||data.facts.some(f=>!sources.has(f.source_id)))return false;}\r\n if(d.research.data){const r=d.research.data;const ids=new Set(r.sources.map(s=>s.source_id));if(r.source_assessments.some(a=>!ids.has(a.source_id)||a.related_source_ids.some(id=>!ids.has(id))))return false;const assessed=new Set(r.source_assessments.map(a=>a.source_id));if(assessed.size!==r.source_assessments.length||assessed.size!==ids.size)return false;\r\n const count=r.source_assessments.filter(a=>a.identity_match==='match'&&a.usable&&a.independence==='no_obvious_overlap'&&r.facts.some(f=>f.source_id===a.source_id)).length;\r\n if(r.qualified_source_count!==count||r.target_sources!==input.limits.target_sources||r.target_met!==(count>=r.target_sources))return false;}\r\n const ids=new Set(facts.map(f=>f.fact_id));if(d.synthesis.data&&[...d.synthesis.data.profile_fact_ids,...d.synthesis.data.comparisons.flatMap(x=>x.fact_ids)].some(id=>!ids.has(id)))return false;\r\n if(!facts.length&&d.outcome!=='failed')return false;\r\n if(d.outcome==='completed'&&(d.classification.status!=='success'||d.bio.status!=='success'||d.synthesis.status!=='success'||d.research.status!=='skipped'&&(d.research.status!=='success'||!d.research.data?.target_met)))return false;\r\n return true;\r\n}\r\nfunction normalizeReturn(input,rows){\r\n if(rows.length!==1)return fallback(input,'CHILD_ITEM_COUNT_INVALID');\r\n const e=rows[0];if(!e||Object.keys(e).length===0)return fallback(input,'CHILD_EMPTY_RESULT');\r\n if(e.error)return fallback(input,'CHILD_EXECUTION_FAILED');\r\n return consistent(e,input)?e:fallback(input,'CHILD_CONTRACT_INVALID');\r\n}\r\nfunction finalizeBatch(dataset,envelopes,stop=null){\r\n const expected=dataset.author_inputs;const expectedIds=new Set(expected.map(x=>x.author.author_id));\r\n if(expectedIds.size!==expected.length)throw new Error('DUPLICATE_INPUT_AUTHOR');\r\n if(envelopes.some(e=>!expectedIds.has(e.author_id)))throw new Error('UNKNOWN_RETURNED_AUTHOR');\r\n const dossiers=expected.map(input=>{\r\n  const rows=envelopes.filter(e=>e.author_id===input.author.author_id);\r\n  if(!rows.length)return fallback(input,stop?'GLOBAL_SERVICE_BLOCKED':'MISSING_CHILD_RESULT',!!stop).dossier;\r\n  return normalizeReturn(input,rows).dossier;\r\n });\r\n const result={run_id:dataset.run_id,summary:{pages:dataset.pages,input_complete:dataset.input_complete,quote_count:dataset.quotes.length,author_count:expected.length,completed_count:dossiers.filter(d=>d.outcome==='completed').length,degraded_count:dossiers.filter(d=>d.outcome==='degraded').length,failed_count:dossiers.filter(d=>d.outcome==='failed').length,stop_reason:stop},dossiers};\r\n if(!matches(result,CONTRACT.$defs.BatchOutput))throw new Error('BATCH_SCHEMA_INVALID');\r\n return result;\r\n}\r\n\r\nconst d=$('Prepare Batch').first().json;const e=$input.first().json;const index=d.author_inputs.findIndex(x=>x.author.author_id===e.author_id);if(index<0)throw new Error('UNKNOWN_STOP_AUTHOR');const rows=[];\r\nfor(let i=0;i<=index;i++)rows.push(...$('Normalize Author Return1').all(0,i).map(x=>x.json));\r\nreturn [{json:finalizeBatch(d,rows,e.control.code||'GLOBAL_SERVICE_BLOCKED')}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "6e10f052-d1ba-4802-bd03-cf20734efff0",
+      "name": "Finalize Stopped Batch",
+      "position": [
+        3232,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"run_id\": \"m03-fixed-001\",\n  \"page_urls\": [\n    \"https://quotes.toscrape.com/\",\n    \"https://quotes.toscrape.com/page/2/\"\n  ],\n  \"limits\": {\n    \"target_sources\": 2,\n    \"max_pages\": 3,\n    \"max_searches\": 2,\n    \"candidates_per_search\": 3,\n    \"max_research_rounds\": 2,\n    \"request_retries\": 1,\n    \"gemini_transport_retries\": 1,\n    \"gemini_repair_calls\": 1,\n    \"max_gemini_requests_per_step\": 3,\n    \"retry_wait_ms\": 2000,\n    \"request_timeout_ms\": 30000,\n    \"gemini_timeout_ms\": 60000,\n    \"author_budget_ms\": 360000,\n    \"synthesis_reserve_ms\": 60000,\n    \"packaging_reserve_ms\": 5000,\n    \"max_page_text_chars\": 20000,\n    \"max_model_input_chars\": 60000,\n    \"prior_reference_chars_per_source\": 2000\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        976,
+        240
+      ],
+      "id": "ee330837-7913-4c0f-89fe-e02e8c7f49e4",
+      "name": "Run Config1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Config boundary validator. Limit minima mirror contracts.schema.json; keep synchronized.\r\nconst minima = {\r\n  \"gemini_transport_retries\": 0,\r\n  \"max_page_text_chars\": 1,\r\n  \"synthesis_reserve_ms\": 1,\r\n  \"request_timeout_ms\": 1,\r\n  \"max_pages\": 1,\r\n  \"max_searches\": 1,\r\n  \"candidates_per_search\": 1,\r\n  \"max_research_rounds\": 1,\r\n  \"author_budget_ms\": 1,\r\n  \"gemini_repair_calls\": 0,\r\n  \"max_gemini_requests_per_step\": 1,\r\n  \"prior_reference_chars_per_source\": 1,\r\n  \"retry_wait_ms\": 1,\r\n  \"request_retries\": 0,\r\n  \"gemini_timeout_ms\": 1,\r\n  \"packaging_reserve_ms\": 1,\r\n  \"target_sources\": 1,\r\n  \"max_model_input_chars\": 1\r\n};\r\n\r\nconst items = $input.all();\r\nconst fail = message => { throw new Error(`CONFIG_INVALID: ${message}`); };\r\nconst object = value => value !== null && typeof value === 'object' && !Array.isArray(value);\r\nfunction exactKeys(value, keys, path) {\r\n  if (!object(value)) fail(`${path} must be an object`);\r\n  for (const key of keys) if (!Object.prototype.hasOwnProperty.call(value, key)) fail(`${path}.${key} is required`);\r\n  for (const key of Object.keys(value)) if (!keys.includes(key)) fail(`${path}.${key} is unexpected`);\r\n}\r\nif (items.length !== 1) fail('expected exactly one item');\r\nconst config = items[0].json;\r\nexactKeys(config, ['run_id', 'page_urls', 'limits'], 'config');\r\nif (typeof config.run_id !== 'string' || !config.run_id.trim()) fail('run_id must be a nonblank string');\r\nconst expectedPages = ['https://quotes.toscrape.com/', 'https://quotes.toscrape.com/page/2/'];\r\nif (!Array.isArray(config.page_urls) || config.page_urls.length !== 2 ||\r\n    !expectedPages.every((url, i) => config.page_urls[i] === url)) fail('page_urls must contain the required first two pages in order');\r\nconst limits = config.limits;\r\nexactKeys(limits, Object.keys(minima), 'limits');\r\nfor (const [key, min] of Object.entries(minima)) {\r\n  if (!Number.isSafeInteger(limits[key]) || limits[key] < min) fail(`limits.${key} must be a safe integer >= ${min}`);\r\n}\r\nif (limits.target_sources > limits.max_pages) fail('target_sources exceeds max_pages');\r\nif (limits.max_research_rounds > 2) fail('max_research_rounds exceeds the two-round design');\r\nif (limits.synthesis_reserve_ms < limits.gemini_timeout_ms) fail('synthesis_reserve_ms must cover one Gemini request');\r\nif (limits.author_budget_ms < Math.max(limits.request_timeout_ms, limits.gemini_timeout_ms) +\r\n    limits.synthesis_reserve_ms + limits.packaging_reserve_ms) fail('author_budget_ms cannot admit an initial request with reserves');\r\n// Preserve the Config contract. No flags, coercion, silent defaults or added fields.\r\nreturn [{ json: config, pairedItem: { item: 0 } }];\r\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "727fe9af-3aff-420e-b688-eda1af60f65a",
+      "name": "Validate Config1",
+      "position": [
+        1216,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1984,
+        32
+      ],
+      "id": "93ac6c3c-1dd0-4359-9c56-ed4c1c8c5f38",
+      "name": "Loop Authors1"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2256,
+        96
+      ],
+      "id": "862e0d21-2cb0-4065-b3f9-5be545fe2fa9",
+      "name": "Current Author1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const CONTRACT={\"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"title\": \"Author Dossier contracts v0.1\", \"$ref\": \"#/$defs/BatchOutput\", \"$defs\": {\"Issue\": {\"type\": \"object\", \"properties\": {\"code\": {\"type\": \"string\", \"minLength\": 1}, \"message\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"code\", \"message\", \"source_id\"], \"additionalProperties\": false}, \"Limits\": {\"type\": \"object\", \"properties\": {\"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"max_pages\": {\"type\": \"integer\", \"minimum\": 1}, \"max_searches\": {\"type\": \"integer\", \"minimum\": 1}, \"candidates_per_search\": {\"type\": \"integer\", \"minimum\": 1}, \"max_research_rounds\": {\"type\": \"integer\", \"minimum\": 1}, \"max_gemini_requests_per_step\": {\"type\": \"integer\", \"minimum\": 1}, \"request_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"gemini_timeout_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"author_budget_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"synthesis_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"packaging_reserve_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"max_page_text_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"max_model_input_chars\": {\"type\": \"integer\", \"minimum\": 1}, \"prior_reference_chars_per_source\": {\"type\": \"integer\", \"minimum\": 1}, \"retry_wait_ms\": {\"type\": \"integer\", \"minimum\": 1}, \"request_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_transport_retries\": {\"type\": \"integer\", \"minimum\": 0}, \"gemini_repair_calls\": {\"type\": \"integer\", \"minimum\": 0}}, \"required\": [\"target_sources\", \"max_pages\", \"max_searches\", \"candidates_per_search\", \"max_research_rounds\", \"max_gemini_requests_per_step\", \"request_timeout_ms\", \"gemini_timeout_ms\", \"author_budget_ms\", \"synthesis_reserve_ms\", \"packaging_reserve_ms\", \"max_page_text_chars\", \"max_model_input_chars\", \"prior_reference_chars_per_source\", \"retry_wait_ms\", \"request_retries\", \"gemini_transport_retries\", \"gemini_repair_calls\"], \"additionalProperties\": false}, \"Config\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_urls\": {\"const\": [\"https://quotes.toscrape.com/\", \"https://quotes.toscrape.com/page/2/\"]}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}}, \"required\": [\"run_id\", \"page_urls\", \"limits\"], \"additionalProperties\": false}, \"PageFetch\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"enum\": [\"success\", \"failed\"]}, \"http_status\": {\"anyOf\": [{\"type\": \"integer\", \"minimum\": 100, \"maximum\": 599}, {\"type\": \"null\"}]}, \"raw_html\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"fetched_at\": {\"type\": \"string\", \"format\": \"date-time\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"status\", \"http_status\", \"raw_html\", \"fetched_at\", \"issues\"], \"additionalProperties\": false}, \"Quote\": {\"type\": \"object\", \"properties\": {\"quote_id\": {\"type\": \"string\", \"minLength\": 1}, \"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"position\": {\"type\": \"integer\", \"minimum\": 1}, \"text\": {\"type\": \"string\", \"minLength\": 1}, \"author_name\": {\"type\": \"string\", \"minLength\": 1}, \"tags\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}}, \"required\": [\"quote_id\", \"page_url\", \"position\", \"text\", \"author_name\", \"tags\", \"bio_url\", \"author_id\"], \"additionalProperties\": false}, \"PageParse\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"quotes\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Quote\"}}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"quotes\", \"issues\"], \"additionalProperties\": false}, \"Author\": {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"name\": {\"type\": \"string\", \"minLength\": 1}, \"bio_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"quote_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}}, \"required\": [\"author_id\", \"name\", \"bio_url\", \"quote_ids\"], \"additionalProperties\": false}, \"AuthorInput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author\": {\"$ref\": \"#/$defs/Author\"}, \"limits\": {\"$ref\": \"#/$defs/Limits\"}, \"identity_quotes\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"run_id\", \"author\", \"limits\", \"identity_quotes\"], \"additionalProperties\": false}, \"ClassificationData\": {\"type\": \"object\", \"properties\": {\"category\": {\"enum\": [\"verifiable\", \"unverifiable\"]}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"category\", \"reason\"], \"additionalProperties\": false}, \"Source\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"requested_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"title\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"retrieved_at\": {\"type\": \"string\", \"format\": \"date-time\"}}, \"required\": [\"source_id\", \"url\", \"requested_url\", \"title\", \"retrieved_at\"], \"additionalProperties\": false}, \"PageWork\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"raw_content\": {\"type\": \"string\"}, \"extracted_text\": {\"type\": \"string\"}, \"submitted_text\": {\"type\": \"string\"}, \"truncated\": {\"type\": \"boolean\"}}, \"required\": [\"source_id\", \"raw_content\", \"extracted_text\", \"submitted_text\", \"truncated\"], \"additionalProperties\": false}, \"ExtractedFact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"Fact\": {\"type\": \"object\", \"properties\": {\"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"value\": {\"type\": \"string\", \"minLength\": 1}, \"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"evidence_text\": {\"type\": \"string\", \"minLength\": 1}, \"fact_id\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"field\", \"subject\", \"value\", \"source_id\", \"evidence_text\", \"fact_id\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"field\": {\"enum\": [\"work\", \"affiliation\"]}}}, \"then\": {\"properties\": {\"subject\": {\"type\": \"string\", \"minLength\": 1}}}, \"else\": {\"properties\": {\"subject\": {\"type\": \"null\"}}}}, {\"if\": {\"properties\": {\"field\": {\"const\": \"birth_date\"}}}, \"then\": {\"properties\": {\"value\": {\"pattern\": \"^\\\\d{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12]\\\\d|3[01]))?)?$\"}}}}]}, \"SourceAssessment\": {\"type\": \"object\", \"properties\": {\"source_id\": {\"type\": \"string\", \"minLength\": 1}, \"identity_match\": {\"enum\": [\"match\", \"mismatch\", \"uncertain\"]}, \"usable\": {\"type\": \"boolean\"}, \"reason\": {\"type\": \"string\", \"minLength\": 1}, \"independence\": {\"enum\": [\"no_obvious_overlap\", \"duplicate\", \"uncertain\"]}, \"related_source_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"source_id\", \"identity_match\", \"usable\", \"reason\", \"independence\", \"related_source_ids\"], \"additionalProperties\": false}, \"BioData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\"], \"additionalProperties\": false}, \"ResearchData\": {\"type\": \"object\", \"properties\": {\"sources\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Source\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Fact\"}}, \"evidence_status\": {\"enum\": [\"available\", \"none\"]}, \"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"qualified_source_count\": {\"type\": \"integer\", \"minimum\": 0}, \"target_sources\": {\"type\": \"integer\", \"minimum\": 1}, \"target_met\": {\"type\": \"boolean\"}, \"stop_reason\": {\"enum\": [\"target_met\", \"page_budget_exhausted\", \"round_limit_reached\", \"candidates_exhausted\", \"time_budget_exhausted\", \"service_blocked\"]}}, \"required\": [\"sources\", \"facts\", \"evidence_status\", \"source_assessments\", \"qualified_source_count\", \"target_sources\", \"target_met\", \"stop_reason\"], \"additionalProperties\": false}, \"Comparison\": {\"type\": \"object\", \"properties\": {\"scope\": {\"enum\": [\"site_vs_web\", \"within_web\", \"within_site\"]}, \"field\": {\"enum\": [\"birth_date\", \"birth_place\", \"occupation\", \"work\", \"affiliation\"]}, \"subject\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"site_only\", \"web_only\", \"inconclusive\"]}, \"fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"minItems\": 1, \"uniqueItems\": true}, \"explanation\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"scope\", \"field\", \"subject\", \"conclusion\", \"fact_ids\", \"explanation\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"scope\": {\"enum\": [\"within_web\", \"within_site\"]}}}, \"then\": {\"properties\": {\"conclusion\": {\"enum\": [\"agreement\", \"conflict\", \"inconclusive\"]}}}}]}, \"SynthesisData\": {\"type\": \"object\", \"properties\": {\"comparisons\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Comparison\"}}, \"profile\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"profile_fact_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}, \"uniqueItems\": true}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"comparisons\", \"profile\", \"profile_fact_ids\", \"limitations\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"profile\": {\"type\": \"null\"}}}, \"then\": {\"properties\": {\"profile_fact_ids\": {\"maxItems\": 0}}}, \"else\": {\"properties\": {\"profile_fact_ids\": {\"minItems\": 1}}}}]}, \"ClassificationResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ClassificationData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"BioResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/BioData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"ResearchResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/ResearchData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"SynthesisResult\": {\"oneOf\": [{\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"success\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"partial\"}, \"data\": {\"$ref\": \"#/$defs/SynthesisData\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"skipped\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}, \"skip_reason\": {\"type\": \"string\", \"minLength\": 1}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}, {\"type\": \"object\", \"properties\": {\"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"status\": {\"const\": \"failed\"}, \"data\": {\"type\": \"null\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}, \"minItems\": 1}, \"skip_reason\": {\"type\": \"null\"}}, \"required\": [\"author_id\", \"status\", \"data\", \"issues\", \"skip_reason\"], \"additionalProperties\": false}]}, \"MergedAuthor\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\"], \"additionalProperties\": false}, \"Dossier\": {\"type\": \"object\", \"properties\": {\"author\": {\"$ref\": \"#/$defs/Author\"}, \"classification\": {\"$ref\": \"#/$defs/ClassificationResult\"}, \"bio\": {\"$ref\": \"#/$defs/BioResult\"}, \"research\": {\"$ref\": \"#/$defs/ResearchResult\"}, \"synthesis\": {\"$ref\": \"#/$defs/SynthesisResult\"}, \"outcome\": {\"enum\": [\"completed\", \"degraded\", \"failed\"]}, \"limitations\": {\"type\": \"array\", \"items\": {\"type\": \"string\", \"minLength\": 1}}}, \"required\": [\"author\", \"classification\", \"bio\", \"research\", \"synthesis\", \"outcome\", \"limitations\"], \"additionalProperties\": false}, \"Control\": {\"type\": \"object\", \"properties\": {\"stop_new_authors\": {\"type\": \"boolean\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\", null]}, \"scope\": {\"enum\": [\"operation\", \"author\", \"batch\", null]}, \"code\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}, \"reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"stop_new_authors\", \"service\", \"scope\", \"code\", \"reason\"], \"additionalProperties\": false, \"allOf\": [{\"if\": {\"properties\": {\"stop_new_authors\": {\"const\": true}}}, \"then\": {\"properties\": {\"scope\": {\"const\": \"batch\"}, \"service\": {\"enum\": [\"browserless\", \"gemini\"]}, \"code\": {\"type\": \"string\", \"minLength\": 1}, \"reason\": {\"type\": \"string\", \"minLength\": 1}}}}]}, \"Envelope\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"author_id\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"dossier\": {\"$ref\": \"#/$defs/Dossier\"}, \"control\": {\"$ref\": \"#/$defs/Control\"}}, \"required\": [\"run_id\", \"author_id\", \"dossier\", \"control\"], \"additionalProperties\": false}, \"PageCoverage\": {\"type\": \"object\", \"properties\": {\"page_url\": {\"type\": \"string\", \"format\": \"uri\", \"pattern\": \"^https?://\"}, \"fetch_status\": {\"enum\": [\"success\", \"failed\", \"skipped\"]}, \"discovered_count\": {\"type\": \"integer\", \"minimum\": 0}, \"parsed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"invalid_count\": {\"type\": \"integer\", \"minimum\": 0}, \"complete\": {\"type\": \"boolean\"}, \"issues\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Issue\"}}}, \"required\": [\"page_url\", \"fetch_status\", \"discovered_count\", \"parsed_count\", \"invalid_count\", \"complete\", \"issues\"], \"additionalProperties\": false}, \"Summary\": {\"type\": \"object\", \"properties\": {\"pages\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/PageCoverage\"}}, \"input_complete\": {\"type\": \"boolean\"}, \"quote_count\": {\"type\": \"integer\", \"minimum\": 0}, \"author_count\": {\"type\": \"integer\", \"minimum\": 0}, \"completed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"degraded_count\": {\"type\": \"integer\", \"minimum\": 0}, \"failed_count\": {\"type\": \"integer\", \"minimum\": 0}, \"stop_reason\": {\"anyOf\": [{\"type\": \"string\", \"minLength\": 1}, {\"type\": \"null\"}]}}, \"required\": [\"pages\", \"input_complete\", \"quote_count\", \"author_count\", \"completed_count\", \"degraded_count\", \"failed_count\", \"stop_reason\"], \"additionalProperties\": false}, \"BatchOutput\": {\"type\": \"object\", \"properties\": {\"run_id\": {\"type\": \"string\", \"minLength\": 1}, \"summary\": {\"$ref\": \"#/$defs/Summary\"}, \"dossiers\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/Dossier\"}}}, \"required\": [\"run_id\", \"summary\", \"dossiers\"], \"additionalProperties\": false}, \"BioModelOutput\": {\"type\": \"object\", \"properties\": {\"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"facts\"], \"additionalProperties\": false}, \"ResearchModelOutput\": {\"type\": \"object\", \"properties\": {\"source_assessments\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/SourceAssessment\"}}, \"facts\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/$defs/ExtractedFact\"}}}, \"required\": [\"source_assessments\", \"facts\"], \"additionalProperties\": false}}};\r\n// Shared parent-boundary logic. CONTRACT is embedded by the generator.\r\nfunction matches(v,s){\r\n if(s.$ref)return matches(v,CONTRACT.$defs[s.$ref.split('/').pop()]);\r\n if(s.allOf&&!s.allOf.every(x=>matches(v,x)))return false;\r\n if(s.anyOf&&!s.anyOf.some(x=>matches(v,x)))return false;\r\n if(s.oneOf&&s.oneOf.filter(x=>matches(v,x)).length!==1)return false;\r\n if(s.if&&matches(v,s.if)&&s.then&&!matches(v,s.then))return false;\r\n if(s.if&&!matches(v,s.if)&&s.else&&!matches(v,s.else))return false;\r\n if(Object.hasOwn(s,'const')&&JSON.stringify(v)!==JSON.stringify(s.const))return false;\r\n if(s.enum&&!s.enum.some(x=>JSON.stringify(x)===JSON.stringify(v)))return false;\r\n const type=t=>t==='null'?v===null:t==='array'?Array.isArray(v):t==='object'?v!==null&&typeof v==='object'&&!Array.isArray(v):t==='integer'?Number.isInteger(v):typeof v===t;\r\n if(s.type&&!(Array.isArray(s.type)?s.type.some(type):type(s.type)))return false;\r\n if(typeof v==='number'&&((s.minimum!==undefined&&v<s.minimum)||(s.maximum!==undefined&&v>s.maximum)))return false;\r\n if(typeof v==='string'){\r\n  if(s.minLength!==undefined&&v.length<s.minLength||s.maxLength!==undefined&&v.length>s.maxLength||s.pattern&&!new RegExp(s.pattern).test(v))return false;\r\n  if(s.format==='uri'&&!/^https?:\\/\\/[^\\s/]+(?:\\/[^\\s]*)?$/.test(v))return false;\r\n  if(s.format==='date-time'&&!/^\\d{4}-\\d{2}-\\d{2}T/.test(v)||s.format==='date-time'&&!Number.isFinite(Date.parse(v)))return false;\r\n }\r\n if(Array.isArray(v)){\r\n  if(s.minItems!==undefined&&v.length<s.minItems||s.maxItems!==undefined&&v.length>s.maxItems)return false;\r\n  if(s.uniqueItems&&new Set(v.map(x=>JSON.stringify(x))).size!==v.length)return false;\r\n  if(s.items&&!v.every(x=>matches(x,s.items)))return false;\r\n }\r\n if(v&&typeof v==='object'&&!Array.isArray(v)){\r\n  if(s.required&&!s.required.every(k=>Object.hasOwn(v,k)))return false;\r\n  if(s.additionalProperties===false&&Object.keys(v).some(k=>!Object.hasOwn(s.properties||{},k)))return false;\r\n  if(s.properties&&!Object.entries(s.properties).every(([k,t])=>!Object.hasOwn(v,k)||matches(v[k],t)))return false;\r\n }\r\n return true;\r\n}\r\nfunction fallback(input,code,blocked=false){\r\n const id=input.author.author_id;\r\n const result=()=>({author_id:id,status:'skipped',data:null,issues:[],skip_reason:blocked?'global_service_blocked':'child_result_unavailable'});\r\n return {run_id:input.run_id,author_id:id,dossier:{author:input.author,classification:result(),bio:result(),research:result(),synthesis:result(),outcome:'failed',limitations:[blocked?'Author was not scheduled because a shared service was blocked.':'Child result unavailable; intermediate child progress cannot be recovered.',code]},control:{stop_new_authors:false,service:null,scope:null,code:null,reason:null}};\r\n}\r\nfunction consistent(e,input){\r\n if(!matches(e,CONTRACT.$defs.Envelope)||e.run_id!==input.run_id||e.author_id!==input.author.author_id)return false;\r\n const d=e.dossier;if(['author_id','name','bio_url'].some(k=>d.author[k]!==input.author[k])||JSON.stringify(d.author.quote_ids)!==JSON.stringify(input.author.quote_ids))return false;\r\n for(const k of ['classification','bio','research','synthesis'])if(d[k].author_id!==e.author_id)return false;\r\n const category=d.classification.status==='success'?d.classification.data?.category:null;\r\n if(d.research.status==='skipped'){\r\n  const reason=d.research.skip_reason;\r\n  if(reason==='category_unverifiable'&&category!=='unverifiable'||reason==='classification_failed'&&category!==null)return false;\r\n  if(category==='unverifiable'&&reason!=='category_unverifiable')return false;\r\n }else if(category!=='verifiable')return false;\r\n const facts=[...(d.bio.data?.facts||[]),...(d.research.data?.facts||[])];\r\n if(new Set(facts.map(f=>f.fact_id)).size!==facts.length)return false;\r\n for(const k of ['bio','research']){const data=d[k].data;if(!data)continue;const sources=new Set(data.sources.map(s=>s.source_id));if(sources.size!==data.sources.length||data.facts.some(f=>!sources.has(f.source_id)))return false;}\r\n if(d.research.data){const r=d.research.data;const ids=new Set(r.sources.map(s=>s.source_id));if(r.source_assessments.some(a=>!ids.has(a.source_id)||a.related_source_ids.some(id=>!ids.has(id))))return false;const assessed=new Set(r.source_assessments.map(a=>a.source_id));if(assessed.size!==r.source_assessments.length||assessed.size!==ids.size)return false;\r\n const count=r.source_assessments.filter(a=>a.identity_match==='match'&&a.usable&&a.independence==='no_obvious_overlap'&&r.facts.some(f=>f.source_id===a.source_id)).length;\r\n if(r.qualified_source_count!==count||r.target_sources!==input.limits.target_sources||r.target_met!==(count>=r.target_sources))return false;}\r\n const ids=new Set(facts.map(f=>f.fact_id));if(d.synthesis.data&&[...d.synthesis.data.profile_fact_ids,...d.synthesis.data.comparisons.flatMap(x=>x.fact_ids)].some(id=>!ids.has(id)))return false;\r\n if(!facts.length&&d.outcome!=='failed')return false;\r\n if(d.outcome==='completed'&&(d.classification.status!=='success'||d.bio.status!=='success'||d.synthesis.status!=='success'||d.research.status!=='skipped'&&(d.research.status!=='success'||!d.research.data?.target_met)))return false;\r\n return true;\r\n}\r\nfunction normalizeReturn(input,rows){\r\n if(rows.length!==1)return fallback(input,'CHILD_ITEM_COUNT_INVALID');\r\n const e=rows[0];if(!e||Object.keys(e).length===0)return fallback(input,'CHILD_EMPTY_RESULT');\r\n if(e.error)return fallback(input,'CHILD_EXECUTION_FAILED');\r\n return consistent(e,input)?e:fallback(input,'CHILD_CONTRACT_INVALID');\r\n}\r\nfunction finalizeBatch(dataset,envelopes,stop=null){\r\n const expected=dataset.author_inputs;const expectedIds=new Set(expected.map(x=>x.author.author_id));\r\n if(expectedIds.size!==expected.length)throw new Error('DUPLICATE_INPUT_AUTHOR');\r\n if(envelopes.some(e=>!expectedIds.has(e.author_id)))throw new Error('UNKNOWN_RETURNED_AUTHOR');\r\n const dossiers=expected.map(input=>{\r\n  const rows=envelopes.filter(e=>e.author_id===input.author.author_id);\r\n  if(!rows.length)return fallback(input,stop?'GLOBAL_SERVICE_BLOCKED':'MISSING_CHILD_RESULT',!!stop).dossier;\r\n  return normalizeReturn(input,rows).dossier;\r\n });\r\n const result={run_id:dataset.run_id,summary:{pages:dataset.pages,input_complete:dataset.input_complete,quote_count:dataset.quotes.length,author_count:expected.length,completed_count:dossiers.filter(d=>d.outcome==='completed').length,degraded_count:dossiers.filter(d=>d.outcome==='degraded').length,failed_count:dossiers.filter(d=>d.outcome==='failed').length,stop_reason:stop},dossiers};\r\n if(!matches(result,CONTRACT.$defs.BatchOutput))throw new Error('BATCH_SCHEMA_INVALID');\r\n return result;\r\n}\r\n\r\nconst prior=$('Current Author1').all(0,$runIndex);if(prior.length!==1)throw new Error('AUTHOR_CONTEXT_INVALID');return [{json:normalizeReturn(prior[0].json,$input.all().map(x=>x.json)),pairedItem:{item:0}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "2c78bb5a-cc94-4397-b2d3-6456a6babc4c",
+      "name": "Normalize Author Return1",
+      "position": [
+        2736,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "288ecccc-1e1e-4a91-ba48-321d83555f44",
+              "leftValue": "={{ $json.control.stop_new_authors === true\n   && $json.control.scope === 'batch' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2992,
+        192
+      ],
+      "id": "eb4bce41-98a9-46e9-aa50-5e28285832da",
+      "name": "Batch Stop Requested?1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Run Config1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Intake": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page 1": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fetch 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fetch 1": {
+      "main": [
+        [
+          {
+            "node": "Extract Blocks 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Blocks 1": {
+      "main": [
+        [
+          {
+            "node": "Split Blocks 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Blocks 1": {
+      "main": [
+        [
+          {
+            "node": "Extract Quotes 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Quotes 1": {
+      "main": [
+        [
+          {
+            "node": "Collect Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Page 1": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page 2": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fetch 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fetch 2": {
+      "main": [
+        [
+          {
+            "node": "Extract Blocks 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Blocks 2": {
+      "main": [
+        [
+          {
+            "node": "Split Blocks 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Blocks 2": {
+      "main": [
+        [
+          {
+            "node": "Extract Quotes 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Quotes 2": {
+      "main": [
+        [
+          {
+            "node": "Collect Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Page 2": {
+      "main": [
+        [
+          {
+            "node": "Build Author Dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Author Dataset": {
+      "main": [
+        [
+          {
+            "node": "Prepare Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batch": {
+      "main": [
+        [
+          {
+            "node": "Has Authors?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Authors?": {
+      "main": [
+        [
+          {
+            "node": "Emit Author Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finalize Empty Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Author Inputs": {
+      "main": [
+        [
+          {
+            "node": "Loop Authors1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Live Author": {
+      "main": [
+        [
+          {
+            "node": "Normalize Author Return1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Config1": {
+      "main": [
+        [
+          {
+            "node": "Validate Config1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Config1": {
+      "main": [
+        [
+          {
+            "node": "Initialize Intake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Authors1": {
+      "main": [
+        [
+          {
+            "node": "Finalize Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Current Author1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Current Author1": {
+      "main": [
+        [
+          {
+            "node": "Call Live Author",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Author Return1": {
+      "main": [
+        [
+          {
+            "node": "Batch Stop Requested?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Stop Requested?1": {
+      "main": [
+        [
+          {
+            "node": "Finalize Stopped Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Authors1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": []
+}

@@ -1,0 +1,9 @@
+# Budget-preserving quality improvements
+
+1. After an insufficient first round, institutional search gets a chance before the remaining page budget is spent. The existing search cap, page cap and time admission remain in force. If search fails or returns no useful candidates, the previous queue remains available. Ranking now scans all extracted links before limiting selections; a regression test covers an institutional result appearing after the old early cutoff.
+
+2. New research requests supply source-local paragraph IDs. Models return paragraph_id rather than copying evidence_text. Normalization resolves a valid ID to the stored paragraph and feeds that exact text through existing fact validation. Unknown IDs, cross-source IDs and injected evidence text are rejected. Public Fact output keeps its existing evidence_text field. Historical cached pages without paragraph metadata retain legacy validation; new requests require the new contract. Paragraph membership is provenance, not proof that the generated value is entailed by that paragraph.
+
+3. Uncertain or duplicate external sources remain in the research record but are excluded from synthesis comparison candidates and profile facts. Bio facts remain available with site-only caveats. Code emits an explicit incomplete-corroboration limitation when the target is unmet. No uncertain source is promoted to meet the count, and partial authors are retained.
+
+Offline tests cover fallback queues, late institutional results, exact paragraph reconstruction, cross-source/unknown references and conservative profile evidence. The local n8n mock suite exercises the new request format. No real provider requests were made for these changes; compatibility with a real model has not yet been verified. Rebuild and import the complete child workflow because preparation and normalization contracts changed together.

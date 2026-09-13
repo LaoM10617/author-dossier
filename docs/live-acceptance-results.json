@@ -1,0 +1,64 @@
+{
+  "scope": "One real author child pipeline, no manual source injection; not a full parent intake batch",
+  "durationMs": 24312,
+  "browserlessCalls": 5,
+  "geminiCalls": 5,
+  "searches": 1,
+  "researchPages": 3,
+  "qualifiedSources": 1,
+  "targetMet": false,
+  "stageStatus": {
+    "classification": "success",
+    "bio": "success",
+    "research": "partial",
+    "synthesis": "success"
+  },
+  "siteFactsCovered": 8,
+  "siteFactsTotal": 8,
+  "synthesisRepairs": 0,
+  "outcome": "degraded",
+  "budgetChecksPassed": true,
+  "excerptTraceChecksPassed": true,
+  "researchIssues": [
+    {
+      "code": "SOURCE_ACCESS_DENIED",
+      "message": "Candidate https://www.britannica.com/biography/Albert-Einstein returned access restriction (target HTTP 403); try another source.",
+      "source_id": null
+    },
+    {
+      "code": "TEXT_TRUNCATED",
+      "message": "External page text truncated.",
+      "source_id": "research:1"
+    },
+    {
+      "code": "FACT_REJECTED",
+      "message": "Fact 4: evidence not in submitted source",
+      "source_id": "research:2"
+    },
+    {
+      "code": "RESEARCH_TARGET_UNMET",
+      "message": "Qualified source target not met: 1/2.",
+      "source_id": null
+    }
+  ],
+  "sourceAssessments": [
+    {
+      "source_id": "research:1",
+      "identity_match": "match",
+      "usable": true,
+      "reason": "The page provides a comprehensive biographical account of Albert Einstein.",
+      "independence": "no_obvious_overlap",
+      "related_source_ids": []
+    },
+    {
+      "source_id": "research:2",
+      "identity_match": "match",
+      "usable": true,
+      "reason": "The source details the scientific contributions and biographical milestones of Albert Einstein.",
+      "independence": "uncertain",
+      "related_source_ids": [
+        "research:1"
+      ]
+    }
+  ]
+}

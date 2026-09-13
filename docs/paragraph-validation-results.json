@@ -1,0 +1,72 @@
+{
+  "scope": "Saved real pages combined into one research replay; current generated Code nodes executed locally; one real Gemini research request, no new crawling or synthesis",
+  "status": "partial",
+  "targetMet": false,
+  "qualifiedSources": 1,
+  "facts": 7,
+  "issues": [
+    {
+      "code": "SOURCE_ACCESS_DENIED",
+      "message": "Candidate https://www.britannica.com/biography/Albert-Einstein returned access restriction (target HTTP 403); try another source.",
+      "source_id": null
+    },
+    {
+      "code": "FACT_REJECTED",
+      "message": "Fact 4: generic work subject",
+      "source_id": "research:1"
+    },
+    {
+      "code": "FACT_REJECTED",
+      "message": "Fact 5: generic work subject",
+      "source_id": "research:1"
+    },
+    {
+      "code": "TEXT_TRUNCATED",
+      "message": "External page text truncated.",
+      "source_id": "research:1"
+    },
+    {
+      "code": "RESEARCH_TARGET_UNMET",
+      "message": "Qualified source target not met: 1/2.",
+      "source_id": null
+    }
+  ],
+  "assessments": [
+    {
+      "source_id": "research:1",
+      "identity_match": "match",
+      "usable": true,
+      "reason": "The source provides detailed biographical and scientific information regarding Albert Einstein.",
+      "independence": "no_obvious_overlap",
+      "related_source_ids": []
+    },
+    {
+      "source_id": "research:2",
+      "identity_match": "match",
+      "usable": true,
+      "reason": "The source outlines the major scientific contributions of Albert Einstein.",
+      "independence": "uncertain",
+      "related_source_ids": [
+        "research:1"
+      ]
+    }
+  ],
+  "excerptLengths": [
+    {
+      "source": "https://en.wikipedia.org/wiki/Albert_Einstein",
+      "chars": 19997,
+      "partial": true
+    },
+    {
+      "source": "https://www.sciencenewstoday.org/10-most-important-contributions-of-albert-einstein",
+      "chars": 12695,
+      "partial": false
+    }
+  ],
+  "runtime": "Current generated Code nodes executed locally; not a full n8n execution",
+  "modelCalls": 1,
+  "returnedFacts": 9,
+  "validParagraphReferences": 9,
+  "acceptedFacts": 7,
+  "quotationReconstructionPassed": true
+}

@@ -9,14 +9,19 @@ const allFacts = [...(c.bio.data?.facts||[]), ...(c.research.data?.facts||[])];
 const facts = new Map(allFacts.map(f => [f.fact_id, f]));
 const bioIds = new Set((c.bio.data?.facts||[]).map(f=>f.fact_id));
 try {
+  if(c.synthesis_plan){data=finishStructuredSynthesis(c);issues.push(...c.synthesis_contract_issues);}else{
   if (r.error || r.statusCode !== 200) fail('HTTP request failed');
   const candidates = r.body?.candidates;
   if (candidates?.length !== 1 || candidates[0].finishReason !== 'STOP') fail('Incomplete model response');
   data = JSON.parse(candidates[0].content.parts.filter(p=>p.thought!==true && typeof p.text==='string').map(p=>p.text).join(''));
+  }
   if (!exact(data,['comparisons','profile','profile_fact_ids','limitations'])) fail('Invalid synthesis fields');
   if (!Array.isArray(data.comparisons) || !Array.isArray(data.limitations) || !data.limitations.every(text)) fail('Invalid arrays');
   if (!Array.isArray(data.profile_fact_ids) || new Set(data.profile_fact_ids).size!==data.profile_fact_ids.length || !data.profile_fact_ids.every(id=>facts.has(id))) fail('Invalid profile references');
   if (data.profile===null ? data.profile_fact_ids.length!==0 : !text(data.profile) || data.profile_fact_ids.length===0) fail('Invalid profile');
+  if (data.profile && /\b(?:research\.|bio\.|qualified_source_count|target_sources|profile_fact_ids|fact_ids|source_id|bio:\d|research:\d)/i.test(data.profile)) {
+    issues.push({code:'SYNTHESIS_PROFILE_TECHNICAL_FIELDS',message:'Profile contains implementation fields or evidence identifiers.',source_id:null});
+  }
   const accepted = [];
   for (const [index,x] of data.comparisons.entries()) {
     try {

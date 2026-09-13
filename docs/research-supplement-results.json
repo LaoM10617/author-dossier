@@ -1,0 +1,30 @@
+{
+  "scope": "Explicit supplemental diagnostic beyond previous run; one new Browserless page and one Gemini research request; Code nodes executed locally, not a full n8n run",
+  "url": "https://www.nobelprize.org/prizes/physics/1921/einstein/biographical/",
+  "browserlessStatus": 200,
+  "geminiStatus": 200,
+  "targetMet": true,
+  "qualifiedSources": 2,
+  "status": "partial",
+  "newAssessment": {
+    "source_id": "research:3",
+    "identity_match": "match",
+    "usable": true,
+    "reason": "Biographical article on Albert Einstein from NobelPrize.org.",
+    "independence": "no_obvious_overlap",
+    "related_source_ids": []
+  },
+  "newFactCount": 18,
+  "issues": [
+    {
+      "code": "SOURCE_ACCESS_DENIED",
+      "message": "Candidate https://www.britannica.com/biography/Albert-Einstein returned access restriction (target HTTP 403); try another source.",
+      "source_id": null
+    },
+    {
+      "code": "TEXT_TRUNCATED",
+      "message": "External page text truncated.",
+      "source_id": "research:1"
+    }
+  ]
+}

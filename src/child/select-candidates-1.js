@@ -81,19 +81,14 @@ function bioResult(c) {
 }
 function researchEnabled(c){return c.classification.status==='success'&&c.classification.data.category==='verifiable';}
 function qualified(c){return c.assessments.filter(a=>a.usable&&a.identity_match==='match'&&a.independence==='no_obvious_overlap'&&c.webfacts.some(f=>f.source_id===a.source_id)).length;}
-function researchResult(c) {
- if(!researchEnabled(c)){c.research=stage(c,'skipped',null,[],c.classification.status==='success'?'category_unverifiable':'classification_failed');return c;}
- const count=qualified(c),met=count>=c.limits.target_sources;
- const stop=met?'target_met':c.control.stop_new_authors?'service_blocked':Date.now()+c.limits.gemini_timeout_ms+c.limits.synthesis_reserve_ms+c.limits.packaging_reserve_ms>c.deadline?'time_budget_exhausted':c.attempted.length>=c.limits.max_pages?'page_budget_exhausted':c.round>=c.limits.max_research_rounds?'round_limit_reached':'candidates_exhausted';
- const failed=!c.webfacts.length&&c.research_issues.length>0;
- c.research=stage(c,failed?'failed':c.research_issues.length?'partial':'success',failed?null:{sources:c.webpages.map(p=>p.source),facts:c.webfacts,evidence_status:c.webfacts.length?'available':'none',source_assessments:c.assessments,qualified_source_count:count,target_sources:c.limits.target_sources,target_met:met,stop_reason:stop},c.research_issues);
- return c;
-}
+function researchResult(c) { return finalizeResearch(c); }
 
 const c=$input.first().json;
 const normalize=s=>clean(s).normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ');
 const tokens=normalize(c.author.name).split(' ').filter(t=>t&&!['dr','mr','mrs','ms'].includes(t));
-let selected=0;
+let selected=0;const candidates=[];
+// Ranking is a retrieval hint, never an independence/identity verdict.
+const priority=url=>{const h=group(url).toLowerCase();return /(?:^|\.)(?:nobelprize\.org|ias\.edu)$/.test(h)||/(?:\.edu|\.gov|\.ac\.[a-z]{2}|\.edu\.[a-z]{2}|\.gov\.[a-z]{2})$/.test(h)?2:h==='wikipedia.org'?1:0;};
 c.discovery=c.discovery||[];
 const group=u=>(u.match(/^https?:\/\/([^/]+)/i)?.[1]||'').replace(/^www\./,'').replace(/^(?:[^.]+\.)*wikipedia\.org$/,'wikipedia.org');
 const groups=new Set([...c.queue,...c.attempted].map(group));
@@ -112,11 +107,10 @@ for(const [index,original] of (c.extracted.links||[]).entries()) {
   const relevant=tokens.length>0&&tokens.every(t=>words.includes(t));
   c.discovery.push({query:c.last_search_query,url,title,relevant});
   if(!relevant||c.attempted.includes(url)||c.queue.includes(url))continue;
-  if(groups.has(group(url)))continue;
-  groups.add(group(url));
-  c.queue.push(url);
-  if(++selected>=c.limits.candidates_per_search)break;
+  candidates.push({url,index});
  }catch{}
 }
+for(const {url} of candidates.sort((a,b)=>priority(b.url)-priority(a.url)||a.index-b.index)){if(groups.has(group(url)))continue;if(selected>=c.limits.candidates_per_search)break;groups.add(group(url));c.queue.push(url);selected++;}
+c.queue.sort((a,b)=>priority(b)-priority(a));
 if(c.req.allowed&&!c.queue.length)c.research_issues.push(issue('NO_RELEVANT_CANDIDATES','Search produced no URLs matching the author identity.'));
 c.round_pages=[];delete c.extracted;return output(c);

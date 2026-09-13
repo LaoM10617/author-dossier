@@ -4,6 +4,8 @@ An n8n parent/child pipeline for quote intake, author classification, website bi
 
 ## Quick start
 
+For the local editor, credential binding and import verification, see [the local UI guide](docs/local-editor-check.md). For precisely scoped open quality questions and search terms, see [synthesis quality investigation](docs/synthesis-quality-investigation.md).
+
 Requires Node.js 20+ for local build checks. No npm dependencies are needed.
 
 ```sh
@@ -20,13 +22,13 @@ Import `dist/child-workflow.json` first, then `dist/parent-workflow.json` into y
 - `scripts/build.cjs`: assembles importable workflow JSON into `dist`.
 - `scripts/test.cjs`: compilation, wiring and clean-import checks.
 
-Code nodes currently embed shared helpers repeatedly. This preserves the existing operational code during extraction; consolidating these helpers is a follow-up refactor, not a completed optimization.
+Research policy, paragraph selection and synthesis contracts are maintained in `src/shared` and injected during the build. Some legacy Code-node helpers remain duplicated.
 
 ## Architecture
 
 Parent: fetch two quote pages via Browserless, extract quotes, deduplicate by author biography URL, call one child at a time, reconcile results by identity.
 
-Child: four separate Gemini responsibilities (classification, Bio, Research, Synthesis). Bio is intended for every author; Research calls are gated by a verifiable classification. Research model input excludes extracted Bio facts. Accepted facts retain source references and supporting text. Bounded retries and time reserves protect synthesis and result packaging. Missing child results produce explicit fallbacks rather than disappearing authors.
+Child: four separate Gemini responsibilities (classification, Bio, Research, Synthesis). Bio is intended for every author; Research calls are gated by a verifiable classification. Research uses external page excerpts with paragraph references. Accepted facts retain source references and supporting text. Bounded retries and time reserves protect synthesis and result packaging. Missing child results produce explicit fallbacks rather than disappearing authors.
 
 ## Testing options
 
@@ -39,13 +41,13 @@ Official setup: https://docs.n8n.io/hosting/installation/docker/
 
 ## Validation status
 
-Before repository extraction, the saved-intake variant completed a real 15-author run: no missing or duplicate authors; all dossiers degraded. Classification and Bio succeeded for all; Research was partial for 4 and failed for 11; Synthesis was successful for 10 and partial for 5. Separately, the two-page intake returned 20 quotes. The cleaned fresh-intake variant still needs a live end-to-end run in the destination environment.
+On 2026-09-13, local n8n 2.38.7 fetched both real pages (20 quotes, 15 unique authors), passed a one-author smoke, then completed one full real-provider batch using that fresh saved intake in 5m12s. All 15 authors returned without duplicates or child fallbacks. Classification: 15 success; Bio: 14 success, 1 partial; Research: 5 partial, 10 failed; Synthesis: 15 success under the runtime contract. All 15 dossiers remain degraded. All accepted Bio facts occur in comparisons, and all authors have profiles; this does not establish factual correctness or complete citation coverage.
 
-`npm test` validates assembly and structure; `npm run test:n8n` separately validates actual local engine behavior using synthetic HTTP responses. Earlier workspace semantic regression tests are not yet fully migrated here; neither command implies complete semantic acceptance. No company execution exports, task text, correspondence, credential records or raw scraped pages are included.
+`npm test` and `npm run test:n8n` passed before this run. See [final validation](docs/final-validation.md) for scope and remaining quality limitations. The [frozen delivery](delivery/release-1789324402547/README.md) includes clean parent/child imports, the observed batch output and checksums. Tests used a local credential bridge to real providers; the exports require credentials and a child binding in the destination instance. Original company correspondence and credential records are excluded.
 
 ## Known limitations
 
-Search relevance remains inconsistent (including irrelevant results for correctly formed full-name searches). Semantic grounding and comparison coverage need improvement; one prior semantic test still accepted a belief as an occupation. Intake retries and comprehensive conflict/fault testing are incomplete. Research has two rounds and three page slots; increasing a configuration number does not create more slots. This is a working development baseline, not production certification.
+Search candidate recall, source access and model independence judgments still limit research. Paragraph references enforce provenance, not semantic entailment. Manual review found incomplete profile citation coverage and inconsistent work-subject normalization. Research uses bounded candidate replacement, two model rounds and a default three-page budget. The project demonstrates complete orchestration and explicit degradation, not production-grade independent verification.
 
 ## Development policy
 

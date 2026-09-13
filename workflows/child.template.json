@@ -3781,6 +3781,40 @@
         "width": 1100,
         "height": 500
       }
+    },
+    {
+      "id": "research-refill-check",
+      "name": "More R2 Candidates?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        3400
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "refill",
+              "leftValue": "={{ $json.req.allowed && !$json.control.stop_new_authors && $json.queue.length > 0 && $json.attempted.length < $json.limits.max_pages && $json.round_pages.length < Math.max(1, $json.limits.target_sources - $json.assessments.filter(a => a.usable && a.identity_match === \"match\" && a.independence === \"no_obvious_overlap\" && $json.webfacts.some(f => f.source_id === a.source_id)).length) }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
     }
   ],
   "connections": {
@@ -5497,7 +5531,7 @@
       "main": [
         [
           {
-            "node": "Prepare Research Round 2",
+            "node": "More R2 Candidates?",
             "type": "main",
             "index": 0
           }
@@ -5914,6 +5948,24 @@
         [
           {
             "node": "Package Author Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "More R2 Candidates?": {
+      "main": [
+        [
+          {
+            "node": "Prepare R2 Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Research Round 2",
             "type": "main",
             "index": 0
           }

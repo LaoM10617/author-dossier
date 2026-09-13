@@ -1,0 +1,12 @@
+{
+  "liveCalls": 2,
+  "liveSynthesisStatus": "partial",
+  "liveSiteComparisonsAccepted": 8,
+  "repairOnlyFailedTasks": true,
+  "offlineCorrectedStatus": "success",
+  "allComparisons": 15,
+  "acceptedResultsPreserved": true,
+  "profilePreserved": true,
+  "overallOutcome": "degraded",
+  "scope": "Real n8n/Gemini run exposed one-sided enum confusion. Deterministic correction verified against the saved response offline; no further API calls."
+}

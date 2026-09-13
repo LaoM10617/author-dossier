@@ -1,0 +1,88 @@
+{
+  "scope": "Real local n8n, Browserless and Gemini; one author",
+  "modelAlias": "gemini-flash-lite-latest",
+  "lastNode": "Package Author Envelope",
+  "calls": [
+    {
+      "step": "classification",
+      "status": 200
+    },
+    {
+      "step": "bio_page",
+      "status": 200,
+      "bytes": 5262
+    },
+    {
+      "step": "bio",
+      "status": 200
+    },
+    {
+      "step": "search_1",
+      "status": 200,
+      "bytes": 125887
+    },
+    {
+      "step": "research_page",
+      "status": 200,
+      "bytes": 2210094
+    },
+    {
+      "step": "research_page",
+      "status": 200,
+      "bytes": 28639
+    },
+    {
+      "step": "research_round_1",
+      "status": 200
+    },
+    {
+      "step": "search_2",
+      "status": 200,
+      "bytes": 122943
+    },
+    {
+      "step": "research_page",
+      "status": 200,
+      "bytes": 72936
+    },
+    {
+      "step": "research_round_2",
+      "status": 200
+    },
+    {
+      "step": "synthesis",
+      "status": 200
+    }
+  ],
+  "outcome": "degraded",
+  "stages": {
+    "classification": "success",
+    "bio": "success",
+    "research": "partial",
+    "synthesis": "partial"
+  },
+  "qualifiedSourceCount": 2,
+  "targetMet": true,
+  "issues": {
+    "bio": [],
+    "research": [
+      {
+        "code": "SOURCE_UNAVAILABLE",
+        "message": "Candidate page did not provide usable text.",
+        "source_id": null
+      },
+      {
+        "code": "TEXT_TRUNCATED",
+        "message": "External page text truncated.",
+        "source_id": "research:1"
+      }
+    ],
+    "synthesis": [
+      {
+        "code": "SYNTHESIS_COVERAGE_INCOMPLETE",
+        "message": "Site facts without an accepted comparison: bio:1:f4, bio:1:f5",
+        "source_id": null
+      }
+    ]
+  }
+}

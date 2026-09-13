@@ -1,0 +1,82 @@
+{
+  "artifactDirectory": "artifacts/release-1789324402547",
+  "scope": "Fresh two-page intake, one sampled smoke author, then one full batch reusing that intake",
+  "quoteCount": 20,
+  "authorCount": 15,
+  "smoke": {
+    "pages": [
+      {
+        "page_url": "https://quotes.toscrape.com/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      },
+      {
+        "page_url": "https://quotes.toscrape.com/page/2/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      }
+    ],
+    "input_complete": true,
+    "quote_count": 4,
+    "author_count": 1,
+    "completed_count": 0,
+    "degraded_count": 1,
+    "failed_count": 0,
+    "stop_reason": null
+  },
+  "batch": {
+    "pages": [
+      {
+        "page_url": "https://quotes.toscrape.com/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      },
+      {
+        "page_url": "https://quotes.toscrape.com/page/2/",
+        "fetch_status": "success",
+        "discovered_count": 10,
+        "parsed_count": 10,
+        "invalid_count": 0,
+        "complete": true,
+        "issues": []
+      }
+    ],
+    "input_complete": true,
+    "quote_count": 20,
+    "author_count": 15,
+    "completed_count": 0,
+    "degraded_count": 15,
+    "failed_count": 0,
+    "stop_reason": null
+  },
+  "stages": {
+    "classification": {
+      "success": 15
+    },
+    "bio": {
+      "success": 14,
+      "partial": 1
+    },
+    "research": {
+      "partial": 5,
+      "failed": 10
+    },
+    "synthesis": {
+      "success": 15
+    }
+  },
+  "fallbackAuthors": [],
+  "durationMs": 311541
+}

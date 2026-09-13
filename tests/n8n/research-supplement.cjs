@@ -1,0 +1,33 @@
+// Explicit diagnostic supplement; not an automatic extension of production page budgets.
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const cheerio=require(require.resolve('cheerio',{paths:['./.runtime/node_modules/n8n']}));
+require('../../scripts/build.cjs');
+const w=JSON.parse(fs.readFileSync('dist/child-workflow.json'));
+const run=(name,c)=>new Function('$input',w.nodes.find(n=>n.name===name).parameters.jsCode)({first:()=>({json:c})})[0].json;
+const gemini=process.env.AUTHOR_DOSSIER_GEMINI_KEY,token=process.env.AUTHOR_DOSSIER_BROWSERLESS_TOKEN;
+delete process.env.AUTHOR_DOSSIER_GEMINI_KEY;delete process.env.AUTHOR_DOSSIER_BROWSERLESS_TOKEN;
+if(!gemini||!token)throw new Error('Both provider credentials required in process memory');
+const dir='artifacts/research-supplement';fs.mkdirSync(dir,{recursive:true});
+(async()=>{
+ let c=JSON.parse(fs.readFileSync('artifacts/research-replay/state.json'));
+ const original=JSON.parse(JSON.stringify({classification:c.classification,bio:c.bio}));
+ const url=process.env.AUTHOR_DOSSIER_SUPPLEMENT_URL||'https://www.ias.edu/scholars/einstein';
+ const r=await fetch('https://production-sfo.browserless.io/content?token='+encodeURIComponent(token),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({url}),signal:AbortSignal.timeout(30000)});
+ const html=await r.text();assert.equal(r.status,200,'Browserless request failed');assert.equal(r.headers.get('x-response-code'),'200','Source page unavailable');
+ fs.writeFileSync(dir+'/source.html',html);
+ const $=cheerio.load(html);$('script,style,nav,footer').remove();
+ const get=selector=>$(selector).toArray().map(el=>$(el).text());
+ c.extracted={titles:get('title'),article:get('article p, #mw-content-text .mw-parser-output p'),main:get('main p'),body:get('body p')};
+ c.response={statusCode:r.status,html,headers:{'x-response-code':r.headers.get('x-response-code'),'x-response-url':r.headers.get('x-response-url')||url}};
+ c.req={allowed:true,body:{url}};c.round_pages=[];c=run('Collect R1 Page 1',c);
+ assert.equal(c.round_pages.length,1,'No usable source paragraphs');
+ c.deadline=Date.now()+180000;c=run('Prepare Research Round 2',c);assert(c.req.allowed);
+ const g=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent',{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':gemini},body:JSON.stringify(c.req.body),signal:AbortSignal.timeout(60000)});
+ assert.equal(g.status,200,'Gemini generation failed');c.response={statusCode:g.status,body:await g.json()};
+ c=run('Normalize Research 2',c);c=run('Assemble Author Evidence',c);
+ assert.deepEqual({classification:c.classification,bio:c.bio},original);
+ fs.writeFileSync(dir+'/state.json',JSON.stringify(c,null,2));
+ const report={scope:'Explicit supplemental diagnostic beyond previous run; one new Browserless page and one Gemini research request; Code nodes executed locally, not a full n8n run',url,browserlessStatus:r.status,geminiStatus:g.status,targetMet:c.research.data?.target_met,qualifiedSources:c.research.data?.qualified_source_count,status:c.research.status,newAssessment:c.assessments.at(-1),newFactCount:c.webfacts.filter(f=>f.source_id===c.webpages.at(-1).source.source_id).length,issues:c.research.issues};
+ fs.writeFileSync('docs/research-supplement-results.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+ assert(report.targetMet,'Source target not met');
+})().catch(e=>{console.error(e.name==='AssertionError'?e.message:'Supplement request failed; no credentials logged.');process.exitCode=1;});

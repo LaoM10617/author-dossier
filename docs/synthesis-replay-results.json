@@ -1,0 +1,22 @@
+{
+  "scope": "Synthesis-only real n8n replay of saved real webpage evidence",
+  "modelAlias": "gemini-flash-lite-latest",
+  "lastNode": "Package Author Envelope",
+  "calls": [
+    {
+      "step": "synthesis",
+      "status": 200
+    }
+  ],
+  "outcome": "degraded",
+  "stages": {
+    "classification": "success",
+    "bio": "success",
+    "research": "partial",
+    "synthesis": "success"
+  },
+  "profile": "Albert Einstein was born in Ulm, Germany, on March 14, 1879. He published landmark papers in 1905 on special relativity, mass-energy equivalence, and the photoelectric effect, later advancing physics with his general theory of relativity and completing his PhD at the University of Zurich. He remained affiliated with the Institute for Advanced Study in Princeton until his death in 1955.",
+  "issues": [],
+  "coveredSiteFacts": 8,
+  "totalSiteFacts": 8
+}

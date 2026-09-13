@@ -81,14 +81,7 @@ function bioResult(c) {
 }
 function researchEnabled(c){return c.classification.status==='success'&&c.classification.data.category==='verifiable';}
 function qualified(c){return c.assessments.filter(a=>a.usable&&a.identity_match==='match'&&a.independence==='no_obvious_overlap'&&c.webfacts.some(f=>f.source_id===a.source_id)).length;}
-function researchResult(c) {
- if(!researchEnabled(c)){c.research=stage(c,'skipped',null,[],c.classification.status==='success'?'category_unverifiable':'classification_failed');return c;}
- const count=qualified(c),met=count>=c.limits.target_sources;
- const stop=met?'target_met':c.control.stop_new_authors?'service_blocked':Date.now()+c.limits.gemini_timeout_ms+c.limits.synthesis_reserve_ms+c.limits.packaging_reserve_ms>c.deadline?'time_budget_exhausted':c.attempted.length>=c.limits.max_pages?'page_budget_exhausted':c.round>=c.limits.max_research_rounds?'round_limit_reached':'candidates_exhausted';
- const failed=!c.webfacts.length&&c.research_issues.length>0;
- c.research=stage(c,failed?'failed':c.research_issues.length?'partial':'success',failed?null:{sources:c.webpages.map(p=>p.source),facts:c.webfacts,evidence_status:c.webfacts.length?'available':'none',source_assessments:c.assessments,qualified_source_count:count,target_sources:c.limits.target_sources,target_met:met,stop_reason:stop},c.research_issues);
- return c;
-}
+function researchResult(c) { return finalizeResearch(c); }
 
 const c=$input.first().json;const e=c.extracted;const full=(e.texts||[]).map(clean).filter(Boolean).join('\n\n');c.bio_page=null;
 if(validPage(c)&&e.titles?.length===1&&clean(e.titles[0]).toLowerCase()===c.author.name.toLowerCase()&&full){c.bio_page={source:pageSource(c,'bio:1',e.titles[0]),submitted_text:full.slice(0,c.limits.max_page_text_chars),truncated:full.length>c.limits.max_page_text_chars};}
