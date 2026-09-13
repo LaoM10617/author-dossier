@@ -1,0 +1,5929 @@
+{
+  "name": "Author Dossier - Child",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "77d39e1c-53c0-408a-b944-6ae83795347a",
+      "name": "Author Input"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:validate-author-input.js"
+      },
+      "id": "e706bf8d-f512-4c4f-a03c-5bca46056381",
+      "name": "Validate Author Input",
+      "position": [
+        270,
+        0
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:initialize-author.js"
+      },
+      "id": "6bf9235c-08ee-4c7a-937e-8007951f09b2",
+      "name": "Initialize Author",
+      "position": [
+        540,
+        0
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-categorizer.js"
+      },
+      "id": "e7d35641-5682-4031-9839-f62e7d171b24",
+      "name": "Prepare Categorizer",
+      "position": [
+        810,
+        0
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3774d63c-cc11-40cc-b6d6-cb193c617885",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c3e3bde5-022a-4451-b331-f198b5a05e19",
+      "name": "Categorizer Allowed",
+      "position": [
+        1080,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1350,
+        0
+      ],
+      "id": "0cd90587-ac80-450c-866c-995cbd66e3be",
+      "name": "Categorizer HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-capture.js"
+      },
+      "id": "33c72293-b659-482a-96b1-a75a56d38b99",
+      "name": "Categorizer Capture",
+      "position": [
+        1620,
+        0
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-skip.js"
+      },
+      "id": "f779beda-f3f4-4b28-b870-98c150dd794e",
+      "name": "Categorizer Skip",
+      "position": [
+        1890,
+        0
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-retry-plan.js"
+      },
+      "id": "2b144e00-4b99-4f14-956a-6ff20e966be0",
+      "name": "Categorizer Retry Plan",
+      "position": [
+        0,
+        280
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e7fcf9cd-ccd9-42ab-954e-7a59639fc48f",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4cd923e7-4cdc-4285-b771-c72b2df58e82",
+      "name": "Categorizer Retry",
+      "position": [
+        270,
+        280
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "cd9427a0-3b64-4c01-ba56-19002db80562",
+      "name": "Categorizer Wait",
+      "position": [
+        540,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        810,
+        280
+      ],
+      "id": "18f01532-d4d0-4e6f-bf09-37c1758ffc9a",
+      "name": "Categorizer Retry HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-retry-capture.js"
+      },
+      "id": "7c510a2f-4302-4279-9bcc-5c9225e5f9b1",
+      "name": "Categorizer Retry Capture",
+      "position": [
+        1080,
+        280
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-response.js"
+      },
+      "id": "512242c7-dd1b-4a53-b6ce-7fa5cb8cecf9",
+      "name": "Categorizer Response",
+      "position": [
+        1350,
+        280
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-repair-plan.js"
+      },
+      "id": "aabb2887-8fdd-4803-ab77-0815806413c3",
+      "name": "Categorizer Repair Plan",
+      "position": [
+        1620,
+        280
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e18c3f5a-fd04-426a-9e40-e35b8e3dfa7a",
+              "leftValue": "={{ $json.repair }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2ce4d7cf-9cdc-4ab7-809a-f31ca5f337c7",
+      "name": "Categorizer Repair",
+      "position": [
+        1890,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        560
+      ],
+      "id": "01c8d434-efbf-4822-acd3-52c0e01f856c",
+      "name": "Categorizer Repair HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-repair-capture.js"
+      },
+      "id": "ca1f3d95-968e-4067-bc2b-a7d6ca31a90e",
+      "name": "Categorizer Repair Capture",
+      "position": [
+        270,
+        560
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:categorizer-final-response.js"
+      },
+      "id": "7d27c9fd-7438-466d-8bdf-2268fe88f42a",
+      "name": "Categorizer Final Response",
+      "position": [
+        540,
+        560
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:normalize-categorizer.js"
+      },
+      "id": "cfa1fbab-d111-4e0b-a7d1-b3444816bdab",
+      "name": "Normalize Categorizer",
+      "position": [
+        810,
+        560
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-bio-fetch.js"
+      },
+      "id": "14c50206-629e-44b8-bd90-41f1cd1103b7",
+      "name": "Prepare Bio Fetch",
+      "position": [
+        1080,
+        560
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "17a6766f-efe7-48df-8d45-35b2d4639520",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "330b0666-a11a-4257-83c2-c813ba69a871",
+      "name": "Bio Page Allowed",
+      "position": [
+        1350,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1620,
+        560
+      ],
+      "id": "78e93d95-fece-463a-a151-29ed90bba99e",
+      "name": "Bio Page HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-page-capture.js"
+      },
+      "id": "d2612fca-e1dd-4415-90ca-27cbd4f309b9",
+      "name": "Bio Page Capture",
+      "position": [
+        1890,
+        560
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-page-skip.js"
+      },
+      "id": "e3606065-e661-402b-a9d0-360807028390",
+      "name": "Bio Page Skip",
+      "position": [
+        0,
+        840
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-page-retry-plan.js"
+      },
+      "id": "8a01de55-9f73-4945-a9f6-65e2f9351cfb",
+      "name": "Bio Page Retry Plan",
+      "position": [
+        270,
+        840
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4e3acc17-e3b8-472a-ab71-d4b19f06f6ac",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e912107b-8773-4948-88d3-71f6f2fcb6bc",
+      "name": "Bio Page Retry",
+      "position": [
+        540,
+        840
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "be14436c-8049-4dad-a945-bbfbb7010247",
+      "name": "Bio Page Wait",
+      "position": [
+        810,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1080,
+        840
+      ],
+      "id": "6472326e-6c94-438d-8138-fcd21d74d798",
+      "name": "Bio Page Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-page-retry-capture.js"
+      },
+      "id": "8cc401de-616f-4d52-bdb3-3c0b88e0353e",
+      "name": "Bio Page Retry Capture",
+      "position": [
+        1350,
+        840
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-page-response.js"
+      },
+      "id": "b5dbf151-eb8f-4097-b001-62fc2fbbec42",
+      "name": "Bio Page Response",
+      "position": [
+        1620,
+        840
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-html-input.js"
+      },
+      "id": "8171aea4-47d9-4ad4-b716-4ab62a64c331",
+      "name": "Bio HTML Input",
+      "position": [
+        1890,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": ".author-details .author-title",
+              "returnArray": true
+            },
+            {
+              "key": "texts",
+              "cssSelector": ".author-details",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        1120
+      ],
+      "id": "ad9c462e-b4b4-4246-be6a-5cc7841d524c",
+      "name": "Bio HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-parsed.js"
+      },
+      "id": "deb8867d-499a-424f-b45c-d887b173029d",
+      "name": "Bio Parsed",
+      "position": [
+        270,
+        1120
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-bio.js"
+      },
+      "id": "0ef0cb37-3e47-4474-aa3b-98e9164086f8",
+      "name": "Prepare Bio",
+      "position": [
+        540,
+        1120
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6d50a985-3a09-4c61-85c4-76b37c02a596",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "77beb5f8-2991-4204-8dfe-7ceed6147250",
+      "name": "Bio Gemini Allowed",
+      "position": [
+        810,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1080,
+        1120
+      ],
+      "id": "1549c45e-2e49-4867-99c7-3df0fb6a4288",
+      "name": "Bio Gemini HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-capture.js"
+      },
+      "id": "dd2ecbf9-e347-4b4b-9b08-fddb8973f671",
+      "name": "Bio Gemini Capture",
+      "position": [
+        1350,
+        1120
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-skip.js"
+      },
+      "id": "c2978813-1729-4a8d-ba1d-134e493537d5",
+      "name": "Bio Gemini Skip",
+      "position": [
+        1620,
+        1120
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-retry-plan.js"
+      },
+      "id": "3c6795ed-d4e0-426a-88f5-cc63f35afd37",
+      "name": "Bio Gemini Retry Plan",
+      "position": [
+        1890,
+        1120
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d0094058-4d44-48cb-9e1a-bea47e01c599",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c6fcdbe8-fcae-4d7d-9a74-aef7453a991d",
+      "name": "Bio Gemini Retry",
+      "position": [
+        0,
+        1400
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "718eb432-8ba8-46ce-a921-8d53da324a90",
+      "name": "Bio Gemini Wait",
+      "position": [
+        270,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        540,
+        1400
+      ],
+      "id": "f29ef7fa-b934-4b89-8496-0e5182830594",
+      "name": "Bio Gemini Retry HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-retry-capture.js"
+      },
+      "id": "cf07c8a8-8856-482b-9d87-2b5ee59530f6",
+      "name": "Bio Gemini Retry Capture",
+      "position": [
+        810,
+        1400
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-response.js"
+      },
+      "id": "c333be77-1d26-49ae-ae82-20f955fc5ab2",
+      "name": "Bio Gemini Response",
+      "position": [
+        1080,
+        1400
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-repair-plan.js"
+      },
+      "id": "864339fe-1b69-478f-b9d6-8339c19228f2",
+      "name": "Bio Gemini Repair Plan",
+      "position": [
+        1350,
+        1400
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "79f02be9-5d7e-4e91-8fbb-b34b7d403cc1",
+              "leftValue": "={{ $json.repair }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "329d94bf-30cd-4dfd-844f-ac11bb83194e",
+      "name": "Bio Gemini Repair",
+      "position": [
+        1620,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1890,
+        1400
+      ],
+      "id": "f800828a-9e31-408a-bcc8-914f269f4f25",
+      "name": "Bio Gemini Repair HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-repair-capture.js"
+      },
+      "id": "9b6f8509-0d2a-426f-971e-2c07a25aeb85",
+      "name": "Bio Gemini Repair Capture",
+      "position": [
+        0,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:bio-gemini-final-response.js"
+      },
+      "id": "2b500879-8b3b-4ba2-9b12-6145c646eb65",
+      "name": "Bio Gemini Final Response",
+      "position": [
+        270,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:normalize-bio.js"
+      },
+      "id": "e54fc453-6d89-4d3c-bc1c-7ab2db4fc7db",
+      "name": "Normalize Bio",
+      "position": [
+        540,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-search-1.js"
+      },
+      "id": "040fa639-9ba4-464a-a318-889ed350eaeb",
+      "name": "Prepare Search 1",
+      "position": [
+        810,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "78e8fcbb-b0b5-4a4d-af42-c40f0be0ffb3",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d8320309-b598-4ca0-bc54-73d1cb24105e",
+      "name": "Search 1 Allowed",
+      "position": [
+        1080,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1350,
+        1680
+      ],
+      "id": "3685dcf6-de4c-4d3f-934d-e6557f8d2068",
+      "name": "Search 1 HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-capture.js"
+      },
+      "id": "31246216-bc7f-4247-9a5a-4fb6e14a237e",
+      "name": "Search 1 Capture",
+      "position": [
+        1620,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-skip.js"
+      },
+      "id": "6df994a5-5fbf-4fc1-8321-3b7e34beee32",
+      "name": "Search 1 Skip",
+      "position": [
+        1890,
+        1680
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-retry-plan.js"
+      },
+      "id": "6ea965f9-8353-45f4-9670-abfd0d0fa294",
+      "name": "Search 1 Retry Plan",
+      "position": [
+        0,
+        1960
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e23bf8c3-6453-43c3-9c40-e1127c272d4b",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ccfbd49c-9e60-43e5-8cf4-20afdf9183e7",
+      "name": "Search 1 Retry",
+      "position": [
+        270,
+        1960
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "3aeef047-6c69-41d8-918b-4a9af192086f",
+      "name": "Search 1 Wait",
+      "position": [
+        540,
+        1960
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        810,
+        1960
+      ],
+      "id": "0881686b-1ec3-44a9-a1f0-bec0789bfb3c",
+      "name": "Search 1 Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-retry-capture.js"
+      },
+      "id": "fdd8371e-ea51-452d-9183-6d47288d9a01",
+      "name": "Search 1 Retry Capture",
+      "position": [
+        1080,
+        1960
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-response.js"
+      },
+      "id": "57403b31-cc70-4328-b874-abf1f8d15bad",
+      "name": "Search 1 Response",
+      "position": [
+        1350,
+        1960
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-html-input.js"
+      },
+      "id": "31e919a7-93dd-4331-823c-c4410fbb5caf",
+      "name": "Search 1 HTML Input",
+      "position": [
+        1620,
+        1960
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "links",
+              "cssSelector": "#b_results .b_algo h2 a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "titles",
+              "cssSelector": "#b_results .b_algo h2 a",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1890,
+        1960
+      ],
+      "id": "94db3754-329e-408f-9704-ceacb901aefa",
+      "name": "Search 1 HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-1-parsed.js"
+      },
+      "id": "b4b881a5-cd50-4658-b8cc-336e77ef66cb",
+      "name": "Search 1 Parsed",
+      "position": [
+        0,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:select-candidates-1.js"
+      },
+      "id": "020f5430-68a8-45e3-9324-87dfda442603",
+      "name": "Select Candidates 1",
+      "position": [
+        270,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-r1-page-1.js"
+      },
+      "id": "a9ddf36e-3dbb-4f65-a1d6-2e29da13cd3f",
+      "name": "Prepare R1 Page 1",
+      "position": [
+        540,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ca3477e8-1394-491b-8dda-bd5c30c1500d",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fed86e4d-f146-4fa8-a480-3114a83fa9f8",
+      "name": "R1 Page 1 Allowed",
+      "position": [
+        810,
+        2240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1080,
+        2240
+      ],
+      "id": "4b45e536-934b-4f5c-8bf5-ecc279d824c0",
+      "name": "R1 Page 1 HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-capture.js"
+      },
+      "id": "4bb95be7-5fea-48b3-9270-d79b9ab3bf43",
+      "name": "R1 Page 1 Capture",
+      "position": [
+        1350,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-skip.js"
+      },
+      "id": "8ad0052f-4a38-4fdb-9aa5-142d29a4c0dc",
+      "name": "R1 Page 1 Skip",
+      "position": [
+        1620,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-retry-plan.js"
+      },
+      "id": "a2c49e6f-79bd-45e6-9df3-0d6e6cf96456",
+      "name": "R1 Page 1 Retry Plan",
+      "position": [
+        1890,
+        2240
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d68aa9b7-95f3-4c11-84b5-00f9fe112de6",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3ed2745f-d187-41f1-9610-25c76ee667bf",
+      "name": "R1 Page 1 Retry",
+      "position": [
+        0,
+        2520
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "10c77350-ad6e-449e-a417-f67650911c9c",
+      "name": "R1 Page 1 Wait",
+      "position": [
+        270,
+        2520
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        540,
+        2520
+      ],
+      "id": "a640cca9-4617-42a9-8bcb-53a5e924991b",
+      "name": "R1 Page 1 Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-retry-capture.js"
+      },
+      "id": "99b19390-fdb6-4197-9404-e9721f6a7e9d",
+      "name": "R1 Page 1 Retry Capture",
+      "position": [
+        810,
+        2520
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-response.js"
+      },
+      "id": "3ac878d4-b2c2-4b2c-9381-cc366c52b877",
+      "name": "R1 Page 1 Response",
+      "position": [
+        1080,
+        2520
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-html-input.js"
+      },
+      "id": "901d3b90-00f8-4a50-93c0-27176a9f70f5",
+      "name": "R1 Page 1 HTML Input",
+      "position": [
+        1350,
+        2520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": "title",
+              "returnArray": true
+            },
+            {
+              "key": "article",
+              "cssSelector": "article p, #mw-content-text .mw-parser-output p",
+              "returnArray": true
+            },
+            {
+              "key": "main",
+              "cssSelector": "main p",
+              "returnArray": true
+            },
+            {
+              "key": "body",
+              "cssSelector": "body p",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1620,
+        2520
+      ],
+      "id": "58821d9d-93aa-4cd1-94ec-43c451bf1b20",
+      "name": "R1 Page 1 HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-1-parsed.js"
+      },
+      "id": "99ff5819-07b8-4c6e-a699-3452c4333f87",
+      "name": "R1 Page 1 Parsed",
+      "position": [
+        1890,
+        2520
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:collect-r1-page-1.js"
+      },
+      "id": "c118eeeb-f3c6-428e-bde1-fa1d04a2300f",
+      "name": "Collect R1 Page 1",
+      "position": [
+        0,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-r1-page-2.js"
+      },
+      "id": "e3e68a5a-8fa3-44f1-abdb-79f614a6d6c9",
+      "name": "Prepare R1 Page 2",
+      "position": [
+        270,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2f87e748-04c0-417a-a137-f19703cce7a4",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "767756d8-b092-4360-8f0e-867af20dade3",
+      "name": "R1 Page 2 Allowed",
+      "position": [
+        540,
+        2800
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        810,
+        2800
+      ],
+      "id": "de17a371-3f8f-41ee-a4a2-cecc63b6bebd",
+      "name": "R1 Page 2 HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-capture.js"
+      },
+      "id": "af75a81d-f8b7-480e-b1e5-f6eb314a59a1",
+      "name": "R1 Page 2 Capture",
+      "position": [
+        1080,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-skip.js"
+      },
+      "id": "e9d25e71-69c4-4940-aef7-15e4792d71f9",
+      "name": "R1 Page 2 Skip",
+      "position": [
+        1350,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-retry-plan.js"
+      },
+      "id": "cda37f81-03ca-4d63-a626-1091d797b19b",
+      "name": "R1 Page 2 Retry Plan",
+      "position": [
+        1620,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1f997061-2b02-4dc7-b71a-df99dd80692d",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "57934fee-13c0-4413-8c30-3b7d35516372",
+      "name": "R1 Page 2 Retry",
+      "position": [
+        1890,
+        2800
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "2bd0b3ea-4aef-48f6-abc4-9407edc50214",
+      "name": "R1 Page 2 Wait",
+      "position": [
+        0,
+        3080
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        270,
+        3080
+      ],
+      "id": "6aa2a3ab-5074-4811-b5ab-4149b4a84de8",
+      "name": "R1 Page 2 Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-retry-capture.js"
+      },
+      "id": "910f4753-fd09-4fbd-832f-4b13ec3f4ff0",
+      "name": "R1 Page 2 Retry Capture",
+      "position": [
+        540,
+        3080
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-response.js"
+      },
+      "id": "da6cd403-d151-4330-846f-27ffbe241f06",
+      "name": "R1 Page 2 Response",
+      "position": [
+        810,
+        3080
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-html-input.js"
+      },
+      "id": "3147c098-add5-4cba-b580-6ef6309fc1e1",
+      "name": "R1 Page 2 HTML Input",
+      "position": [
+        1080,
+        3080
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": "title",
+              "returnArray": true
+            },
+            {
+              "key": "article",
+              "cssSelector": "article p, #mw-content-text .mw-parser-output p",
+              "returnArray": true
+            },
+            {
+              "key": "main",
+              "cssSelector": "main p",
+              "returnArray": true
+            },
+            {
+              "key": "body",
+              "cssSelector": "body p",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1350,
+        3080
+      ],
+      "id": "5c526bc2-8d5d-4597-b5cc-0c1b7c40ce31",
+      "name": "R1 Page 2 HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r1-page-2-parsed.js"
+      },
+      "id": "d08527a5-1ef3-46e3-9e9d-066294020b3c",
+      "name": "R1 Page 2 Parsed",
+      "position": [
+        1620,
+        3080
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:collect-r1-page-2.js"
+      },
+      "id": "788ceef3-cab3-4a70-9b3c-b02ac0593a8e",
+      "name": "Collect R1 Page 2",
+      "position": [
+        1890,
+        3080
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-research-round-1.js"
+      },
+      "id": "b3712334-72f0-487f-944c-8260fd5441d3",
+      "name": "Prepare Research Round 1",
+      "position": [
+        0,
+        3360
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a396307c-a504-4f4e-a93b-e65e4761ee7d",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2a447456-a923-46cb-8d81-a48f70bf94e0",
+      "name": "Research 1 Allowed",
+      "position": [
+        270,
+        3360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        540,
+        3360
+      ],
+      "id": "26d9eeb4-b99d-4f37-a905-5a091ec53b8f",
+      "name": "Research 1 HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-capture.js"
+      },
+      "id": "ae17a2c6-0279-45a1-9fde-615e6aca5188",
+      "name": "Research 1 Capture",
+      "position": [
+        810,
+        3360
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-skip.js"
+      },
+      "id": "737138b0-95bd-482f-ac92-55900dd3a87c",
+      "name": "Research 1 Skip",
+      "position": [
+        1080,
+        3360
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-retry-plan.js"
+      },
+      "id": "d3957c89-ba4f-42dd-b402-cfcad95c3340",
+      "name": "Research 1 Retry Plan",
+      "position": [
+        1350,
+        3360
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc86528b-02f0-4b4c-beba-95790f673489",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d5943037-3db5-4b0a-99fb-9d60b3980d29",
+      "name": "Research 1 Retry",
+      "position": [
+        1620,
+        3360
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "8928cffe-fd9f-4438-8b56-04a34f396156",
+      "name": "Research 1 Wait",
+      "position": [
+        1890,
+        3360
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        0,
+        3640
+      ],
+      "id": "f7df70e9-86e9-4ff1-8fc0-4627f4de3686",
+      "name": "Research 1 Retry HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-retry-capture.js"
+      },
+      "id": "05b90f42-547f-45b2-b852-5d1e1efd9a80",
+      "name": "Research 1 Retry Capture",
+      "position": [
+        270,
+        3640
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-response.js"
+      },
+      "id": "9d0effee-8d33-4d1d-9968-4c1188e20d36",
+      "name": "Research 1 Response",
+      "position": [
+        540,
+        3640
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-repair-plan.js"
+      },
+      "id": "6f1502a3-c80f-4214-baf6-080d67e4206e",
+      "name": "Research 1 Repair Plan",
+      "position": [
+        810,
+        3640
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ceb7ae10-236a-4dc5-921d-f20133f5ce41",
+              "leftValue": "={{ $json.repair }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d6f09c7b-5498-4269-b5e2-975700540757",
+      "name": "Research 1 Repair",
+      "position": [
+        1080,
+        3640
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1350,
+        3640
+      ],
+      "id": "52d9a611-7ef9-41f2-be89-3901a1ab056f",
+      "name": "Research 1 Repair HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-repair-capture.js"
+      },
+      "id": "34ebe68b-40f9-4101-a148-5734d82cecc1",
+      "name": "Research 1 Repair Capture",
+      "position": [
+        1620,
+        3640
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-1-final-response.js"
+      },
+      "id": "2463e972-c8e6-4e1c-8127-0ee9c759204f",
+      "name": "Research 1 Final Response",
+      "position": [
+        1890,
+        3640
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:normalize-research-1.js"
+      },
+      "id": "f7afbdec-8e47-4d29-881b-3398e05d81b1",
+      "name": "Normalize Research 1",
+      "position": [
+        0,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-search-2.js"
+      },
+      "id": "03e3c5f0-fdd2-4ace-b274-3c0086cfd135",
+      "name": "Prepare Search 2",
+      "position": [
+        270,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5fab2c86-b145-49f1-b771-7c87ca3e7b2c",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cb565cec-541b-449c-abdf-77e816bda5dd",
+      "name": "Search 2 Allowed",
+      "position": [
+        540,
+        3920
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        810,
+        3920
+      ],
+      "id": "f2f21779-bf1e-4820-9ebc-e4d6443b6eba",
+      "name": "Search 2 HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-capture.js"
+      },
+      "id": "c9f31960-064c-4183-9fba-2e3240834928",
+      "name": "Search 2 Capture",
+      "position": [
+        1080,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-skip.js"
+      },
+      "id": "f77a240a-efce-4c2c-9ef3-f857720b5f68",
+      "name": "Search 2 Skip",
+      "position": [
+        1350,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-retry-plan.js"
+      },
+      "id": "014ff55f-2164-413b-96b9-0c7848898896",
+      "name": "Search 2 Retry Plan",
+      "position": [
+        1620,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6f575ec6-3347-47a9-901f-cbd2f87b2414",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1a496d3f-7049-4688-a038-31d2659f9d8e",
+      "name": "Search 2 Retry",
+      "position": [
+        1890,
+        3920
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "e5b27374-240b-4ed3-b3a4-dc81366c09c8",
+      "name": "Search 2 Wait",
+      "position": [
+        0,
+        4200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        270,
+        4200
+      ],
+      "id": "3c4ec692-793e-4f62-9b44-55029ce79530",
+      "name": "Search 2 Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-retry-capture.js"
+      },
+      "id": "470fbc97-2625-49e5-a583-ba39efac6d04",
+      "name": "Search 2 Retry Capture",
+      "position": [
+        540,
+        4200
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-response.js"
+      },
+      "id": "2df7cd83-deed-4361-acc9-76427e0308b4",
+      "name": "Search 2 Response",
+      "position": [
+        810,
+        4200
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-html-input.js"
+      },
+      "id": "646cfa58-d14b-43c7-af30-ff865d52ef18",
+      "name": "Search 2 HTML Input",
+      "position": [
+        1080,
+        4200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "links",
+              "cssSelector": "#b_results .b_algo h2 a",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "titles",
+              "cssSelector": "#b_results .b_algo h2 a",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1350,
+        4200
+      ],
+      "id": "3ef97183-077b-4401-9708-5ba4af09695a",
+      "name": "Search 2 HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:search-2-parsed.js"
+      },
+      "id": "d07d8717-7f51-4049-9807-c89cf20806de",
+      "name": "Search 2 Parsed",
+      "position": [
+        1620,
+        4200
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:select-candidates-2.js"
+      },
+      "id": "5b74c3c4-7a0e-41e0-955d-6bd57bccddce",
+      "name": "Select Candidates 2",
+      "position": [
+        1890,
+        4200
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-r2-page-1.js"
+      },
+      "id": "70460d52-bfb1-4b50-a13a-df042b7e2a65",
+      "name": "Prepare R2 Page 1",
+      "position": [
+        0,
+        4480
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "851485f9-80a5-4fcd-ab57-07f52fb2cd48",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "524c101d-6f4e-4f9c-9891-f65ad6413e90",
+      "name": "R2 Page 1 Allowed",
+      "position": [
+        270,
+        4480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        540,
+        4480
+      ],
+      "id": "5db06bcc-93f6-426d-bca0-225247d995fe",
+      "name": "R2 Page 1 HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-capture.js"
+      },
+      "id": "843a3fb7-ce77-4a1b-96e7-007b7b1424ca",
+      "name": "R2 Page 1 Capture",
+      "position": [
+        810,
+        4480
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-skip.js"
+      },
+      "id": "7267ee4e-8d11-49b8-a889-015c55a47999",
+      "name": "R2 Page 1 Skip",
+      "position": [
+        1080,
+        4480
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-retry-plan.js"
+      },
+      "id": "740ba858-dd48-4fb5-8077-12c9540d745e",
+      "name": "R2 Page 1 Retry Plan",
+      "position": [
+        1350,
+        4480
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3979f47a-9cd2-4b71-a360-6bfc67fad2b3",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a6ffcf69-61fa-4e33-a9d1-25803c3b1939",
+      "name": "R2 Page 1 Retry",
+      "position": [
+        1620,
+        4480
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "7f315581-e0e9-470f-8b6e-cc0c9ed00fc0",
+      "name": "R2 Page 1 Wait",
+      "position": [
+        1890,
+        4480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.req.body.url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        4760
+      ],
+      "id": "7b4fd87c-c989-4043-8747-4d2221c783b3",
+      "name": "R2 Page 1 Retry HTTP",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-retry-capture.js"
+      },
+      "id": "78a94f66-be82-4936-af7a-7a372d550e76",
+      "name": "R2 Page 1 Retry Capture",
+      "position": [
+        270,
+        4760
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-response.js"
+      },
+      "id": "32cdd994-250f-443e-9322-4f513c77ebaa",
+      "name": "R2 Page 1 Response",
+      "position": [
+        540,
+        4760
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-html-input.js"
+      },
+      "id": "3606b8b3-ddf2-41b8-919f-c4696622e88e",
+      "name": "R2 Page 1 HTML Input",
+      "position": [
+        810,
+        4760
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "titles",
+              "cssSelector": "title",
+              "returnArray": true
+            },
+            {
+              "key": "article",
+              "cssSelector": "article p, #mw-content-text .mw-parser-output p",
+              "returnArray": true
+            },
+            {
+              "key": "main",
+              "cssSelector": "main p",
+              "returnArray": true
+            },
+            {
+              "key": "body",
+              "cssSelector": "body p",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1080,
+        4760
+      ],
+      "id": "7a49cc32-b14f-43d4-af7a-cbfa7d612a0b",
+      "name": "R2 Page 1 HTML"
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:r2-page-1-parsed.js"
+      },
+      "id": "11e7fab7-2ca6-438a-855e-eef5f26f0e31",
+      "name": "R2 Page 1 Parsed",
+      "position": [
+        1350,
+        4760
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:collect-r2-page-1.js"
+      },
+      "id": "03f49db8-9e99-47ea-a3dc-a9c65233e34a",
+      "name": "Collect R2 Page 1",
+      "position": [
+        1620,
+        4760
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-research-round-2.js"
+      },
+      "id": "3d029c5d-091f-4fe9-a6fa-90f56dda301b",
+      "name": "Prepare Research Round 2",
+      "position": [
+        1890,
+        4760
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f7422bcb-91c1-4a8f-b425-ef3cf1c9e348",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c95d4b28-c84d-43d6-bcdf-dc411813a0dc",
+      "name": "Research 2 Allowed",
+      "position": [
+        0,
+        5040
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        270,
+        5040
+      ],
+      "id": "f274c12c-b809-4e5f-8cda-57f71b2fa4b8",
+      "name": "Research 2 HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-capture.js"
+      },
+      "id": "d1058399-239e-4426-b97e-2fb2b0551694",
+      "name": "Research 2 Capture",
+      "position": [
+        540,
+        5040
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-skip.js"
+      },
+      "id": "f217324e-399b-45c8-a890-079de968ce7f",
+      "name": "Research 2 Skip",
+      "position": [
+        810,
+        5040
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-retry-plan.js"
+      },
+      "id": "b92639c2-3400-4d99-87c7-dc4510fe8a56",
+      "name": "Research 2 Retry Plan",
+      "position": [
+        1080,
+        5040
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "051dc70f-6c08-4552-91d7-4743e990426d",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e98fda86-36df-4658-a1a5-46293685099a",
+      "name": "Research 2 Retry",
+      "position": [
+        1350,
+        5040
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "d41ac772-5b6a-484c-ae3f-7573857cab77",
+      "name": "Research 2 Wait",
+      "position": [
+        1620,
+        5040
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1890,
+        5040
+      ],
+      "id": "8012ac71-7827-4c90-bf8c-a2a41a24b87c",
+      "name": "Research 2 Retry HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-retry-capture.js"
+      },
+      "id": "bc26ee95-e1c8-4f9d-854b-791e3285737b",
+      "name": "Research 2 Retry Capture",
+      "position": [
+        0,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-response.js"
+      },
+      "id": "1868fcfd-96c3-4ce2-9c7f-3cae305c4f70",
+      "name": "Research 2 Response",
+      "position": [
+        270,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-repair-plan.js"
+      },
+      "id": "a3cfea86-55a9-4e08-9f39-e9931a33d1ce",
+      "name": "Research 2 Repair Plan",
+      "position": [
+        540,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7bd28ed1-d05b-4e68-9df6-5a79dec46c75",
+              "leftValue": "={{ $json.repair }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "423c5b9c-998e-4118-bb26-d70c1f3b7e71",
+      "name": "Research 2 Repair",
+      "position": [
+        810,
+        5320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1080,
+        5320
+      ],
+      "id": "6920e5d3-11e0-4564-9440-80a26ada2d47",
+      "name": "Research 2 Repair HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-repair-capture.js"
+      },
+      "id": "495d565f-f546-4cf1-b2cc-5d3e4ff86e80",
+      "name": "Research 2 Repair Capture",
+      "position": [
+        1350,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:research-2-final-response.js"
+      },
+      "id": "2705ec14-6b7f-4185-81e3-ca3859c13730",
+      "name": "Research 2 Final Response",
+      "position": [
+        1620,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:normalize-research-2.js"
+      },
+      "id": "0146e048-1cb4-4e83-86b8-a8d6e90559a4",
+      "name": "Normalize Research 2",
+      "position": [
+        1890,
+        5320
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:assemble-author-evidence.js"
+      },
+      "id": "48a53046-3c21-484e-9c73-6fbd43d6dbdb",
+      "name": "Assemble Author Evidence",
+      "position": [
+        0,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:prepare-synthesis-request.js"
+      },
+      "id": "8f4ee359-1166-4163-ba5b-cb09c18ac6da",
+      "name": "Prepare Synthesis Request",
+      "position": [
+        270,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a7c82404-0f51-482d-b282-25e4a42b9cef",
+              "leftValue": "={{ $json.req.allowed }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4a3e2328-def1-43e2-971d-606dca1352c2",
+      "name": "Synthesis Allowed",
+      "position": [
+        540,
+        5600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        810,
+        5600
+      ],
+      "id": "57096c6d-2cdc-4a89-a05f-967803fb7244",
+      "name": "Synthesis HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-capture.js"
+      },
+      "id": "b8d87ea5-f263-4e1c-a352-2ad7a9947a00",
+      "name": "Synthesis Capture",
+      "position": [
+        1080,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-skip.js"
+      },
+      "id": "53ee68d0-30aa-4818-b9cb-556afc0bf71e",
+      "name": "Synthesis Skip",
+      "position": [
+        1350,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-retry-plan.js"
+      },
+      "id": "0f41788c-eaaf-4899-afd4-ba8ffe615592",
+      "name": "Synthesis Retry Plan",
+      "position": [
+        1620,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a9dd416c-746d-47a1-aa16-d954349d8a80",
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "957159fa-0e4c-4890-8597-532bddb33de8",
+      "name": "Synthesis Retry",
+      "position": [
+        1890,
+        5600
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json.wait_seconds }}",
+        "unit": "seconds"
+      },
+      "id": "9c4a4a4c-b7e6-4055-9b76-3b36e695ec33",
+      "name": "Synthesis Wait",
+      "position": [
+        0,
+        5880
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        270,
+        5880
+      ],
+      "id": "c4d7f463-7568-4c96-a997-8591519d3460",
+      "name": "Synthesis Retry HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-retry-capture.js"
+      },
+      "id": "1e5672f1-8418-4731-9427-a55451f052bd",
+      "name": "Synthesis Retry Capture",
+      "position": [
+        540,
+        5880
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-response.js"
+      },
+      "id": "56bca333-814a-447e-8c14-e1bf99f60261",
+      "name": "Synthesis Response",
+      "position": [
+        810,
+        5880
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-repair-plan.js"
+      },
+      "id": "71c2c058-44e8-416c-903a-237a8d2f97a5",
+      "name": "Synthesis Repair Plan",
+      "position": [
+        1080,
+        5880
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b8822b90-cd8e-470b-87c0-8274f050d90d",
+              "leftValue": "={{ $json.repair }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "043f0845-25b0-4178-945f-223f4c5c9b70",
+      "name": "Synthesis Repair",
+      "position": [
+        1350,
+        5880
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.req.body }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json",
+              "neverError": true
+            }
+          },
+          "timeout": "={{ $json.req.timeout }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1620,
+        5880
+      ],
+      "id": "a3ebdfca-bb67-41fb-ba55-7cdd1c858c0c",
+      "name": "Synthesis Repair HTTP",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "retryOnFail": false
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-repair-capture.js"
+      },
+      "id": "4c37e44c-18b4-4a5a-9401-0fd93b6c89a4",
+      "name": "Synthesis Repair Capture",
+      "position": [
+        1890,
+        5880
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:synthesis-final-response.js"
+      },
+      "id": "049bf8db-3ba2-4478-b5ea-1fd747342d53",
+      "name": "Synthesis Final Response",
+      "position": [
+        0,
+        6160
+      ]
+    },
+    {
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "__SOURCE__:package-author-envelope.js"
+      },
+      "id": "cc80a88d-2b95-4bb7-8a4b-4f499752b0af",
+      "name": "Package Author Envelope",
+      "position": [
+        270,
+        6160
+      ]
+    },
+    {
+      "id": "handover-note",
+      "name": "Architecture and Handover",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -650
+      ],
+      "parameters": {
+        "content": "## Author Dossier\nSee README for setup, tested scope and known limitations. Bind personal credentials and the child workflow before execution.",
+        "width": 1100,
+        "height": 500
+      }
+    }
+  ],
+  "connections": {
+    "Author Input": {
+      "main": [
+        [
+          {
+            "node": "Validate Author Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Author Input": {
+      "main": [
+        [
+          {
+            "node": "Initialize Author",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Author": {
+      "main": [
+        [
+          {
+            "node": "Prepare Categorizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Categorizer": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Allowed": {
+      "main": [
+        [
+          {
+            "node": "Categorizer HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizer Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer HTTP": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Capture": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Skip": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Retry": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizer Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Wait": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Response": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Repair Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Repair Plan": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Repair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Repair": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Repair HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizer Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Repair HTTP": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Repair Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Repair Capture": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Final Response": {
+      "main": [
+        [
+          {
+            "node": "Normalize Categorizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Categorizer": {
+      "main": [
+        [
+          {
+            "node": "Prepare Bio Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Bio Fetch": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Allowed": {
+      "main": [
+        [
+          {
+            "node": "Bio Page HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bio Page Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page HTTP": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Capture": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Skip": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Retry": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bio Page Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Wait": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Bio Page Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Page Response": {
+      "main": [
+        [
+          {
+            "node": "Bio HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio HTML Input": {
+      "main": [
+        [
+          {
+            "node": "Bio HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio HTML": {
+      "main": [
+        [
+          {
+            "node": "Bio Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Parsed": {
+      "main": [
+        [
+          {
+            "node": "Prepare Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Bio": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Allowed": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bio Gemini Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini HTTP": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Capture": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Skip": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Retry": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bio Gemini Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Wait": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Response": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Repair Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Repair Plan": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Repair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Repair": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Repair HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bio Gemini Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Repair HTTP": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Repair Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Repair Capture": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini Final Response": {
+      "main": [
+        [
+          {
+            "node": "Normalize Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Bio": {
+      "main": [
+        [
+          {
+            "node": "Prepare Search 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Search 1": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Allowed": {
+      "main": [
+        [
+          {
+            "node": "Search 1 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search 1 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 HTTP": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Capture": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Skip": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Retry": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Wait": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Response": {
+      "main": [
+        [
+          {
+            "node": "Search 1 HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 HTML Input": {
+      "main": [
+        [
+          {
+            "node": "Search 1 HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 HTML": {
+      "main": [
+        [
+          {
+            "node": "Search 1 Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 1 Parsed": {
+      "main": [
+        [
+          {
+            "node": "Select Candidates 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Candidates 1": {
+      "main": [
+        [
+          {
+            "node": "Prepare R1 Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare R1 Page 1": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Allowed": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R1 Page 1 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 HTTP": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Capture": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Skip": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Retry": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R1 Page 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Wait": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Response": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 HTML Input": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 HTML": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 1 Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 1 Parsed": {
+      "main": [
+        [
+          {
+            "node": "Collect R1 Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect R1 Page 1": {
+      "main": [
+        [
+          {
+            "node": "Prepare R1 Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare R1 Page 2": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Allowed": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R1 Page 2 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 HTTP": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Capture": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Skip": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Retry": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R1 Page 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Wait": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Response": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 HTML Input": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 HTML": {
+      "main": [
+        [
+          {
+            "node": "R1 Page 2 Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R1 Page 2 Parsed": {
+      "main": [
+        [
+          {
+            "node": "Collect R1 Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect R1 Page 2": {
+      "main": [
+        [
+          {
+            "node": "Prepare Research Round 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Research Round 1": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Allowed": {
+      "main": [
+        [
+          {
+            "node": "Research 1 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 1 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Skip": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Retry": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Wait": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Response": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Repair Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Repair Plan": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Repair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Repair": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Repair HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 1 Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Repair HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Repair Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Repair Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 1 Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 1 Final Response": {
+      "main": [
+        [
+          {
+            "node": "Normalize Research 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Research 1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Search 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Search 2": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Allowed": {
+      "main": [
+        [
+          {
+            "node": "Search 2 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search 2 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 HTTP": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Capture": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Skip": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Retry": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Search 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Wait": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Response": {
+      "main": [
+        [
+          {
+            "node": "Search 2 HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 HTML Input": {
+      "main": [
+        [
+          {
+            "node": "Search 2 HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 HTML": {
+      "main": [
+        [
+          {
+            "node": "Search 2 Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search 2 Parsed": {
+      "main": [
+        [
+          {
+            "node": "Select Candidates 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Candidates 2": {
+      "main": [
+        [
+          {
+            "node": "Prepare R2 Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare R2 Page 1": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Allowed": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R2 Page 1 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 HTTP": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Capture": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Skip": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Retry": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "R2 Page 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Wait": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Response": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 HTML Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 HTML Input": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 HTML": {
+      "main": [
+        [
+          {
+            "node": "R2 Page 1 Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R2 Page 1 Parsed": {
+      "main": [
+        [
+          {
+            "node": "Collect R2 Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect R2 Page 1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Research Round 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Research Round 2": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Allowed": {
+      "main": [
+        [
+          {
+            "node": "Research 2 HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 2 Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Skip": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Retry": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Wait": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Response": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Repair Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Repair Plan": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Repair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Repair": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Repair HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Research 2 Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Repair HTTP": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Repair Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Repair Capture": {
+      "main": [
+        [
+          {
+            "node": "Research 2 Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research 2 Final Response": {
+      "main": [
+        [
+          {
+            "node": "Normalize Research 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Research 2": {
+      "main": [
+        [
+          {
+            "node": "Assemble Author Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Author Evidence": {
+      "main": [
+        [
+          {
+            "node": "Prepare Synthesis Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Synthesis Request": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Allowed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Allowed": {
+      "main": [
+        [
+          {
+            "node": "Synthesis HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Synthesis Skip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis HTTP": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Capture": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Skip": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Retry Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Retry Plan": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Retry": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Synthesis Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Wait": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Retry HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Retry HTTP": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Retry Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Retry Capture": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Response": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Repair Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Repair Plan": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Repair",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Repair": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Repair HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Synthesis Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Repair HTTP": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Repair Capture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Repair Capture": {
+      "main": [
+        [
+          {
+            "node": "Synthesis Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesis Final Response": {
+      "main": [
+        [
+          {
+            "node": "Package Author Envelope",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "pinData": {}
+}

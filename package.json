@@ -1,0 +1,13 @@
+{
+  "name": "author-dossier",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-aware author research workflows for n8n",
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "test": "node scripts/test.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

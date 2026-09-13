@@ -1,0 +1,1 @@
+const blocks=$input.first().json.blocks;return (Array.isArray(blocks)&&blocks.length?blocks:['']).map((html,i)=>({json:{html},pairedItem:{item:0}}));

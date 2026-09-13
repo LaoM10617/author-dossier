@@ -1,0 +1,1 @@
+return $('Prepare Batch').first().json.author_inputs.map(json=>({json,pairedItem:{item:0}}));

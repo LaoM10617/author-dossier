@@ -1,0 +1,1955 @@
+{
+  "name": "Author Dossier - Parent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Author Dossier\nSee README for setup, tested scope and known limitations. Bind personal credentials and the child workflow before execution.",
+        "height": 2414,
+        "width": 612
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "65183722-0130-4906-97c5-7e2d4465c99e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        752,
+        240
+      ],
+      "id": "60ef9d08-9c3a-4ebe-b16a-068f7b48b924",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"browserless.io\",\n  \"sources\": [\"web\"],\n  \"limit\": 3\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7392,
+        2032
+      ],
+      "id": "a3a291c2-13e5-4dad-bb30-0ff0bcdd1bc8",
+      "name": "Probe Browserless Search",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://quotes.toscrape.com/"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7184,
+        2032
+      ],
+      "id": "09f38951-8297-4b61-9ce0-c821d45c11fa",
+      "name": "Probe Browserless Content",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://en.wikipedia.org/wiki/Albert_Einstein"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        6944,
+        2032
+      ],
+      "id": "43b16dc6-d375-4377-a712-6277880501e1",
+      "name": "Probe Search Results HTML",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "url": "https://generativelanguage.googleapis.com/v1beta/models",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        7584,
+        2032
+      ],
+      "id": "b42383b3-de0c-4092-9553-cb3929d25527",
+      "name": "Probe Gemini Models"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"run_id\": \"m03-fixed-001\",\n  \"page_urls\": [\n    \"https://quotes.toscrape.com/\",\n    \"https://quotes.toscrape.com/page/2/\"\n  ],\n  \"limits\": {\n    \"target_sources\": 2,\n    \"max_pages\": 3,\n    \"max_searches\": 2,\n    \"candidates_per_search\": 3,\n    \"max_research_rounds\": 2,\n    \"request_retries\": 1,\n    \"gemini_transport_retries\": 1,\n    \"gemini_repair_calls\": 1,\n    \"max_gemini_requests_per_step\": 3,\n    \"retry_wait_ms\": 2000,\n    \"request_timeout_ms\": 30000,\n    \"gemini_timeout_ms\": 60000,\n    \"author_budget_ms\": 360000,\n    \"synthesis_reserve_ms\": 60000,\n    \"packaging_reserve_ms\": 5000,\n    \"max_page_text_chars\": 20000,\n    \"max_model_input_chars\": 60000,\n    \"prior_reference_chars_per_source\": 2000\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        6080,
+        1264
+      ],
+      "id": "062f3818-5c0a-4195-babe-291f5e117d3d",
+      "name": "Run Config"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:validate-config.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6704,
+        1248
+      ],
+      "id": "a81af220-30a0-4fd7-9805-29041ba7c96e",
+      "name": "Validate Config"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:build-fixture-authors.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5824,
+        2304
+      ],
+      "id": "23bd0e70-a505-4812-a072-21d30ce11d8c",
+      "name": "Build Fixture Authors"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        6160,
+        2240
+      ],
+      "id": "06638c81-56ea-4737-8694-12b45a85fdf1",
+      "name": "Loop Authors"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        6368,
+        2256
+      ],
+      "id": "434b75cd-0c0c-453c-ae18-889a3f348c45",
+      "name": "Current Author"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "4PsI03CkAbJIWQl4",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/4PsI03CkAbJIWQl4",
+          "cachedResultName": "Author Dossier - Author"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        6592,
+        2256
+      ],
+      "id": "36ba377f-7074-4851-bb1b-00d345223857",
+      "name": "Call Author Dossier",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-author-return.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6816,
+        2256
+      ],
+      "id": "7edd3638-ecb4-4b33-8ee5-3aab8cf2216c",
+      "name": "Normalize Author Return"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:check-fixture-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6368,
+        2112
+      ],
+      "id": "3511ed3b-be76-4745-9dd8-f936bf195dae",
+      "name": "Check Fixture Batch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "288ecccc-1e1e-4a91-ba48-321d83555f44",
+              "leftValue": "={{ $json.control.stop_new_authors === true\n   && $json.control.scope === 'batch' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        7040,
+        2256
+      ],
+      "id": "8959b9ef-7d10-44d6-929e-2c207040faa2",
+      "name": "Batch Stop Requested?"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:finalize-stopped-fixture-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7328,
+        2304
+      ],
+      "id": "2ded2947-2a95-4e1f-843f-9c89bb367eaa",
+      "name": "Finalize Stopped Fixture Batch"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:build-single-author-input.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7408,
+        1344
+      ],
+      "id": "b1e668d5-ba8d-4dcd-b5bf-64fe014f7529",
+      "name": "Build Single Author Input"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-classification-request.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5600,
+        1904
+      ],
+      "id": "05f79372-b8ac-4d42-a86c-50e8f5c9162b",
+      "name": "Prepare Classification Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.gemini_request }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": "={{ $json.limits.gemini_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        5328,
+        1568
+      ],
+      "id": "cb24e1e0-6c70-4140-aac4-547a97206d6d",
+      "name": "Categorizer Gemini",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"contents\": [{\n    \"role\": \"user\",\n    \"parts\": [{\n      \"text\": \"This is a connectivity and structured-output test. Return an object with ok set to true and message set to probe_ok. Do not add other fields.\"\n    }]\n  }],\n  \"generationConfig\": {\n    \"temperature\": 0,\n    \"maxOutputTokens\": 1024,\n    \"responseMimeType\": \"application/json\",\n    \"responseJsonSchema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"ok\": { \"type\": \"boolean\" },\n        \"message\": { \"type\": \"string\" }\n      },\n      \"required\": [\"ok\", \"message\"],\n      \"additionalProperties\": false\n    }\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        7792,
+        2016
+      ],
+      "id": "bca95df9-100d-4641-b791-6a129f5f4a4b",
+      "name": "Probe Gemini Structured Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-classification-response.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5552,
+        1568
+      ],
+      "id": "84bbb1ea-7e5d-4def-98cf-a3a6a1b94e14",
+      "name": "Normalize Classification Response"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.author.bio_url }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        5744,
+        1568
+      ],
+      "id": "f9828fd5-ad75-4226-a93d-8c92722dbe19",
+      "name": "Fetch Author Bio",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "author_names",
+              "cssSelector": ".author-details .author-title",
+              "skipSelectors": "script, style",
+              "returnArray": true
+            },
+            {
+              "key": "bio_texts",
+              "cssSelector": ".author-details",
+              "skipSelectors": "script, style",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        5968,
+        1568
+      ],
+      "id": "518b7fbe-a144-4b25-832d-47d75422ccbb",
+      "name": "Extract Bio Text"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-bio-request.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6192,
+        1568
+      ],
+      "id": "cd05d039-94fe-419a-b4c5-9ef9b713b876",
+      "name": "Prepare Bio Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.gemini_request }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": "={{ $json.limits.gemini_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        6384,
+        1568
+      ],
+      "id": "c0211592-05d9-431c-9e95-741bb139f98a",
+      "name": "Bio Gemini",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-bio-response.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6608,
+        1568
+      ],
+      "id": "1aa47af3-9d77-4ddc-8a11-161906bf4ec7",
+      "name": "Normalize Bio Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-research-discovery.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6832,
+        1568
+      ],
+      "id": "f2c30743-ec9a-43c4-9281-afbb8aba18ae",
+      "name": "Prepare Research Discovery"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.search_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://en.wikipedia.org/wiki/Albert_Einstein"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7056,
+        1568
+      ],
+      "id": "39751202-ae1a-4cae-a06a-6468e6562453",
+      "name": "Fetch Research Search HTML",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://en.wikipedia.org/wiki/Albert_Einstein"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Prepare Research Discovery').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7232,
+        1568
+      ],
+      "id": "07690c99-6aad-48c3-b03d-82fdfa0e4d3b",
+      "name": "Fetch Research Page",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "page_titles",
+              "cssSelector": "#firstHeading",
+              "skipSelectors": "script, style",
+              "returnArray": true
+            },
+            {
+              "key": "page_texts",
+              "cssSelector": "#mw-content-text .mw-parser-output p",
+              "skipSelectors": "script, style",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        5744,
+        1840
+      ],
+      "id": "1d71d29d-e345-489e-9b8b-eeda199b4af6",
+      "name": "Extract Research Page Text"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-reserach-page-text.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5968,
+        1840
+      ],
+      "id": "e01517dc-4619-4613-a5c2-c2d11d28ebba",
+      "name": "Prepare Reserach Page Text"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-research-request.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6192,
+        1840
+      ],
+      "id": "f54ac928-a92a-4073-bf17-bf6e599a77c9",
+      "name": "Prepare Research Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.gemini_request }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": "={{ $json.limits.gemini_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        6352,
+        1840
+      ],
+      "id": "2802cbc2-07a6-46e4-9be7-80d677e145f2",
+      "name": "Research Gemini",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-research-response.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6576,
+        1840
+      ],
+      "id": "005e4522-35e4-4693-936e-2bd523625959",
+      "name": "Normalize Research Response"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "https://www.planet-wissen.de/geschichte/persoenlichkeiten/albert_einstein_das_jahrhundert_genie/index.html"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Prepare Research Discovery').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        6736,
+        1840
+      ],
+      "id": "0cd2d2a2-1c21-4454-8f0c-40b8c9447321",
+      "name": "Fetch Research Page3",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:initialize-intake.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b1b17ec0-95f3-4edc-812a-53c330e85343",
+      "name": "Initialize Intake",
+      "position": [
+        1456,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $('Initialize Intake').first().json.page_urls[0] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Initialize Intake').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1696,
+        240
+      ],
+      "id": "3bf98ace-44bf-4b66-af47-3301b94dc385",
+      "name": "Fetch Page 1",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-fetch-1.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "76f0e6cd-d0c4-4ab4-9f22-7083762bed73",
+      "name": "Normalize Fetch 1",
+      "position": [
+        1936,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "blocks",
+              "cssSelector": ".quote",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2176,
+        240
+      ],
+      "id": "2505d426-2cee-42de-a766-7ec06bc6a9e4",
+      "name": "Extract Blocks 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:split-blocks-1.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "b6d0d505-35fe-4270-ad91-cd9b0913546c",
+      "name": "Split Blocks 1",
+      "position": [
+        2416,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "texts",
+              "cssSelector": ".text",
+              "returnArray": true
+            },
+            {
+              "key": "names",
+              "cssSelector": ".author",
+              "returnArray": true
+            },
+            {
+              "key": "links",
+              "cssSelector": "a[href^=\"/author/\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "tags",
+              "cssSelector": ".tags a.tag",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        2656,
+        240
+      ],
+      "id": "166b339f-d106-422a-b024-e06269f3c341",
+      "name": "Extract Quotes 1"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:collect-page-1.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "77b7c2cb-b4b5-475a-8343-d5451985a7da",
+      "name": "Collect Page 1",
+      "position": [
+        2896,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://production-sfo.browserless.io/content",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $('Initialize Intake').first().json.page_urls[1] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          },
+          "timeout": "={{ $('Initialize Intake').first().json.limits.request_timeout_ms }}"
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3136,
+        240
+      ],
+      "id": "7504b1bd-81f5-4ca0-9ddc-3c78d19762d4",
+      "name": "Fetch Page 2",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-fetch-2.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "332aa572-196b-4026-94e1-55089517d0b8",
+      "name": "Normalize Fetch 2",
+      "position": [
+        3376,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "blocks",
+              "cssSelector": ".quote",
+              "returnValue": "html",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        3616,
+        240
+      ],
+      "id": "69370ff7-f82e-4d2f-8ddc-f904c6525a5f",
+      "name": "Extract Blocks 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:split-blocks-2.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "55fda5ca-2c41-4544-bab4-33d60b0e6db9",
+      "name": "Split Blocks 2",
+      "position": [
+        3856,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "texts",
+              "cssSelector": ".text",
+              "returnArray": true
+            },
+            {
+              "key": "names",
+              "cssSelector": ".author",
+              "returnArray": true
+            },
+            {
+              "key": "links",
+              "cssSelector": "a[href^=\"/author/\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "tags",
+              "cssSelector": ".tags a.tag",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": false
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4144,
+        288
+      ],
+      "id": "e5221e2b-054e-4130-84e3-8a81881d203f",
+      "name": "Extract Quotes 2"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:collect-page-2.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "94dc9ee8-7364-4a1a-9928-158489919741",
+      "name": "Collect Page 2",
+      "position": [
+        4384,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:build-author-dataset.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "ec59101e-1eb8-4e2c-9ae4-1d4deac77eb8",
+      "name": "Build Author Dataset",
+      "position": [
+        4624,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:prepare-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "937457c6-d17c-44ee-9e0f-525f1fd6e1d2",
+      "name": "Prepare Batch",
+      "position": [
+        1232,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "288ecccc-1e1e-4a91-ba48-321d83555f44",
+              "leftValue": "={{ $json.author_inputs.length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1488,
+        32
+      ],
+      "id": "febb31d8-54eb-42cd-b356-ab12133be138",
+      "name": "Has Authors?"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:emit-author-inputs.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "42abd974-a1b8-4391-9ee0-a6f57ccfb50d",
+      "name": "Emit Author Inputs",
+      "position": [
+        1728,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "SHgGCeJIw8sR88HQ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/SHgGCeJIw8sR88HQ",
+          "cachedResultName": "M05-B Live Author Candidate"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2480,
+        80
+      ],
+      "id": "e63e5980-1c1f-48a6-a893-e025de60ed8f",
+      "name": "Call Live Author",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:finalize-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "bb0e8df2-9d2e-4121-a813-b50e97e0e428",
+      "name": "Finalize Batch",
+      "position": [
+        2240,
+        -144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:finalize-empty-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "cd9a6e58-ed62-4264-8f82-bde8e7951155",
+      "name": "Finalize Empty Batch",
+      "position": [
+        1728,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:finalize-stopped-batch.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "6e10f052-d1ba-4802-bd03-cf20734efff0",
+      "name": "Finalize Stopped Batch",
+      "position": [
+        3232,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"run_id\": \"m03-fixed-001\",\n  \"page_urls\": [\n    \"https://quotes.toscrape.com/\",\n    \"https://quotes.toscrape.com/page/2/\"\n  ],\n  \"limits\": {\n    \"target_sources\": 2,\n    \"max_pages\": 3,\n    \"max_searches\": 2,\n    \"candidates_per_search\": 3,\n    \"max_research_rounds\": 2,\n    \"request_retries\": 1,\n    \"gemini_transport_retries\": 1,\n    \"gemini_repair_calls\": 1,\n    \"max_gemini_requests_per_step\": 3,\n    \"retry_wait_ms\": 2000,\n    \"request_timeout_ms\": 30000,\n    \"gemini_timeout_ms\": 60000,\n    \"author_budget_ms\": 360000,\n    \"synthesis_reserve_ms\": 60000,\n    \"packaging_reserve_ms\": 5000,\n    \"max_page_text_chars\": 20000,\n    \"max_model_input_chars\": 60000,\n    \"prior_reference_chars_per_source\": 2000\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        976,
+        240
+      ],
+      "id": "ee330837-7913-4c0f-89fe-e02e8c7f49e4",
+      "name": "Run Config1"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:validate-config1.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "727fe9af-3aff-420e-b688-eda1af60f65a",
+      "name": "Validate Config1",
+      "position": [
+        1216,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1984,
+        32
+      ],
+      "id": "93ac6c3c-1dd0-4359-9c56-ed4c1c8c5f38",
+      "name": "Loop Authors1"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2256,
+        96
+      ],
+      "id": "862e0d21-2cb0-4065-b3f9-5be545fe2fa9",
+      "name": "Current Author1"
+    },
+    {
+      "parameters": {
+        "jsCode": "__SOURCE__:normalize-author-return1.js"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "id": "2c78bb5a-cc94-4397-b2d3-6456a6babc4c",
+      "name": "Normalize Author Return1",
+      "position": [
+        2736,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "288ecccc-1e1e-4a91-ba48-321d83555f44",
+              "leftValue": "={{ $json.control.stop_new_authors === true\n   && $json.control.scope === 'batch' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2992,
+        192
+      ],
+      "id": "eb4bce41-98a9-46e9-aa50-5e28285832da",
+      "name": "Batch Stop Requested?1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Run Config1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Config": {
+      "main": [
+        [
+          {
+            "node": "Validate Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Config": {
+      "main": [
+        [
+          {
+            "node": "Build Single Author Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Fixture Authors": {
+      "main": [
+        [
+          {
+            "node": "Loop Authors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Authors": {
+      "main": [
+        [
+          {
+            "node": "Check Fixture Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Current Author",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Current Author": {
+      "main": [
+        [
+          {
+            "node": "Call Author Dossier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Author Dossier": {
+      "main": [
+        [
+          {
+            "node": "Normalize Author Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Author Return": {
+      "main": [
+        [
+          {
+            "node": "Batch Stop Requested?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Stop Requested?": {
+      "main": [
+        [
+          {
+            "node": "Finalize Stopped Fixture Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Authors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Single Author Input": {
+      "main": [
+        [
+          {
+            "node": "Prepare Classification Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Classification Request": {
+      "main": [
+        [
+          {
+            "node": "Categorizer Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizer Gemini": {
+      "main": [
+        [
+          {
+            "node": "Normalize Classification Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Classification Response": {
+      "main": [
+        [
+          {
+            "node": "Fetch Author Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Author Bio": {
+      "main": [
+        [
+          {
+            "node": "Extract Bio Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Bio Text": {
+      "main": [
+        [
+          {
+            "node": "Prepare Bio Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Bio Request": {
+      "main": [
+        [
+          {
+            "node": "Bio Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bio Gemini": {
+      "main": [
+        [
+          {
+            "node": "Normalize Bio Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Bio Response": {
+      "main": [
+        [
+          {
+            "node": "Prepare Research Discovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Research Discovery": {
+      "main": [
+        [
+          {
+            "node": "Fetch Research Search HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Research Search HTML": {
+      "main": [
+        [
+          {
+            "node": "Fetch Research Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Research Page": {
+      "main": [
+        [
+          {
+            "node": "Extract Research Page Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Research Page Text": {
+      "main": [
+        [
+          {
+            "node": "Prepare Reserach Page Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Reserach Page Text": {
+      "main": [
+        [
+          {
+            "node": "Prepare Research Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Research Request": {
+      "main": [
+        [
+          {
+            "node": "Research Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research Gemini": {
+      "main": [
+        [
+          {
+            "node": "Normalize Research Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Research Response": {
+      "main": [
+        [
+          {
+            "node": "Fetch Research Page3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Intake": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page 1": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fetch 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fetch 1": {
+      "main": [
+        [
+          {
+            "node": "Extract Blocks 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Blocks 1": {
+      "main": [
+        [
+          {
+            "node": "Split Blocks 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Blocks 1": {
+      "main": [
+        [
+          {
+            "node": "Extract Quotes 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Quotes 1": {
+      "main": [
+        [
+          {
+            "node": "Collect Page 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Page 1": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page 2": {
+      "main": [
+        [
+          {
+            "node": "Normalize Fetch 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Fetch 2": {
+      "main": [
+        [
+          {
+            "node": "Extract Blocks 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Blocks 2": {
+      "main": [
+        [
+          {
+            "node": "Split Blocks 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Blocks 2": {
+      "main": [
+        [
+          {
+            "node": "Extract Quotes 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Quotes 2": {
+      "main": [
+        [
+          {
+            "node": "Collect Page 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Page 2": {
+      "main": [
+        [
+          {
+            "node": "Build Author Dataset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Author Dataset": {
+      "main": [
+        [
+          {
+            "node": "Prepare Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Batch": {
+      "main": [
+        [
+          {
+            "node": "Has Authors?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Authors?": {
+      "main": [
+        [
+          {
+            "node": "Emit Author Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finalize Empty Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Author Inputs": {
+      "main": [
+        [
+          {
+            "node": "Loop Authors1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Live Author": {
+      "main": [
+        [
+          {
+            "node": "Normalize Author Return1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Config1": {
+      "main": [
+        [
+          {
+            "node": "Validate Config1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Config1": {
+      "main": [
+        [
+          {
+            "node": "Initialize Intake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Authors1": {
+      "main": [
+        [
+          {
+            "node": "Finalize Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Current Author1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Current Author1": {
+      "main": [
+        [
+          {
+            "node": "Call Live Author",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Author Return1": {
+      "main": [
+        [
+          {
+            "node": "Batch Stop Requested?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Batch Stop Requested?1": {
+      "main": [
+        [
+          {
+            "node": "Finalize Stopped Batch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Authors1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a5e24695-a12b-424d-a85a-e8183fc56f8a",
+  "meta": {
+    "instanceId": "282481e184f891942caa7067fd3f955c950e09023bfe5aa2a53a6c8f23e10711"
+  },
+  "nodeGroups": [],
+  "id": "xkr1bwAR5zr7f2lY",
+  "tags": []
+}

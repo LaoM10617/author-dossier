@@ -1,0 +1,1 @@
+const c=$input.first().json;if(c.page_urls.length!==2)throw new Error('Expected exactly two configured pages');return [{json:{...c,run_id:'m05-intake-'+$execution.id}}];
